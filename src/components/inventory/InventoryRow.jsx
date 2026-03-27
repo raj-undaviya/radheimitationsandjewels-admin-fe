@@ -11,7 +11,7 @@ export default function InventoryRow({ item }) {
     };
 
     return (
-        <div className="bg-white px-6 py-5 rounded-2xl shadow-sm hover:shadow-md transition">
+        <div className="bg-dark px-6 py-5 rounded-2xl shadow-sm hover:shadow-md transition">
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 items-center gap-y-4 gap-x-6">
 
