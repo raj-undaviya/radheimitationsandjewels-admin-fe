@@ -1,51 +1,106 @@
 import { useState } from "react";
 import OrderHeader from "../../components/orders/OrderHeader";
-import OrderTabs from "../../components/orders/OrderTabs";
 import OrderTable from "../../components/orders/OrderTable";
 import Pagination from "../../components/common/Pagination";
 
 export default function Orders() {
 
     const [page, setPage] = useState(1);
+    const [activeTab, setActiveTab] = useState("All");
 
-    // ✅ Dummy Data (replace later with API)
-    const orders = [
-        { id: 1, name: "Alexander", amount: "$42,000" },
-        { id: 2, name: "Elena", amount: "$18,500" },
-        { id: 3, name: "Marcus", amount: "$125,000" },
-        { id: 4, name: "Maya", amount: "$8,900" },
-        { id: 5, name: "John", amount: "$50,000" },
-        { id: 6, name: "Sara", amount: "$20,000" },
-        { id: 7, name: "David", amount: "$70,000" },
-        { id: 8, name: "Chris", amount: "$15,000" },
-    ];
+    // ✅ SAME STRUCTURE AS TABLE
+    const orders = Array.from({ length: 30 }, (_, i) => {
 
-    const itemsPerPage = 3;
+        const names = [
+            "Alexander Van Der Bellen",
+            "Elena Sofia Rossi",
+            "Marcus Thorne",
+            "Maya Isabella Chen",
+            "John Carter",
+            "Sara Ali",
+            "David Miller",
+            "Chris Evans",
+            "Amit Shah",
+            "Riya Patel"
+        ];
 
-    // ✅ Calculate total pages
-    const totalPages = Math.ceil(orders.length / itemsPerPage);
+        const tags = ["VIP Member", "Platinum Tier", "New Customer", "Elite Collector"];
 
-    // ✅ Slice data for current page
-    const paginatedOrders = orders.slice(
+        const statuses = ["In Production", "Processing", "Shipped", "Delivered"];
+
+        const progressSteps = [
+            { text: "Initiated", value: 20 },
+            { text: "Stone Selection", value: 40 },
+            { text: "Quality Check", value: 60 },
+            { text: "Out for Delivery", value: 80 },
+            { text: "Delivered", value: 100 }
+        ];
+
+        const randomName = names[i % names.length];
+        const randomTag = tags[i % tags.length];
+        const randomStatus = statuses[i % statuses.length];
+        const randomProgress = progressSteps[i % progressSteps.length];
+
+        return {
+            id: `#RJ-${8829 + i}`,
+            name: randomName,
+            tag: randomTag,
+            amount: `$${(8000 + i * 4500).toLocaleString()}`,
+            progress: randomProgress.value,
+            progressText: randomProgress.text,
+            status: randomStatus,
+            date: `Oct ${24 - (i % 10)}, 2023`
+        };
+    });
+
+    const itemsPerPage = 10;
+
+    // ✅ FILTER BASED ON TAB (MATCH TABS EXACTLY)
+    const filteredOrders =
+        activeTab === "All"
+            ? orders
+            : orders.filter(order => order.status === activeTab);
+
+    // ✅ TOTAL PAGES
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+    // ✅ PAGINATION SLICE
+    const paginatedOrders = filteredOrders.slice(
         (page - 1) * itemsPerPage,
         page * itemsPerPage
     );
 
     return (
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-6">
 
+            {/* 🔥 HEADER */}
             <OrderHeader />
-            <OrderTabs />
 
-            {/* ✅ Pass paginated data */}
+            {/* 🔥 TABLE (NO PAGINATION INSIDE) */}
             <OrderTable orders={paginatedOrders} />
 
-            {/* ✅ Pagination */}
-            <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={setPage}
-            />
+            {/* 🔥 PAGINATION FOOTER */}
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
+
+                {/* LEFT TEXT */}
+                <p className="text-sm text-gray-500">
+                    Showing{" "}
+                    {(page - 1) * itemsPerPage + 1}-
+                    {Math.min(page * itemsPerPage, filteredOrders.length)}{" "}
+                    of {filteredOrders.length} Luxury Orders
+                </p>
+
+                {/* RIGHT PAGINATION */}
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => {
+                        if (newPage >= 1 && newPage <= totalPages) {
+                            setPage(newPage);
+                        }
+                    }}
+                />
+            </div>
 
         </div>
     );

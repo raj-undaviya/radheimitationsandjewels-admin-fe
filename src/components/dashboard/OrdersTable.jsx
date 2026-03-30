@@ -34,63 +34,53 @@ export default function OrdersTable() {
                 </span>
             </div>
 
-            {/* Desktop Table Header */}
-            <div className="hidden md:grid grid-cols-4 text-xs text-gray-400 font-semibold px-3 py-2">
-                <span>ORDER ID</span>
-                <span>CUSTOMER</span>
-                <span>STATUS</span>
-                <span className="text-right">VALUE</span>
-            </div>
+            {/* Table Wrapper */}
+            <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
 
-            {/* Rows */}
-            <div className="space-y-3">
-                {orders.map((order, index) => (
-                    <div
-                        key={index}
-                        className="bg-gray-50 md:bg-transparent rounded-xl p-3 md:p-0"
-                    >
+                    {/* Table Head */}
+                    <thead className="text-xs text-gray-400 uppercase border-b">
+                        <tr>
+                            <th className="py-3 px-2">Order ID</th>
+                            <th className="py-3 px-2">Customer</th>
+                            <th className="py-3 px-2">Status</th>
+                            <th className="py-3 px-2 text-right">Value</th>
+                        </tr>
+                    </thead>
 
-                        {/* Mobile View */}
-                        <div className="md:hidden space-y-2">
-                            <div className="flex justify-between">
-                                <span className="font-semibold">{order.id}</span>
-                                <span className="font-semibold">{order.amount}</span>
-                            </div>
-
-                            <div className="text-gray-600 text-sm">
-                                {order.name}
-                            </div>
-
-                            <span
-                                className={`text-xs px-3 py-1 rounded-full w-fit ${getStatusStyle(order.status)}`}
+                    {/* Table Body */}
+                    <tbody>
+                        {orders.map((order, index) => (
+                            <tr
+                                key={index}
+                                className="border-b last:border-none hover:bg-gray-50 transition"
                             >
-                                {order.status}
-                            </span>
-                        </div>
 
-                        {/* Desktop View */}
-                        <div className="hidden md:grid grid-cols-4 items-center px-3 py-3 rounded-xl hover:bg-gray-50 transition">
-                            <span className="font-semibold text-gray-700">
-                                {order.id}
-                            </span>
+                                <td className="py-3 px-2 font-semibold text-gray-700">
+                                    {order.id}
+                                </td>
 
-                            <span className="text-gray-600">
-                                {order.name}
-                            </span>
+                                <td className="py-3 px-2 text-gray-600">
+                                    {order.name}
+                                </td>
 
-                            <span
-                                className={`text-xs px-3 py-1 rounded-full w-fit ${getStatusStyle(order.status)}`}
-                            >
-                                {order.status}
-                            </span>
+                                <td className="py-3 px-2">
+                                    <span
+                                        className={`text-xs px-3 py-1 rounded-full ${getStatusStyle(order.status)}`}
+                                    >
+                                        {order.status}
+                                    </span>
+                                </td>
 
-                            <span className="text-right font-semibold text-gray-800">
-                                {order.amount}
-                            </span>
-                        </div>
+                                <td className="py-3 px-2 text-right font-semibold text-gray-800">
+                                    {order.amount}
+                                </td>
 
-                    </div>
-                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+
+                </table>
             </div>
 
         </div>

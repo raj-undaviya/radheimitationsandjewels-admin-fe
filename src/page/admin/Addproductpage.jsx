@@ -1,5 +1,4 @@
 import { useState } from "react";
-import InventoryHeader from "../../components/inventory/InventoryHeader";
 import AddProductModal from "../../components/inventory/AddProductModal";
 
 export default function Addproductpage() {
