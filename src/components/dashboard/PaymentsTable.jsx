@@ -39,42 +39,55 @@ export default function PaymentsTable() {
                 </span>
             </div>
 
-            {/* Table Header */}
-            <div className="grid grid-cols-3 text-xs text-gray-400 font-semibold px-3 py-2 bg-gray-100 rounded-full">
-                <span>TRANSACTION ID</span>
-                <span>METHOD</span>
-                <span className="text-right">AMOUNT</span>
-            </div>
+            {/* Table Wrapper */}
+            <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
 
-            {/* Rows */}
-            <div className="space-y-3 mt-3">
-                {payments.map((item, index) => (
-                    <div
-                        key={index}
-                        className="grid grid-cols-3 items-center px-3 py-3 rounded-xl hover:bg-gray-50 transition"
-                    >
+                    {/* Head */}
+                    <thead className="text-xs text-gray-400 uppercase border-b">
+                        <tr>
+                            <th className="py-3 px-2">Transaction ID</th>
+                            <th className="py-3 px-2">Method</th>
+                            <th className="py-3 px-2 text-right">Amount</th>
+                        </tr>
+                    </thead>
 
-                        {/* Transaction */}
-                        <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${getStatusDot(item.status)}`} />
-                            <span className="font-semibold text-gray-700">
-                                {item.id}
-                            </span>
-                        </div>
+                    {/* Body */}
+                    <tbody>
+                        {payments.map((item, index) => (
+                            <tr
+                                key={index}
+                                className="border-b last:border-none hover:bg-gray-50 transition"
+                            >
 
-                        {/* Method */}
-                        <div className="flex items-center gap-2 text-gray-600 text-sm">
-                            {getIcon(item.method)}
-                            {item.method}
-                        </div>
+                                {/* Transaction */}
+                                <td className="py-3 px-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className={`w-2 h-2 rounded-full ${getStatusDot(item.status)}`} />
+                                        <span className="font-semibold text-gray-700">
+                                            {item.id}
+                                        </span>
+                                    </div>
+                                </td>
 
-                        {/* Amount */}
-                        <div className={`text-right font-semibold ${getAmountColor(item.status)}`}>
-                            {item.amount}
-                        </div>
+                                {/* Method */}
+                                <td className="py-3 px-2">
+                                    <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                        {getIcon(item.method)}
+                                        {item.method}
+                                    </div>
+                                </td>
 
-                    </div>
-                ))}
+                                {/* Amount */}
+                                <td className={`py-3 px-2 text-right font-semibold ${getAmountColor(item.status)}`}>
+                                    {item.amount}
+                                </td>
+
+                            </tr>
+                        ))}
+                    </tbody>
+
+                </table>
             </div>
 
         </div>

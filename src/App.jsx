@@ -7,8 +7,10 @@ import Dashboard from "./page/admin/Dashboardpage";
 import Inventory from "./page/admin/Inventory";
 import Addproductpage from "./page/admin/Addproductpage";
 import Orders from "./page/admin/Orders";
-// import Customers from "./page/admin/Customers";
-// import Reports from "./page/admin/Reports";
+import CustomerPage from "./page/admin/CustomerPage";
+import CollectionPage from "./page/admin/CollectionPage";
+import Reports from "./page/admin/Reports";
+
 
 function App() {
   return (
@@ -23,7 +25,7 @@ function App() {
           {/* Dashboard page */}
           <Route index element={<Dashboard />} />
 
-          {/* Inventory */}
+          {/* Inventory page*/}
           <Route path="inventory" element={<Inventory />} />
 
           {/* Add Product Page */}
@@ -31,6 +33,15 @@ function App() {
 
           {/* Order page */}
           <Route path="orders" element={<Orders />} />
+
+          {/* Customers page*/}
+          <Route path="customers" element={<CustomerPage />} />
+
+          {/* ✅ COLLECTION ROUTE */}
+          <Route path="collection" element={<CollectionPage />} />
+
+          {/* REPORT page */}
+          <Route path="reports" element={<Reports />} />
 
         </Route>
 

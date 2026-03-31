@@ -4,42 +4,87 @@ export default function Pagination({
     onPageChange,
 }) {
 
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const getPages = () => {
+        const pages = [];
+
+        // Always show first page
+        if (currentPage > 2) {
+            pages.push(1);
+        }
+
+        // Left dots
+        if (currentPage > 3) {
+            pages.push("...");
+        }
+
+        // Middle pages
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+            if (i > 0 && i <= totalPages) {
+                pages.push(i);
+            }
+        }
+
+        // Right dots
+        if (currentPage < totalPages - 2) {
+            pages.push("...");
+        }
+
+        // Last page
+        if (currentPage < totalPages - 1) {
+            pages.push(totalPages);
+        }
+
+        return pages;
+    };
+
+    const pages = getPages();
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
+        <div className="flex items-center justify-between mt-6 text-sm w-full">
 
-            {/* Previous */}
+            {/* LEFT */}
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-4 py-2 border rounded-lg disabled:opacity-50 hover:bg-gray-100"
+                className="text-gray-400 hover:text-black disabled:opacity-30 hidden sm:block"
             >
                 ← Previous
             </button>
 
-            {/* Pages */}
-            <div className="flex gap-2 flex-wrap justify-center">
-                {pages.map((page) => (
-                    <button
-                        key={page}
-                        onClick={() => onPageChange(page)}
-                        className={`px-3 py-1.5 rounded-lg border
-                        ${currentPage === page
-                                ? "bg-orange-500 text-white"
-                                : "hover:bg-gray-100"
-                            }`}
-                    >
-                        {page}
-                    </button>
-                ))}
+            {/* CENTER */}
+            <div className="flex items-center justify-center flex-1 gap-2">
+
+                {pages.map((page, index) => {
+
+                    if (page === "...") {
+                        return (
+                            <span key={index} className="px-1 text-gray-400">
+                                ...
+                            </span>
+                        );
+                    }
+
+                    return (
+                        <button
+                            key={page}
+                            onClick={() => onPageChange(page)}
+                            className={`w-9 h-9 flex items-center justify-center rounded-full transition ${currentPage === page
+                                    ? "bg-orange-500 text-white shadow-md"
+                                    : "text-gray-600 hover:bg-gray-100"
+                                }`}
+                        >
+                            {page}
+                        </button>
+                    );
+                })}
+
             </div>
 
-            {/* Next */}
+            {/* RIGHT */}
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 border rounded-lg disabled:opacity-50 hover:bg-gray-100"
+                className="text-gray-400 hover:text-black disabled:opacity-30 hidden sm:block"
             >
                 Next →
             </button>

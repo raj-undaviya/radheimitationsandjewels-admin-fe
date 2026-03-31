@@ -2,6 +2,7 @@ import { useState } from "react";
 import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X } from "lucide-react";
 import logo from "../assets/logo.png";
 import { User } from "lucide-react";
+import { Shapes } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -13,6 +14,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         { label: "Inventory", path: "/admin/inventory", icon: <Package size={18} /> },
         { label: "Orders", path: "/admin/orders", icon: <ShoppingCart size={18} /> },
         { label: "Customers", path: "/admin/customers", icon: <Users size={18} /> },
+        { label: "Collection", path: "/admin/collection", icon: <Shapes size={18} /> },
         { label: "Reports", path: "/admin/reports", icon: <BarChart size={18} /> },
     ];
 
