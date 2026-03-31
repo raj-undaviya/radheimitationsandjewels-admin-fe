@@ -7,8 +7,8 @@ import Dashboard from "./page/admin/Dashboardpage";
 import Inventory from "./page/admin/Inventory";
 import Addproductpage from "./page/admin/Addproductpage";
 import Orders from "./page/admin/Orders";
-import CustomerPage from "./page/admin/CustomerPage";
-import CollectionPage from "./page/admin/CollectionPage";
+import CustomerPage from "./page/admin/Customerpage";
+import CollectionPage from "./page/admin/Collectionpage";
 import Reports from "./page/admin/Reports";
 
 
@@ -37,10 +37,10 @@ function App() {
           {/* Customers page*/}
           <Route path="customers" element={<CustomerPage />} />
 
-          {/* ✅ COLLECTION ROUTE */}
+          {/* Collection page */}
           <Route path="collection" element={<CollectionPage />} />
 
-          {/* REPORT page */}
+          {/* Report page */}
           <Route path="reports" element={<Reports />} />
 
         </Route>
