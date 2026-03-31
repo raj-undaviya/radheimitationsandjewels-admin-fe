@@ -8,6 +8,7 @@ import Inventory from "./page/admin/Inventory";
 import Addproductpage from "./page/admin/Addproductpage";
 import Orders from "./page/admin/Orders";
 import CustomerPage from "./page/admin/CustomerPage";
+import CollectionPage from "./page/admin/CollectionPage";
 import Reports from "./page/admin/Reports";
 
 
@@ -35,6 +36,9 @@ function App() {
 
           {/* Customers page*/}
           <Route path="customers" element={<CustomerPage />} />
+
+          {/* ✅ COLLECTION ROUTE */}
+          <Route path="collection" element={<CollectionPage />} />
 
           {/* REPORT page */}
           <Route path="reports" element={<Reports />} />
