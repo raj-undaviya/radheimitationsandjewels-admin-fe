@@ -8,7 +8,7 @@ import Inventory from "./page/admin/Inventory";
 import Addproductpage from "./page/admin/Addproductpage";
 import Orders from "./page/admin/Orders";
 import CustomerPage from "./page/admin/Customerpage";
-import CollectionPage from "./page/admin/Collectionpage";
+import CollectionPage from "./page/admin/CollectionPage";
 import Reports from "./page/admin/Reports";
 
 
