@@ -1,19 +1,31 @@
 import { X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function AddCategoryModal({ isOpen, onClose, onSave }) {
 
-    const [form, setForm] = useState({
-        name: "",
-        parent: "None (Top Level)",
-        description: "",
-        image: null,
-        preview: null,
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        formState: { errors },
+        reset
+    } = useForm({
+        defaultValues: {
+            name: "",
+            parent: "None (Top Level)",
+            description: "",
+            image: null
+        }
     });
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [preview, setPreview] = useState(null);
 
     const categories = ["None (Top Level)", "Rings", "Necklaces", "Bangles"];
+
+    const selectedParent = watch("parent");
 
     if (!isOpen) return null;
 
@@ -22,28 +34,21 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
         if (!file) return;
 
         const previewUrl = URL.createObjectURL(file);
-
-        setForm({
-            ...form,
-            image: file,
-            preview: previewUrl,
-        });
+        setPreview(previewUrl);
+        setValue("image", file);
     };
 
-    // ✅ Save
-    const handleSave = () => {
-        if (!form.name.trim()) {
-            alert("Category name required");
-            return;
-        }
-
+    // ✅ Submit
+    const onSubmit = (data) => {
         onSave({
-            name: form.name,
-            desc: form.description,
-            parent: form.parent,
-            image: form.image,
+            name: data.name,
+            desc: data.description,
+            parent: data.parent,
+            image: data.image,
         });
 
+        reset();
+        setPreview(null);
         onClose();
     };
 
@@ -67,7 +72,7 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                     </button>
                 </div>
 
-                <div className="space-y-5">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 
                     {/* Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -76,13 +81,13 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                         <div>
                             <label className="text-xs text-gray-400">CATEGORY NAME</label>
                             <input
+                                {...register("name", { required: "Category name required" })}
                                 className="w-full mt-1 px-4 py-2 rounded-xl bg-gray-100"
                                 placeholder="e.g. Wedding Bands"
-                                value={form.name}
-                                onChange={(e) =>
-                                    setForm({ ...form, name: e.target.value })
-                                }
                             />
+                            {errors.name && (
+                                <p className="text-red-500 text-xs">{errors.name.message}</p>
+                            )}
                         </div>
 
                         {/* Custom Dropdown */}
@@ -91,21 +96,24 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                                 PARENT CATEGORY
                             </label>
 
+                            {/* hidden input for RHF */}
+                            <input type="hidden" {...register("parent")} />
+
                             <div
                                 onClick={() => setDropdownOpen(!dropdownOpen)}
                                 className="mt-1 px-4 py-2 rounded-xl bg-gray-100 flex justify-between items-center cursor-pointer"
                             >
-                                <span>{form.parent}</span>
+                                <span>{selectedParent}</span>
                                 <ChevronDown size={16} />
                             </div>
 
                             {dropdownOpen && (
-                                <div className="absolute w-full mt-2 bg-white overflow-hidden rounded-xl shadow-md z-20">
+                                <div className="absolute w-full mt-2 bg-white rounded-xl shadow-md z-20">
                                     {categories.map((cat, i) => (
                                         <div
                                             key={i}
                                             onClick={() => {
-                                                setForm({ ...form, parent: cat });
+                                                setValue("parent", cat);
                                                 setDropdownOpen(false);
                                             }}
                                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -122,13 +130,10 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                     <div>
                         <label className="text-xs text-gray-400">DESCRIPTION</label>
                         <textarea
+                            {...register("description")}
                             className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100"
                             rows={3}
                             placeholder="Describe the essence..."
-                            value={form.description}
-                            onChange={(e) =>
-                                setForm({ ...form, description: e.target.value })
-                            }
                         />
                     </div>
 
@@ -140,9 +145,9 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
 
                         <label className="block mt-2 border-2 border-dashed border-orange-200 rounded-2xl p-6 text-center cursor-pointer hover:bg-gray-50">
 
-                            {form.preview ? (
+                            {preview ? (
                                 <img
-                                    src={form.preview}
+                                    src={preview}
                                     alt="preview"
                                     className="h-32 mx-auto object-contain"
                                 />
@@ -168,24 +173,25 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                         </label>
                     </div>
 
-                </div>
+                    {/* Footer */}
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-5 py-2 border rounded-full"
+                        >
+                            Cancel
+                        </button>
 
-                {/* Footer */}
-                <div className="flex justify-end gap-3 mt-6">
-                    <button
-                        onClick={onClose}
-                        className="px-5 py-2 border rounded-full"
-                    >
-                        Cancel
-                    </button>
+                        <button
+                            type="submit"
+                            className="px-5 py-2 bg-orange-500 text-white rounded-full"
+                        >
+                            Save Category
+                        </button>
+                    </div>
 
-                    <button
-                        onClick={handleSave}
-                        className="px-5 py-2 bg-orange-500 text-white rounded-full"
-                    >
-                        Save Category
-                    </button>
-                </div>
+                </form>
 
             </div>
         </div>

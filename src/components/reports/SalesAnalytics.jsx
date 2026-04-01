@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
-/* 🔥 CUSTOM DROPDOWN COMPONENT */
+/* CUSTOM DROPDOWN COMPONENT */
 function CustomDropdown({ options, value, onChange }) {
     const [open, setOpen] = useState(false);
     const ref = useRef();
@@ -53,7 +53,7 @@ function CustomDropdown({ options, value, onChange }) {
     );
 }
 
-/* 🔥 MAIN COMPONENT */
+/* MAIN COMPONENT */
 export default function SalesAnalytics() {
 
     const [filters, setFilters] = useState({

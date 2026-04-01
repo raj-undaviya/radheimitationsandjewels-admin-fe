@@ -10,6 +10,9 @@ import Orders from "./page/admin/Orders";
 import CustomerPage from "./page/admin/Customerpage";
 import CollectionPage from "./page/admin/CollectionPage";
 import Reports from "./page/admin/Reports";
+import CouponsPage from "./page/admin/CouponsPage";
+import PoliciesPage from "./page/admin/PoliciesPage";
+
 
 
 function App() {
@@ -42,6 +45,12 @@ function App() {
 
           {/* Report page */}
           <Route path="reports" element={<Reports />} />
+
+          {/* Coupon Page */}
+          <Route path="/admin/coupons" element={<CouponsPage />} />
+
+          {/* Policies Page */}
+          <Route path="policies" element={<PoliciesPage />} />
 
         </Route>
 
