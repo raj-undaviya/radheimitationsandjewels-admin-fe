@@ -13,7 +13,7 @@ export default function CollectionHeader() {
 
                 {/* LEFT */}
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-semibold">
+                    <h1 className="text-2xl sm:text-2xl font-bold">
                         Categories Management
                     </h1>
 

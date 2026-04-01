@@ -9,10 +9,12 @@ import Addproductpage from "./page/admin/Addproductpage";
 import Orders from "./page/admin/Orders";
 import CustomerPage from "./page/admin/Customerpage";
 import CollectionPage from "./page/admin/CollectionPage";
+import Subcategory from "./components/subcategory/Subcategory";
 import Reports from "./page/admin/Reports";
 import CouponsPage from "./page/admin/CouponsPage";
 import PoliciesPage from "./page/admin/PoliciesPage";
 import ProfilePage from "./page/admin/ProfilePage";
+import SettingPage from "./page/admin/SettingPage";
 
 
 
@@ -48,14 +50,20 @@ function App() {
           <Route path="reports" element={<Reports />} />
 
           {/* Coupon Page */}
-          <Route path="/admin/coupons" element={<CouponsPage />} />
+          <Route path="coupons" element={<CouponsPage />} />
 
           {/* Policies Page */}
           <Route path="policies" element={<PoliciesPage />} />
 
           {/* Profile page */}
-          <Route path="/admin/profile" element={<ProfilePage />} />
-          
+          <Route path="profile" element={<ProfilePage />} />
+
+          {/* Setting Page */}
+          <Route path="settings" element={<SettingPage />} />
+
+          {/* SubCategory Page */}
+          <Route path="subcategory" element={<Subcategory />} />
+
         </Route>
 
       </Routes>

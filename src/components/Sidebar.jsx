@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, Ticket } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { User } from "lucide-react";
 import { Shapes } from "lucide-react";
@@ -13,12 +13,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         { label: "Orders", path: "/admin/orders", icon: <ShoppingCart size={18} /> },
         { label: "Customers", path: "/admin/customers", icon: <Users size={18} /> },
         { label: "Collection", path: "/admin/collection", icon: <Shapes size={18} /> },
+        { label: "SubCategory", path: "/admin/subcategory", icon: <ChevronRight size={18} /> },
         { label: "Reports", path: "/admin/reports", icon: <BarChart size={18} /> },
         { label: "Coupons", path: "/admin/coupons", icon: <Ticket size={18} /> },
         { label: "Policies", path: "/admin/policies", icon: <FileText size={18} /> },
+        { label: "Settings", path: "/admin/settings", icon: <Settings size={18} /> },
     ];
 
-    // 🔥 Disable background scroll
+    // Disable background scroll
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";
@@ -48,7 +50,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
             >
 
-                {/* 🔥 Scrollable Area */}
+                {/* Scrollable Area */}
                 <div className="flex-1 overflow-y-auto p-4">
 
                     {/* Mobile Header */}
@@ -91,7 +93,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                 </div>
 
-                {/* 🔥Bottom Profile */}
+                {/* Bottom Profile */}
                 <div className="bg-gray-100 p-4">
                     <NavLink
                         to="/admin/profile"

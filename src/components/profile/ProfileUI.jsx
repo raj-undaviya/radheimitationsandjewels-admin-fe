@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import logo from "../../assets/Logo.png";
 
 export default function ProfileUI() {
 
@@ -38,14 +39,14 @@ export default function ProfileUI() {
 
             {/* Banner */}
             <div className="bg-orange-500 rounded-3xl p-6 text-white relative">
-                <button type="button" className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full text-xs">
+                {/* <button type="button" className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full text-xs">
                     Change Banner
-                </button>
+                </button> */}
 
-                <div className="flex items-end gap-4 mt-10">
+                <div className="flex items-end gap-4">
                     <div className="w-20 h-20 rounded-xl bg-white p-1">
                         <img
-                            src=""
+                            src={logo}
                             alt="not found"
                             className="rounded-xl"
                         />
@@ -54,7 +55,7 @@ export default function ProfileUI() {
                     <div>
                         <h2 className="text-xl font-bold">Rajesh Sharma</h2>
                         <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
-                            MASTER ADMIN
+                            ADMIN
                         </span>
                         <p className="text-xs mt-1">Mumbai, India</p>
                     </div>

@@ -13,7 +13,7 @@ export default function PoliciesDashboard() {
                 {/* HEADER */}
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                     <div>
-                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
+                        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
                             Site Policies
                         </h1>
                         <p className="text-xs sm:text-sm text-gray-500 mt-1">
