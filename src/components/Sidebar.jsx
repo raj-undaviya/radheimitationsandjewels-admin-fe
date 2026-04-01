@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, Ticket } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { User } from "lucide-react";
@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 left-0 h-[100dvh] w-64 bg-gray-100 z-50 flex flex-col
+                className={`fixed top-0 left-0 h-dvh w-64 bg-gray-100 z-50 flex flex-col
                 transform transition-transform duration-300 ease-in-out
                 ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
             >
@@ -93,7 +93,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                 {/* 🔥Bottom Profile */}
                 <div className="bg-gray-100 p-4">
-                    <div className="flex items-center gap-3 p-3 bg-white rounded-xl shadow cursor-pointer hover:bg-gray-50 transition">
+                    <NavLink
+                        to="/admin/profile"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 p-3 bg-white rounded-xl shadow cursor-pointer hover:bg-gray-50 transition"
+                    >
 
                         <div className="bg-orange-100 text-orange-600 p-2 rounded-full">
                             <User size={18} />
@@ -103,7 +107,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                             <p className="text-sm font-semibold text-gray-800">Akshita</p>
                             <p className="text-xs text-gray-500">Admin</p>
                         </div>
-                    </div>
+
+                    </NavLink>
                 </div>
 
             </div>

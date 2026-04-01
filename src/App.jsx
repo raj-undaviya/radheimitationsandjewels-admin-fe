@@ -12,6 +12,7 @@ import CollectionPage from "./page/admin/CollectionPage";
 import Reports from "./page/admin/Reports";
 import CouponsPage from "./page/admin/CouponsPage";
 import PoliciesPage from "./page/admin/PoliciesPage";
+import ProfilePage from "./page/admin/ProfilePage";
 
 
 
@@ -52,6 +53,9 @@ function App() {
           {/* Policies Page */}
           <Route path="policies" element={<PoliciesPage />} />
 
+          {/* Profile page */}
+          <Route path="/admin/profile" element={<ProfilePage />} />
+          
         </Route>
 
       </Routes>
