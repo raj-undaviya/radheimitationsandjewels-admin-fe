@@ -114,6 +114,7 @@ export default function CollectionTable() {
                     }}
                 />
             </div>
+
         </div>
     );
 }

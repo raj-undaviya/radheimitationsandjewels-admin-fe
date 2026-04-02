@@ -6,7 +6,7 @@ export default function OrdersHeader() {
 
             {/* Left */}
             <div>
-                <h1 className="text-2xl font-semibold">Orders Management</h1>
+                <h1 className="text-2xl font-bold">Orders Management</h1>
                 <p className="text-gray-500 text-sm">
                     Oversee and curate your luxury clientele's acquisitions.
                 </p>

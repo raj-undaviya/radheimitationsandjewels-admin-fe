@@ -40,7 +40,7 @@ export default function CustomerPage() {
     );
 
     return (
-        <div className="p-3 sm:p-4 lg:p-6 space-y-4">
+        <div className="p-3 sm:p-4 space-y-4">
 
             <CustomerHeader />
 
