@@ -20,10 +20,10 @@ import SettingPage from "./page/admin/SettingPage";
 
 
 // Protected Route
-const AdminRoute = ({ children }) => {
-  const token = localStorage.getItem("adminToken");
-  return token ? children : <Navigate to="/admin/login" />;
-};
+// const AdminRoute = ({ children }) => {
+//   const token = localStorage.getItem("adminToken");
+//   return token ? children : <Navigate to="/admin/login" />;
+// };
 
 function App() {
   return (
