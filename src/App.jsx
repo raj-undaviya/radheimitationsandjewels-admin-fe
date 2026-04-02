@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-import { Navigate } from "react-router-dom";
+
+// Admin Login
+import AdminLogin from "./page/admin/AdminLogin";
 
 // Pages
 import Dashboard from "./page/admin/Dashboardpage";
@@ -17,57 +19,53 @@ import ProfilePage from "./page/admin/ProfilePage";
 import SettingPage from "./page/admin/SettingPage";
 
 
+// Protected Route
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem("adminToken");
+  return token ? children : <Navigate to="/admin/login" />;
+};
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        <Route path="/" element={<Navigate to="/admin" />} />
+        {/*Default redirect */}
+        <Route path="/" element={<Navigate to="/admin/login" />} />
 
-        {/* Admin layout */}
-        <Route path="/admin" element={<MainLayout />}>
+        {/*Admin Login (NO layout) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-          {/* Dashboard page */}
+        {/*Protected Admin Layout */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <MainLayout />
+            </AdminRoute>
+          }
+        >
+
+          {/* Dashboard */}
           <Route index element={<Dashboard />} />
 
-          {/* Inventory page*/}
+          {/* All Admin Pages */}
           <Route path="inventory" element={<Inventory />} />
-
-          {/* Add Product Page */}
           <Route path="add-product" element={<Addproductpage />} />
-
-          {/* Order page */}
           <Route path="orders" element={<Orders />} />
-
-          {/* Customers page*/}
           <Route path="customers" element={<CustomerPage />} />
-
-          {/* Collection page */}
           <Route path="collection" element={<CollectionPage />} />
-
-          {/* Report page */}
           <Route path="reports" element={<Reports />} />
-
-          {/* Coupon Page */}
           <Route path="coupons" element={<CouponsPage />} />
-
-          {/* Policies Page */}
           <Route path="policies" element={<PoliciesPage />} />
-
-          {/* Profile page */}
           <Route path="profile" element={<ProfilePage />} />
-
-          {/* Setting Page */}
           <Route path="settings" element={<SettingPage />} />
-
-          {/* SubCategory Page */}
           <Route path="subcategory" element={<Subcategory />} />
 
         </Route>
 
       </Routes>
-    </BrowserRouter >
+    </BrowserRouter>
   );
 }
 
