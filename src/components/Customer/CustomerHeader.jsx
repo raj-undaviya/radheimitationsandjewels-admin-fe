@@ -12,7 +12,7 @@ export default function CustomerHeader() {
 
                 {/* LEFT */}
                 <div>
-                    <h1 className="text-xl sm:text-2xl font-semibold">
+                    <h1 className="text-xl sm:text-2xl font-bold">
                         Customer Atelier
                     </h1>
                     <p className="text-gray-500 text-sm max-w-md">

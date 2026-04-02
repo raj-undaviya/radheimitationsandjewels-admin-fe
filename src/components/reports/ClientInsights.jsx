@@ -1,3 +1,5 @@
+// Client Insight componet
+
 export default function ClientInsights() {
     return (
         <div className="bg-white p-5 rounded-2xl shadow space-y-4">

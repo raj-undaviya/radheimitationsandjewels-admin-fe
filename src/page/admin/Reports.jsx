@@ -6,7 +6,7 @@ import ClientInsights from "../../components/reports/ClientInsights";
 
 export default function Reports() {
     return (
-        <div className="p-3 sm:p-4 lg:p-6 space-y-6">
+        <div className="space-y-6">
 
             {/* HEADER */}
             <ReportsHeader />

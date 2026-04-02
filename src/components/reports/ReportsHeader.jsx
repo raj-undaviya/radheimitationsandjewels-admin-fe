@@ -6,7 +6,7 @@ export default function ReportsHeader() {
 
             {/* LEFT */}
             <div>
-                <h1 className="text-xl sm:text-2xl font-semibold">
+                <h1 className="text-xl sm:text-2xl font-bold">
                     Performance Reports
                 </h1>
                 <p className="text-gray-500 text-sm">
