@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MoreVertical, Pencil, Eye, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 export default function InventoryTable({ products }) {
 
@@ -13,16 +13,16 @@ export default function InventoryTable({ products }) {
     };
 
     // ✅ CLICK OUTSIDE CLOSE
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target)) {
-                setOpenMenu(null);
-            }
-        };
+    // useEffect(() => {
+        // const handleClickOutside = (e) => {
+        //     if (menuRef.current && !menuRef.current.contains(e.target)) {
+        //         setOpenMenu(null);
+        //     }
+        // };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    //     document.addEventListener("mousedown", handleClickOutside);
+    //     return () => document.removeEventListener("mousedown", handleClickOutside);
+    // }, []);
 
     return (
         <div>
@@ -88,13 +88,12 @@ export default function InventoryTable({ products }) {
                                     <td className="min-w-40">
                                         <div className="w-full bg-gray-200 h-2 rounded-full">
                                             <div
-                                                className={`h-2 rounded-full ${
-                                                    item.stock === 0
+                                                className={`h-2 rounded-full ${item.stock === 0
                                                         ? "bg-red-500"
                                                         : item.stock < 10
-                                                        ? "bg-yellow-500"
-                                                        : "bg-green-500"
-                                                }`}
+                                                            ? "bg-yellow-500"
+                                                            : "bg-green-500"
+                                                    }`}
                                                 style={{ width: `${Math.min(item.stock, 100)}%` }}
                                             />
                                         </div>
@@ -110,33 +109,27 @@ export default function InventoryTable({ products }) {
                                     </td>
 
                                     {/* 🔥 ADVANCED MENU */}
-                                    <td className="relative" ref={menuRef}>
-                                        <button
+                                    <td>
+                                        {/* <button
                                             onClick={() =>
                                                 setOpenMenu(openMenu === index ? null : index)
                                             }
                                             className="p-2 rounded-full hover:bg-gray-100 transition"
                                         >
                                             <MoreVertical size={18} />
-                                        </button>
+                                        </button> */}
 
-                                        {openMenu === index && (
-                                            <div className="absolute right-0 mt-2 w-40 bg-white overflow-hidden rounded-xl shadow-xl z-50 
-                                                animate-in fade-in zoom-in duration-150">
 
-                                                <button className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100">
-                                                    <Eye size={16} /> View
-                                                </button>
+                                        <div className="flex gap-2">
+                                            <button className="p-2 rounded-full hover:bg-blue-100 transition">
+                                                <Pencil size={16} className="text-blue-600" />
+                                            </button>
 
-                                                <button className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100">
-                                                    <Pencil size={16} /> Edit
-                                                </button>
+                                            <button className="p-2 rounded-full hover:bg-red-100 transition">
+                                                <Trash2 size={16} className="text-red-600" />
+                                            </button>
+                                        </div>
 
-                                                <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                    <Trash2 size={16} /> Delete
-                                                </button>
-                                            </div>
-                                        )}
                                     </td>
 
                                 </tr>

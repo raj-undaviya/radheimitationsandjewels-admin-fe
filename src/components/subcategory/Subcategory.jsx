@@ -232,23 +232,37 @@ export default function Subcategory() {
                                         </td>
 
                                         {/* Actions */}
-                                        <td className="px-6 py-4 text-right relative">
-                                            <button onClick={() => setOpenMenu(openMenu === index ? null : index)}>
-                                                <MoreVertical className="text-gray-500 hover:text-black" />
-                                            </button>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-end items-center gap-2">
 
-                                            {openMenu === index && (
-                                                <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-lg z-50">
-                                                    <div className="flex gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                                        <Pencil size={16} /> Edit
-                                                    </div>
-                                                    <div className="flex gap-2 px-4 py-2 hover:bg-red-50 text-red-600 cursor-pointer">
-                                                        <Trash2 size={16} /> Delete
-                                                    </div>
-                                                </div>
-                                            )}
+                                                {/* Edit */}
+                                                <button
+                                                    type="button"
+                                                    // onClick={() => handleEdit(item)}
+                                                    className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
+                                                    aria-label="Edit"
+                                                >
+                                                    <Pencil
+                                                        size={16}
+                                                        className="text-blue-600 group-hover:scale-110 transition-transform"
+                                                    />
+                                                </button>
+
+                                                {/* Delete */}
+                                                <button
+                                                    type="button"
+                                                    // onClick={() => handleDelete(item)}
+                                                    className="group p-2 rounded-full bg-red-50 hover:bg-red-100 transition-all duration-200"
+                                                    aria-label="Delete"
+                                                >
+                                                    <Trash2
+                                                        size={16}
+                                                        className="text-red-600 group-hover:scale-110 transition-transform"
+                                                    />
+                                                </button>
+
+                                            </div>
                                         </td>
-
                                     </tr>
                                 ))}
                             </tbody>
