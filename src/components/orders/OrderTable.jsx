@@ -1,93 +1,128 @@
-export default function OrdersTable({ orders }) {
+import { useEffect, useState } from "react";
+import API from "../../api/axiosInstance";
+import { OrderAPI } from "../../api/api";
+
+export default function OrdersTable() {
+
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            setLoading(true);
+
+            try {
+                const res = await API.get(OrderAPI());
+
+                const data = res?.data?.data || [];
+
+                // ✅ SORT BY LATEST DATE (IMPORTANT)
+                const sortedOrders = data.sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                );
+
+                setOrders(sortedOrders);
+
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
+
+    const getStatusStyle = (status) => {
+        switch (status?.toLowerCase()) {
+            case "delivered":
+                return "bg-green-100 text-green-600";
+            case "processing":
+                return "bg-orange-100 text-orange-600";
+            case "shipped":
+                return "bg-blue-100 text-blue-600";
+            case "pending":
+                return "bg-gray-200 text-gray-600";
+            default:
+                return "bg-gray-100";
+        }
+    };
 
     return (
         <div className="bg-white p-3 sm:p-5 rounded-2xl shadow">
 
-            {/* TABLE WRAPPER */}
-            <div className="w-full overflow-x-auto">
+            {loading ? (
+                <p className="text-center py-5 text-gray-500">Loading orders...</p>
+            ) : (
+                <div className="w-full overflow-x-auto">
 
-                <table className="min-w-225 w-full text-left">
+                    <table className="min-w-225 w-full text-left">
 
-                    {/* HEADER */}
-                    <thead className="text-xs text-gray-400 border-b">
-                        <tr>
-                            <th className="py-3 whitespace-nowrap">Order ID</th>
-                            <th className="whitespace-nowrap">Customer</th>
-                            <th className="whitespace-nowrap">Amount</th>
-                            <th className="whitespace-nowrap">Progress</th>
-                            <th className="whitespace-nowrap">Status</th>
-                            <th className="whitespace-nowrap">Date</th>
-                            <th className="text-right whitespace-nowrap">Action</th>
-                        </tr>
-                    </thead>
-
-                    {/* BODY */}
-                    <tbody>
-                        {orders.map((o, i) => (
-                            <tr key={i} className="border-b last:border-none hover:bg-gray-50 transition">
-
-                                {/* ORDER ID */}
-                                <td className="py-4 font-semibold text-orange-600 whitespace-nowrap">
-                                    {o.id}
-                                </td>
-
-                                {/* CUSTOMER */}
-                                <td>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-gray-300 shrink-0"></div>
-
-                                        <div className="min-w-0">
-                                            <p className="font-medium truncate">{o.name}</p>
-                                            <p className="text-xs text-gray-400 truncate">{o.tag}</p>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                {/* AMOUNT */}
-                                <td className="font-semibold whitespace-nowrap">
-                                    {o.amount}
-                                </td>
-
-                                {/* PROGRESS */}
-                                <td className="min-w-35">
-                                    <div className="w-full bg-gray-200 h-2 rounded-full">
-                                        <div
-                                            className="bg-orange-500 h-2 rounded-full"
-                                            style={{ width: `${o.progress}%` }}
-                                        />
-                                    </div>
-                                    <p className="text-xs mt-1 text-gray-500 whitespace-nowrap">
-                                        {o.progressText}
-                                    </p>
-                                </td>
-
-                                {/* STATUS */}
-                                <td className="whitespace-nowrap">
-                                    <span className="px-3 py-1 text-xs rounded-full bg-gray-100">
-                                        {o.status}
-                                    </span>
-                                </td>
-
-                                {/* DATE */}
-                                <td className="text-sm text-gray-500 whitespace-nowrap">
-                                    {o.date}
-                                </td>
-
-                                {/* ACTION */}
-                                <td className="text-right whitespace-nowrap">
-                                    <button className="text-orange-600 text-sm font-semibold hover:underline">
-                                        VIEW DETAILS
-                                    </button>
-                                </td>
-
+                        <thead className="text-xs text-gray-400 border-b">
+                            <tr>
+                                <th className="py-3">Order ID</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th className="text-right">Action</th>
                             </tr>
-                        ))}
-                    </tbody>
+                        </thead>
 
-                </table>
+                        <tbody>
+                            {orders.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="text-center py-5">
+                                        No orders found
+                                    </td>
+                                </tr>
+                            ) : (
+                                orders.map((o) => (
+                                    <tr key={o.id} className="border-b hover:bg-gray-50">
 
-            </div>
+                                        {/* ORDER ID */}
+                                        <td className="py-4 font-semibold text-orange-600">
+                                            #{o.id}
+                                        </td>
 
+                                        {/* PRODUCT NAME */}
+                                        <td>
+                                            {o.items[0]?.product_details?.name || "N/A"}
+                                        </td>
+
+                                        {/* AMOUNT */}
+                                        <td className="font-semibold">
+                                            ₹{o.total_amount}
+                                        </td>
+
+                                        {/* STATUS */}
+                                        <td>
+                                            <span className={`px-3 py-1 text-xs rounded-full ${getStatusStyle(o.status)}`}>
+                                                {o.status}
+                                            </span>
+                                        </td>
+
+                                        {/* DATE */}
+                                        <td className="text-sm text-gray-500">
+                                            {new Date(o.created_at).toLocaleDateString()}
+                                        </td>
+
+                                        {/* ACTION */}
+                                        <td className="text-right">
+                                            <button className="text-orange-600 text-sm font-semibold hover:underline">
+                                                VIEW
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            )}
         </div>
     );
 }

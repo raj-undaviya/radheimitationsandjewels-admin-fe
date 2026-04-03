@@ -18,11 +18,17 @@ import PoliciesPage from "./page/admin/PoliciesPage";
 import ProfilePage from "./page/admin/ProfilePage";
 import SettingPage from "./page/admin/SettingPage";
 
-
-// Protected Route
+// Protected route guard
 const AdminRoute = ({ children }) => {
   const token = localStorage.getItem("adminToken");
-  return token ? children : <Navigate to="/admin/login" />;
+  const user = JSON.parse(localStorage.getItem("adminUser"));
+
+  // Check token + admin role
+  if (!token || !user || !user.is_staff) {
+    return <Navigate to="/admin/login" />;
+  }
+
+  return children;
 };
 
 function App() {
@@ -30,7 +36,7 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/*Default redirect */}
+        {/*Default redirect TO login*/}
         <Route path="/" element={<Navigate to="/admin/login" />} />
 
         {/*Admin Login (NO layout) */}
