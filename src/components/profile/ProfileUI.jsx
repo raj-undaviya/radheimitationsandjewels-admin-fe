@@ -3,7 +3,19 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import logo from "../../assets/Logo.png";
 
+import { useNavigate } from "react-router-dom";
+
 export default function ProfileUI() {
+
+    const user = JSON.parse(localStorage.getItem("adminUser"));
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminUser");
+        navigate("/admin/login");
+    };
 
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -34,8 +46,8 @@ export default function ProfileUI() {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} 
-        className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+        <form onSubmit={handleSubmit(onSubmit)}
+            className="p-4 sm:p-6 bg-gray-50 min-h-screen">
 
             {/* Banner */}
             <div className="bg-orange-500 rounded-3xl p-6 text-white relative">
@@ -53,11 +65,10 @@ export default function ProfileUI() {
                     </div>
 
                     <div>
-                        <h2 className="text-xl font-bold">Rajesh Sharma</h2>
-                        <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
-                            ADMIN
-                        </span>
-                        <p className="text-xs mt-1">Mumbai, India</p>
+                        <h2 className="text-xl font-bold">
+                            {user?.email || "Admin"}
+                        </h2>
+                        {/* <p className="text-xs mt-1">Mumbai, India</p> */}
                     </div>
                 </div>
             </div>
@@ -202,6 +213,15 @@ export default function ProfileUI() {
 
             {/* Footer */}
             <div className="flex justify-end gap-3 mt-6">
+
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="text-red-500 font-semibold"
+                >
+                    Logout
+                </button>
+
                 <button type="button" className="text-gray-500">
                     Discard
                 </button>
@@ -212,6 +232,7 @@ export default function ProfileUI() {
                 >
                     Update Account
                 </button>
+
             </div>
 
         </form>

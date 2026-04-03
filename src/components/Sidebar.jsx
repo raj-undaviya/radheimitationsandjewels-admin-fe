@@ -5,7 +5,9 @@ import { User } from "lucide-react";
 import { Shapes } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+
 const Sidebar = ({ isOpen, setIsOpen }) => {
+    const user = JSON.parse(localStorage.getItem("adminUser"));
 
     const menuItems = [
         { label: "Dashboard", path: "/admin", icon: <LayoutDashboard size={18} /> },
@@ -106,7 +108,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                         </div>
 
                         <div>
-                            <p className="text-sm font-semibold text-gray-800">Akshita</p>
+                            <p className="text-sm font-semibold text-gray-800">
+                                {user?.email || "Admin"}
+                            </p>
                             <p className="text-xs text-gray-500">Admin</p>
                         </div>
 

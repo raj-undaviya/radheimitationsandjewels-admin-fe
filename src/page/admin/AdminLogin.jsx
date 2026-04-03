@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import API from "../../api/axiosInstance";
+import { loginAdminAPI } from "../../api/api";
+
 export default function AdminLogin() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -15,25 +18,36 @@ export default function AdminLogin() {
         formState: { errors, isValid }
     } = useForm({ mode: "onChange" });
 
-    const onSubmit = (data) => {
-        setLoading(true);
+    const onSubmit = async (data) => {
+        try {
+            setLoading(true);
 
-        console.log("Admin Login Data:", data);
+            // payload is passed
+            const response = await API.post(loginAdminAPI(), {
+                email: data.email,
+                password: data.password
+            });
 
-        // Fake login logic (temporary)
-        setTimeout(() => {
-            if (data.email === "admin@gmail.com" && data.password === "123456") {
+            console.log("FULL RESPONSE:", response.data);
 
-                // fake token
-                localStorage.setItem("adminToken", "dummy-token");
+            const user = response.data?.data;   // 👈 full user object
+            const token = user?.token;
+
+            if (token && user?.is_staff) {
+                localStorage.setItem("adminToken", token);
+                localStorage.setItem("adminUser", JSON.stringify(user));
 
                 navigate("/admin");
             } else {
-                alert("Invalid admin credentials");
+                alert("Access denied: Not an admin");
             }
 
+        } catch (error) {
+            console.error(error);
+            alert(error?.response?.data?.message || "Login failed");
+        } finally {
             setLoading(false);
-        }, 1000);
+        }
     };
 
     return (

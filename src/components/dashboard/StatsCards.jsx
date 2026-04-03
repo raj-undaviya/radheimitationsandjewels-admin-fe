@@ -1,12 +1,26 @@
 import StatCard from "./StatCard";
 
-export default function StatsCards() {
+export default function StatsCards({ stats }) {
+
+    if (!stats) return <p>Loading...</p>;
 
     const data = [
-        { title: "Total Revenue", value: "$1,284,500", change: "+12%" },
-        { title: "Today Revenue", value: "$42,390", change: "+8%" },
-        { title: "Active Customers", value: "1,402" },
-        { title: "Active Bookings", value: "28", extra: "4 New" },
+        {
+            title: "Total Users",
+            value: stats.total_users
+        },
+        {
+            title: "Total Orders",
+            value: stats.total_orders
+        },
+        {
+            title: "Total Revenue",
+            value: `₹${stats.total_revenue}`
+        },
+        {
+            title: "Orders (7 Days)",
+            value: stats.orders_last_7_days
+        }
     ];
 
     return (

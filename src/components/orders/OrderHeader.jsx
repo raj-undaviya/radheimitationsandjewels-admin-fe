@@ -1,6 +1,37 @@
 import { ShoppingCart, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import API from "../../api/axiosInstance";
+import { StatsCardAPI } from "../../api/api";
 
 export default function OrdersHeader() {
+
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const res = await API.get(StatsCardAPI());
+                setStats(res?.data?.data);
+
+            } catch (err) {
+                console.error(err);
+                setError(
+                    err?.response?.data?.message || "Failed to load dashboard"
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
     return (
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
@@ -22,7 +53,16 @@ export default function OrdersHeader() {
                     </div>
                     <div>
                         <p className="text-xs text-gray-500">Pending Orders</p>
-                        <p className="font-semibold text-lg">24</p>
+
+                        {loading ? (
+                            <p className="text-sm">Loading...</p>
+                        ) : error ? (
+                            <p className="text-sm text-red-500">Error</p>
+                        ) : (
+                            <p className="font-semibold text-lg">
+                                {stats?.pending_orders ?? 0}
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -33,7 +73,16 @@ export default function OrdersHeader() {
                     </div>
                     <div>
                         <p className="text-xs text-gray-500">Daily Revenue</p>
-                        <p className="font-semibold text-lg">$124,500</p>
+
+                        {loading ? (
+                            <p className="text-sm">Loading...</p>
+                        ) : error ? (
+                            <p className="text-sm text-red-500">Error</p>
+                        ) : (
+                            <p className="font-semibold text-lg">
+                                ₹{stats?.daily_revenue ?? 0}
+                            </p>
+                        )}
                     </div>
                 </div>
 
