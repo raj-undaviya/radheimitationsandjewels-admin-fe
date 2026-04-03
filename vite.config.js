@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: "https://radheimitationsandjewels-backend.onrender.com",
-        changeOrigin: true,
+        // changeOrigin: true,
       }
     },
     allowedHosts: ['phyllocladioid-rubi-unwise.ngrok-free.dev']
