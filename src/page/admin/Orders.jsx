@@ -6,7 +6,7 @@ export default function Orders() {
 
     const [page, setPage] = useState(1);
 
-    const itemsPerPage = 5; // like your screenshot (1 to 4)
+    const itemsPerPage = 5;
 
     return (
         <div className="space-y-6">
