@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import Pagination from "../../components/common/Pagination";
+import AddCategoryModal from "./AddCategoryModal";
 
 const data = [
     { name: "Bridal Necklaces", desc: "Traditional & heavy bridal sets", items: 24, status: "Active" },
@@ -22,6 +23,9 @@ const data = [
 ];
 
 export default function CollectionTable() {
+
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const ITEMS_PER_PAGE = 10;
     const [currentPage, setCurrentPage] = useState(1);
@@ -82,7 +86,13 @@ export default function CollectionTable() {
                                 {/* Actions */}
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2">
-                                        <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                                        <button
+                                            onClick={() => {
+                                                setEditData(item);   // store row data
+                                                setOpenModal(true);  // open modal
+                                            }}
+                                            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+                                        >
                                             <Pencil size={14} />
                                         </button>
                                         <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
@@ -112,6 +122,16 @@ export default function CollectionTable() {
                             setCurrentPage(page);
                         }
                     }}
+                />
+
+                <AddCategoryModal
+                    isOpen={openModal}
+                    onClose={() => {
+                        setOpenModal(false);
+                        setEditData(null);
+                    }}
+                    editData={editData}
+                    showParent={false}
                 />
             </div>
 
