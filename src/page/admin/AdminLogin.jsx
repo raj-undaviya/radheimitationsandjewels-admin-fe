@@ -22,7 +22,6 @@ export default function AdminLogin() {
         try {
             setLoading(true);
 
-            // payload is passed
             const response = await API.post(loginAdminAPI(), {
                 email: data.email,
                 password: data.password
@@ -30,7 +29,8 @@ export default function AdminLogin() {
 
             console.log("FULL RESPONSE:", response.data);
 
-            const user = response.data?.data;   // 👈 full user object
+            // BASED ON API
+            const user = response.data?.data;
             const token = user?.token;
 
             if (token && user?.is_staff) {

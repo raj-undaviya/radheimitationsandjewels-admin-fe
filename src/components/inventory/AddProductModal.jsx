@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FiCamera } from "react-icons/fi";
 import { IoClose, IoChevronDown } from "react-icons/io5";
 
-export default function AddProductModal({ isOpen, onClose }) {
+export default function AddProductModal({ isOpen, onClose, editData }) {
 
     const [catOpen, setCatOpen] = useState(false);
     const [subOpen, setSubOpen] = useState(false);
@@ -26,6 +26,20 @@ export default function AddProductModal({ isOpen, onClose }) {
         document.body.style.overflow = isOpen ? "hidden" : "auto";
         return () => (document.body.style.overflow = "auto");
     }, [isOpen]);
+
+    useEffect(() => {
+        if (editData) {
+            setValue("name", editData.name);
+            setValue("sku", editData.sku);
+            setValue("price", editData.price);
+            setValue("stock", editData.stock);
+
+            setCategory(editData.category);
+            setSubcategory(editData.subcategory);
+        } else {
+            reset();
+        }
+    }, [editData]);
 
     const MAX_IMAGES = 5;
 
@@ -148,7 +162,7 @@ export default function AddProductModal({ isOpen, onClose }) {
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <h2 className="text-xl font-semibold text-[#2d2d2d]">
-                                Add New Product
+                                {editData ? "Edit Product" : "Add New Product"}
                             </h2>
                             <p className="text-xs text-gray-500 mt-1">
                                 Enter details to add product.
@@ -283,7 +297,7 @@ export default function AddProductModal({ isOpen, onClose }) {
 
                             </div>
                         </div>
-                        
+
                         {/* PRICE */}
                         <div>
                             <label className="text-[11px] font-semibold text-gray-500 mb-1 block">
@@ -339,7 +353,7 @@ export default function AddProductModal({ isOpen, onClose }) {
                             type="submit"
                             className="bg-linear-to-r from-[#c75b1f] to-[#ff7a2f] text-white px-6 py-2 rounded-full shadow"
                         >
-                            Save Product
+                            {editData ? "Update Product" : "Save Product"}
                         </button>
                     </div>
 

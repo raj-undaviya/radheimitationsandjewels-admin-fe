@@ -1,10 +1,14 @@
-import { useState, useRef, useEffect } from "react";
-import { MoreVertical, Pencil, Eye, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import AddProductModal from "./AddProductModal";
 
 export default function InventoryTable({ products }) {
 
-    const [openMenu, setOpenMenu] = useState(null);
-    const menuRef = useRef(null);
+    const [data, setData] = useState(products);
+    const [deleteId, setDeleteId] = useState(null);
+
+    const [openModal, setOpenModal] = useState(false);
+    const [editProduct, setEditProduct] = useState(null);
 
     const getStatus = (stock) => {
         if (stock === 0) return { text: "Out of Stock", color: "text-red-600" };
@@ -12,17 +16,20 @@ export default function InventoryTable({ products }) {
         return { text: "Active", color: "text-green-600" };
     };
 
-    // ✅ CLICK OUTSIDE CLOSE
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target)) {
-                setOpenMenu(null);
-            }
-        };
+    // OPTIONAL HANDLERS
+    const handleEdit = (item) => {
+        setEditProduct(item);
+        setOpenModal(true);
+    };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    const handleDelete = (id) => {
+        setDeleteId(id);
+    };
+
+    const confirmDelete = () => {
+        setData(prev => prev.filter(item => item.id !== deleteId));
+        setDeleteId(null);
+    };
 
     return (
         <div>
@@ -55,12 +62,12 @@ export default function InventoryTable({ products }) {
                             <th>Stock Level</th>
                             <th>Unit Price</th>
                             <th>Status</th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {products.map((item, index) => {
+                        {data.map((item, index) => {
                             const status = getStatus(item.stock);
 
                             return (
@@ -88,13 +95,12 @@ export default function InventoryTable({ products }) {
                                     <td className="min-w-40">
                                         <div className="w-full bg-gray-200 h-2 rounded-full">
                                             <div
-                                                className={`h-2 rounded-full ${
-                                                    item.stock === 0
-                                                        ? "bg-red-500"
-                                                        : item.stock < 10
+                                                className={`h-2 rounded-full ${item.stock === 0
+                                                    ? "bg-red-500"
+                                                    : item.stock < 10
                                                         ? "bg-yellow-500"
                                                         : "bg-green-500"
-                                                }`}
+                                                    }`}
                                                 style={{ width: `${Math.min(item.stock, 100)}%` }}
                                             />
                                         </div>
@@ -109,34 +115,27 @@ export default function InventoryTable({ products }) {
                                         {status.text}
                                     </td>
 
-                                    {/* 🔥 ADVANCED MENU */}
-                                    <td className="relative" ref={menuRef}>
-                                        <button
-                                            onClick={() =>
-                                                setOpenMenu(openMenu === index ? null : index)
-                                            }
-                                            className="p-2 rounded-full hover:bg-gray-100 transition"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
+                                    {/* ✅ ACTION BUTTONS */}
+                                    <td className="py-4">
+                                        <div className="flex items-center gap-3">
 
-                                        {openMenu === index && (
-                                            <div className="absolute right-0 mt-2 w-40 bg-white overflow-hidden rounded-xl shadow-xl z-50 
-                                                animate-in fade-in zoom-in duration-150">
+                                            {/* EDIT */}
+                                            <button
+                                                onClick={() => handleEdit(item)}
+                                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+                                            >
+                                                <Pencil size={16} className="text-gray-700" />
+                                            </button>
 
-                                                <button className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100">
-                                                    <Eye size={16} /> View
-                                                </button>
+                                            {/* DELETE */}
+                                            <button
+                                                onClick={() => handleDelete(item.id)}
+                                                className="p-2 rounded-full bg-gray-100 hover:bg-red-100 transition"
+                                            >
+                                                <Trash2 size={16} className="text-gray-700 hover:text-red-600" />
+                                            </button>
 
-                                                <button className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100">
-                                                    <Pencil size={16} /> Edit
-                                                </button>
-
-                                                <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                    <Trash2 size={16} /> Delete
-                                                </button>
-                                            </div>
-                                        )}
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -147,6 +146,48 @@ export default function InventoryTable({ products }) {
                 </table>
             </div>
 
+            <AddProductModal
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditProduct(null);
+                }}
+                editData={editProduct}
+            />
+
+            {deleteId && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-sm">
+
+                        <h2 className="text-lg font-semibold mb-2">
+                            Delete Product?
+                        </h2>
+
+                        <p className="text-sm text-gray-500 mb-4">
+                            This action cannot be undone.
+                        </p>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setDeleteId(null)}
+                                className="px-4 py-2 bg-gray-200 rounded"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-600 text-white rounded"
+                            >
+                                Delete
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+
         </div>
+
     );
 }
