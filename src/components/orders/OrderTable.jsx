@@ -6,11 +6,11 @@ import OrderInvoiceModal from "./OrderInvoiceModal";
 
 export default function OrdersTable({ page, setPage, itemsPerPage }) {
 
-    const [selectedOrder, setSelectedOrder] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -20,6 +20,7 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                 const res = await API.get(OrderAPI());
                 const data = res?.data?.data || [];
 
+                // SORT BY LATEST DATE
                 const sortedOrders = data.sort(
                     (a, b) => new Date(b.created_at) - new Date(a.created_at)
                 );
@@ -55,7 +56,6 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
     };
 
     const cycleStatus = (orderId) => {
-
         const flow = ["pending", "processing", "shipped", "delivered"];
 
         const updatedOrders = orders.map(order => {
@@ -77,16 +77,17 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
             ) : (
                 <>
                     {/* TABLE */}
-                    <div className="w-full overflow-x-auto scrollbar-thin">
+                    <div className="w-full overflow-x-auto">
                         <table className="min-w-175 w-full text-left">
+
                             <thead className="text-xs text-gray-400 border-b">
                                 <tr>
-                                    <th className="py-3 whitespace-nowrap">Order ID</th>
-                                    <th className="whitespace-nowrap">Product</th>
-                                    <th className="whitespace-nowrap">Amount</th>
-                                    <th className="whitespace-nowrap">Status</th>
-                                    <th className="whitespace-nowrap">Date</th>
-                                    <th className="text-right whitespace-nowrap">Action</th>
+                                    <th className="py-3">Order ID</th>
+                                    <th>Product</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th className="text-right">Action</th>
                                 </tr>
                             </thead>
 
@@ -101,19 +102,19 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                                     paginatedOrders.map((o) => (
                                         <tr key={o.id} className="border-b hover:bg-gray-50">
 
-                                            <td className="py-4 text-orange-600 font-semibold whitespace-nowrap">
+                                            <td className="py-4 text-orange-600 font-semibold">
                                                 #{o.id}
                                             </td>
 
-                                            <td className="whitespace-nowrap">
+                                            <td>
                                                 {o.items[0]?.product_details?.name || "N/A"}
                                             </td>
 
-                                            <td className="whitespace-nowrap font-medium">
+                                            <td className="font-medium">
                                                 ₹{o.total_amount}
                                             </td>
 
-                                            <td className="whitespace-nowrap">
+                                            <td>
                                                 <span
                                                     onClick={() => cycleStatus(o.id)}
                                                     className={`px-3 py-1 rounded-full text-xs cursor-pointer ${getStatusStyle(o.status)}`}
@@ -122,11 +123,11 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                                                 </span>
                                             </td>
 
-                                            <td className="text-sm text-gray-500 whitespace-nowrap">
+                                            <td className="text-sm text-gray-500">
                                                 {new Date(o.created_at).toLocaleDateString()}
                                             </td>
 
-                                            <td className="text-right whitespace-nowrap">
+                                            <td className="text-right">
                                                 <button
                                                     onClick={() => {
                                                         setSelectedOrder(o);
@@ -146,18 +147,8 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                         </table>
                     </div>
 
-                    {/* 🔥 PAGINATION (INSIDE CARD) */}
-                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-
-                        {/* LEFT TEXT */}
-                        {/* <p className="text-sm text-gray-500">
-                            Showing{" "}
-                            {(page - 1) * itemsPerPage + 1} to{" "}
-                            {Math.min(page * itemsPerPage, totalItems)}{" "}
-                            of {totalItems} items
-                        </p> */}
-
-                        {/* RIGHT PAGINATION */}
+                    {/* PAGINATION */}
+                    <div className="mt-4 flex justify-center">
                         <Pagination
                             currentPage={page}
                             totalPages={totalPages}
@@ -167,11 +158,11 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                                 }
                             }}
                         />
-
                     </div>
                 </>
             )}
 
+            {/* MODAL (OUTSIDE TABLE) */}
             <OrderInvoiceModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
