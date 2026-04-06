@@ -294,6 +294,7 @@ export default function Subcategory() {
             <AddCategoryModal
                 isOpen={openModal}
                 onClose={() => setOpenModal(false)}
+                showParent={true}   // ✅ Show parent
             />
         </>
     );

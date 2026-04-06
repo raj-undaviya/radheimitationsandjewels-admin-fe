@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-import Pagination from "../../components/common/Pagination";
+import Pagination from "../common/Pagination";
+import AddCategoryModal from "./AddCategoryModal";
 
 const data = [
     { name: "Bridal Necklaces", desc: "Traditional & heavy bridal sets", items: 24, status: "Active" },
@@ -23,6 +24,9 @@ const data = [
 
 export default function CollectionTable() {
 
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
+
     const ITEMS_PER_PAGE = 10;
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -31,6 +35,7 @@ export default function CollectionTable() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const currentData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
+    
     return (
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
 
@@ -82,7 +87,13 @@ export default function CollectionTable() {
                                 {/* Actions */}
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2">
-                                        <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                                        <button
+                                            onClick={() => {
+                                                setEditData(item);   // store selected row
+                                                setOpenModal(true);  // open modal
+                                            }}
+                                            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+                                        >
                                             <Pencil size={14} />
                                         </button>
                                         <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
@@ -100,9 +111,9 @@ export default function CollectionTable() {
             {/* FOOTER */}
             <div className="px-4 sm:px-6 py-4">
 
-                <p className="text-sm text-gray-500 mb-3">
+                {/* <p className="text-sm text-gray-500 mb-3">
                     Showing {currentData.length} of {data.length} categories
-                </p>
+                </p> */}
 
                 <Pagination
                     currentPage={currentPage}
@@ -114,6 +125,16 @@ export default function CollectionTable() {
                     }}
                 />
             </div>
+
+            <AddCategoryModal
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null); // reset after close
+                }}
+                editData={editData}
+                showParent={false}
+            />
 
         </div>
     );
