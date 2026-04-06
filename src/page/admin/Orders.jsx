@@ -80,26 +80,29 @@ export default function Orders() {
             <OrderTable orders={paginatedOrders} />
 
             {/* 🔥 PAGINATION FOOTER */}
-            <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
+            <div className="relative mt-6 h-10">
 
                 {/* LEFT TEXT */}
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 absolute left-0 top-1/2 -translate-y-1/2">
                     Showing{" "}
                     {(page - 1) * itemsPerPage + 1}-
                     {Math.min(page * itemsPerPage, filteredOrders.length)}{" "}
                     of {filteredOrders.length} Luxury Orders
                 </p>
 
-                {/* RIGHT PAGINATION */}
-                <Pagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={(newPage) => {
-                        if (newPage >= 1 && newPage <= totalPages) {
-                            setPage(newPage);
-                        }
-                    }}
-                />
+                {/* CENTER PAGINATION */}
+                <div className="flex justify-center">
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={(newPage) => {
+                            if (newPage >= 1 && newPage <= totalPages) {
+                                setPage(newPage);
+                            }
+                        }}
+                    />
+                </div>
+
             </div>
 
         </div>

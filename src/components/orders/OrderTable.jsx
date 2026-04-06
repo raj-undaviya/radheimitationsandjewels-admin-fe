@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import API from "../../api/axiosInstance";
 import { OrderAPI } from "../../api/api";
+import OrderInvoiceModal from "./OrderInvoiceModal";
 
 export default function OrdersTable() {
+
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -16,7 +19,7 @@ export default function OrdersTable() {
 
                 const data = res?.data?.data || [];
 
-                // ✅ SORT BY LATEST DATE (IMPORTANT)
+                //SORT BY LATEST DATE (IMPORTANT)
                 const sortedOrders = data.sort(
                     (a, b) => new Date(b.created_at) - new Date(a.created_at)
                 );
@@ -109,7 +112,10 @@ export default function OrdersTable() {
 
                                         {/* ACTION */}
                                         <td className="text-right">
-                                            <button className="text-orange-600 text-sm font-semibold hover:underline">
+                                            <button
+                                                onClick={() => setSelectedOrder(o)}
+                                                className="text-orange-600 text-sm font-semibold hover:underline"
+                                            >
                                                 VIEW
                                             </button>
                                         </td>
@@ -120,6 +126,12 @@ export default function OrdersTable() {
                         </tbody>
 
                     </table>
+
+                    <OrderInvoiceModal
+                        isOpen={!!selectedOrder}
+                        order={selectedOrder}
+                        onClose={() => setSelectedOrder(null)}
+                    />
 
                 </div>
             )}
