@@ -1,6 +1,5 @@
 import { IoClose } from "react-icons/io5";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 export default function OrderInvoiceModal({ isOpen, onClose, order }) {
     if (!isOpen || !order) return null;
@@ -10,20 +9,20 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
         0
     ) || 0;
 
-    //  DOWNLOAD FUNCTION
+    // 🔥 DOWNLOAD FUNCTION
     const downloadInvoice = () => {
         const pdf = new jsPDF();
 
         let y = 15;
 
-        // 🔥 TITLE
+        // TITLE
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(18);
         pdf.text("INVOICE", 90, y);
 
         y += 10;
 
-        // 🔥 ORDER INFO
+        // ORDER INFO
         pdf.setFontSize(11);
         pdf.setFont("helvetica", "normal");
 
@@ -36,7 +35,7 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
 
         y += 10;
 
-        // 🔥 CUSTOMER
+        // CUSTOMER
         pdf.setFont("helvetica", "bold");
         pdf.text("Customer Details:", 10, y);
 
@@ -51,7 +50,7 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
 
         y += 10;
 
-        // 🔥 ADDRESS
+        // ADDRESS
         pdf.setFont("helvetica", "bold");
         pdf.text("Shipping Address:", 10, y);
 
@@ -61,7 +60,7 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
 
         y += 10;
 
-        // 🔥 TABLE HEADER
+        // TABLE HEADER
         pdf.setFont("helvetica", "bold");
         pdf.text("Product", 10, y);
         pdf.text("Qty", 110, y);
@@ -72,14 +71,11 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
         pdf.line(10, y, 200, y);
         y += 6;
 
-        // 🔥 PRODUCTS
+        // PRODUCTS
         pdf.setFont("helvetica", "normal");
-
-        let subtotal = 0;
 
         order.items?.forEach((item) => {
             const total = item.price * item.quantity;
-            subtotal += total;
 
             pdf.text(item.product_details?.name || "Product", 10, y);
             pdf.text(String(item.quantity), 110, y);
@@ -93,7 +89,7 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
         pdf.line(10, y, 200, y);
         y += 8;
 
-        // 🔥 TOTAL
+        // TOTAL
         pdf.setFont("helvetica", "bold");
         pdf.text(`Subtotal: ₹${subtotal}`, 140, y);
         y += 6;
@@ -103,10 +99,10 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
         y += 6;
         pdf.text(`Total: ₹${subtotal}`, 140, y);
 
-        // 🔥 SAVE
+        // SAVE
         pdf.save(`invoice-${order.id}.pdf`);
     };
-    
+
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
@@ -120,15 +116,13 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                     <IoClose size={22} />
                 </button>
 
-                {/* ONLY CONTENT WRAPPED */}
+                {/* CONTENT */}
                 <div id="invoice">
 
-                    {/* TITLE */}
                     <h2 className="text-xl font-semibold mb-4 text-center">
                         Order Invoice
                     </h2>
 
-                    {/* HEADER */}
                     <div className="flex justify-between mb-4">
                         <div>
                             <p className="font-semibold">Order ID</p>
@@ -141,7 +135,6 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                         </div>
                     </div>
 
-                    {/* CUSTOMER */}
                     <div className="mb-4">
                         <p className="font-semibold">Customer Details</p>
                         <p>Name: {order.name || "N/A"}</p>
@@ -149,13 +142,11 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                         <p>Email: {order.email || "N/A"}</p>
                     </div>
 
-                    {/* ADDRESS */}
                     <div className="mb-4">
                         <p className="font-semibold">Shipping Address</p>
                         <p>{order.address || "N/A"}</p>
                     </div>
 
-                    {/* PRODUCTS */}
                     <table className="w-full text-sm border mb-4">
                         <thead className="bg-gray-100">
                             <tr>
@@ -172,12 +163,8 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                                     <td className="p-2">
                                         {item.product_details?.name}
                                     </td>
-                                    <td className="text-center">
-                                        {item.quantity}
-                                    </td>
-                                    <td className="text-center">
-                                        ₹{item.price}
-                                    </td>
+                                    <td className="text-center">{item.quantity}</td>
+                                    <td className="text-center">₹{item.price}</td>
                                     <td className="text-center font-semibold">
                                         ₹{item.quantity * item.price}
                                     </td>
@@ -186,7 +173,6 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                         </tbody>
                     </table>
 
-                    {/* TOTAL */}
                     <div className="text-right">
                         <p>Subtotal: ₹{subtotal}</p>
                         <p>Tax: ₹0</p>
