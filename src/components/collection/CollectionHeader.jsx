@@ -34,7 +34,7 @@ export default function CollectionHeader() {
             </div>
 
             {/* 🔹 STATS */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
 
                 {/* Card 1 */}
                 <div className="bg-white rounded-2xl p-5 shadow-sm flex items-center gap-4">
@@ -59,7 +59,7 @@ export default function CollectionHeader() {
                 </div>
 
                 {/* Card 3 */}
-                <div className="bg-black text-white rounded-2xl p-5 flex items-center gap-4">
+                {/* <div className="bg-black text-white rounded-2xl p-5 flex items-center gap-4">
                     <div className="bg-white/10 p-3 rounded-full">
                         <TrendingUp size={18} />
                     </div>
@@ -67,7 +67,7 @@ export default function CollectionHeader() {
                         <p className="text-xs text-gray-400">MONTHLY ENGAGEMENT</p>
                         <h2 className="text-xl font-semibold">+14.2%</h2>
                     </div>
-                </div>
+                </div> */}
 
             </div>
 

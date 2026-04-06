@@ -100,9 +100,9 @@ export default function CollectionTable() {
             {/* FOOTER */}
             <div className="px-4 sm:px-6 py-4">
 
-                <p className="text-sm text-gray-500 mb-3">
+                {/* <p className="text-sm text-gray-500 mb-3">
                     Showing {currentData.length} of {data.length} categories
-                </p>
+                </p> */}
 
                 <Pagination
                     currentPage={currentPage}
