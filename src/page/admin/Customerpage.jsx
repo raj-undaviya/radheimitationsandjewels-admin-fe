@@ -1,66 +1,88 @@
 import { useState } from "react";
 import CustomerHeader from "../../components/Customer/CustomerHeader";
 import CustomerTable from "../../components/Customer/CustomerTable";
-import Pagination from "../../components/common/Pagination";
 
 export default function CustomerPage() {
 
     const [page, setPage] = useState(1);
+    const [statusFilter, setStatusFilter] = useState("ALL");
 
-    // ✅ AUTO GENERATE 30 CUSTOMERS
-    const customers = Array.from({ length: 30 }, (_, i) => {
+    // ✅ STATE CUSTOMERS
+    const [customers, setCustomers] = useState(
+        Array.from({ length: 30 }, (_, i) => {
 
-        const names = [
-            "Isabella Rossellini",
-            "Sebastian Sterling",
-            "Amara Okafor",
-            "Dr. Julian Thorne",
-            "Aarav Patel",
-            "Riya Shah",
-            "David Miller",
-            "Chris Evans"
-        ];
+            const names = [
+                "Isabella Rossellini",
+                "Sebastian Sterling",
+                "Amara Okafor",
+                "Dr. Julian Thorne",
+                "Aarav Patel",
+                "Riya Shah",
+                "David Miller",
+                "Chris Evans"
+            ];
 
-        return {
-            name: names[i % names.length],
-            memberSince: `Jan ${2020 + (i % 5)}`,
-            email: `user${i + 1}@example.com`,
-            status: i % 3 === 0 ? "INACTIVE" : "ACTIVE",
-            image: `https://i.pravatar.cc/40?img=${i + 1}`
-        };
-    });
+            return {
+                id: i + 1,
+                name: names[i % names.length],
+                memberSince: `Jan ${2020 + (i % 5)}`,
+                email: `user${i + 1}@example.com`,
+                status: i % 3 === 0 ? "INACTIVE" : "ACTIVE",
+                image: `https://i.pravatar.cc/40?img=${i + 1}`
+            };
+        })
+    );
 
     const itemsPerPage = 10;
 
-    const totalPages = Math.ceil(customers.length / itemsPerPage);
+    // ✅ FILTER LOGIC
+    const filteredCustomers = customers.filter((c) => {
+        if (statusFilter === "ALL") return true;
+        return c.status === statusFilter;
+    });
 
-    const paginatedCustomers = customers.slice(
+    // ✅ PAGINATION ON FILTERED DATA
+    const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
+
+    const paginatedCustomers = filteredCustomers.slice(
         (page - 1) * itemsPerPage,
         page * itemsPerPage
     );
 
+    // ✅ TOGGLE STATUS
+    const toggleStatus = (id) => {
+        setCustomers((prev) =>
+            prev.map((c) =>
+                c.id === id
+                    ? {
+                        ...c,
+                        status: c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+                    }
+                    : c
+            )
+        );
+    };
+
     return (
         <div className="p-3 sm:p-4 space-y-4">
 
-            <CustomerHeader />
+            <CustomerHeader
+                statusFilter={statusFilter}
+                setStatusFilter={(value) => {
+                    setStatusFilter(value);
+                    setPage(1); // 🔥 IMPORTANT
+                }}
+            />
 
-            <CustomerTable customers={paginatedCustomers} />
-
-            {/* FOOTER */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-
-                <p className="text-sm text-gray-500">
-                    Showing {(page - 1) * itemsPerPage + 1}-
-                    {Math.min(page * itemsPerPage, customers.length)} of {customers.length} profiles
-                </p>
-
-                <Pagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={setPage}
-                />
-
-            </div>
+            <CustomerTable
+                customers={paginatedCustomers}
+                page={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                totalItems={filteredCustomers.length}
+                itemsPerPage={itemsPerPage}
+                onToggleStatus={toggleStatus}
+            />
 
         </div>
     );
