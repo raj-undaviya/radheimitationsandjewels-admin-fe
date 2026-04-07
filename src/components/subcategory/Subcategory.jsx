@@ -7,7 +7,6 @@ export default function Subcategory() {
 
     const [editData, setEditData] = useState(null);
 
-    const [openMenu, setOpenMenu] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [parentOpen, setParentOpen] = useState(false);
     const [statusOpen, setStatusOpen] = useState(false);
@@ -297,9 +296,6 @@ export default function Subcategory() {
                         />
                     </div>
                 </div>
-
-
-
 
             </div>
 

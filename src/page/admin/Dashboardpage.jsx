@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import API from "../../api/axiosInstance";
-import { StatsCardAPI } from "../../api/api";
+import { StatsCardAPI, OrderAPI } from "../../api/api";
 
 //componnets
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
@@ -12,6 +12,10 @@ import OrdersTable from "../../components/dashboard/OrdersTable";
 import PaymentsTable from "../../components/dashboard/PaymentsTable";
 
 export default function Dashboard() {
+
+    const [orders, setOrders] = useState([]);
+    const [ordersLoading, setOrdersLoading] = useState(false);
+
     const [filter, setFilter] = useState("today");
 
     const [stats, setStats] = useState(null);
@@ -36,13 +40,33 @@ export default function Dashboard() {
                 );
 
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
         fetchStats();
     }, []);
 
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                setOrdersLoading(true);
+
+                const res = await API.get(OrderAPI());
+
+                const latestFive = res.data.data.slice(0, 5);
+                setOrders(latestFive);
+
+            } catch (err) {
+                console.error("Error fetching orders:", err);
+                setOrders([]);
+            } finally {
+                setOrdersLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
 
     return (
         <div className="space-y-6 max-w-7xl mx-auto transition-all duration-300">
@@ -69,7 +93,7 @@ export default function Dashboard() {
 
             {/* Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <OrdersTable />
+                <OrdersTable orders={orders} loading={ordersLoading} />
                 <PaymentsTable />
             </div>
 

@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FiCamera } from "react-icons/fi";
 import { IoClose, IoChevronDown } from "react-icons/io5";
+import toast from "react-hot-toast";
 
-export default function AddProductModal({ isOpen, onClose }) {
+import API from "../../api/axiosInstance";
+import { ProductAPI } from "../../api/api";
+
+export default function AddProductModal({ isOpen, onClose, onSuccess, editData }) {
 
     const [catOpen, setCatOpen] = useState(false);
     const [subOpen, setSubOpen] = useState(false);
@@ -12,7 +16,8 @@ export default function AddProductModal({ isOpen, onClose }) {
     const [subcategory, setSubcategory] = useState("");
 
     const [active, setActive] = useState(true);
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState([]); // preview
+    const [imageFiles, setImageFiles] = useState([]); // ✅ actual files
 
     const {
         register,
@@ -46,29 +51,99 @@ export default function AddProductModal({ isOpen, onClose }) {
             return;
         }
 
-        const previews = validFiles.map((file) =>
+        // preview (same UI)
+        const previews = validFiles.map(file =>
             URL.createObjectURL(file)
         );
 
-        setImages((prev) => [...prev, ...previews]);
+        setImages(prev => [...prev, ...previews]);
+
+        // ✅ store real files
+        setImageFiles(prev => [...prev, ...validFiles]);
     };
 
-    const onSubmit = (data) => {
-        const finalData = {
-            ...data,
-            status: active,
-            images
-        };
+    const onSubmit = async (data) => {
+        const loadingToast = toast.loading(
+            editData ? "Updating product..." : "Adding product..."
+        );
 
-        console.log("Form Data:", finalData);
+        try {
+            const payload = {
+                name: data.name,
+                description: data.description,
+                price: data.price,
+                stock: data.stock,
+                category: data.category,        // ✅ dynamic
+                subcategory: data.subcategory,  // ✅ dynamic
+                product_images: images,         // ✅ FIXED (was wrong before)
+            };
 
-        reset();
-        setImages([]);
-        setActive(true);
-        onClose();
+            console.log("FINAL PAYLOAD:", payload); // ✅ DEBUG
+
+            let res;
+
+            if (editData) {
+                res = await API.put(`${ProductAPI()}${editData.id}`, payload);
+                toast.success("Product updated successfully");
+            } else {
+                res = await API.post(ProductAPI(), payload);
+                toast.success("Product added successfully");
+            }
+
+            toast.dismiss(loadingToast);
+
+            reset();
+            setCategory("");
+            setSubcategory("");
+            setImages([]);
+            setImageFiles([]);
+
+            onClose();
+            if (onSuccess) onSuccess(res.data.data);
+
+        } catch (error) {
+            toast.dismiss(loadingToast);
+
+            console.error(error);
+            toast.error(
+                error.response?.data?.message || "Failed to save product"
+            );
+        }
     };
+
+    useEffect(() => {
+        if (!isOpen) {
+            reset();
+            setCategory("");
+            setSubcategory("");
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (editData?.images) {
+            setImages(editData.images.map(img => img.image_url));
+        }
+    }, [editData]);
+
+    useEffect(() => {
+        if (editData) {
+            setValue("name", editData.name);
+            setValue("sku", editData.sku || "");
+            setValue("price", editData.price);
+            setValue("stock", editData.stock);
+            setValue("description", editData.description || "");
+
+            setCategory(editData.category_name || `Category ${editData.category}`);
+            setSubcategory(editData.subcategory_name || "");
+
+            setValue("category", editData.category);
+            setValue("subcategory", editData.subcategory);
+        }
+    }, [editData, setValue]);
 
     if (!isOpen) return null;
+
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto">
@@ -148,7 +223,7 @@ export default function AddProductModal({ isOpen, onClose }) {
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <h2 className="text-xl font-semibold text-[#2d2d2d]">
-                                Add New Product
+                                {editData ? "Edit Product" : "Add New Product"}
                             </h2>
                             <p className="text-xs text-gray-500 mt-1">
                                 Enter details to add product.
@@ -216,17 +291,20 @@ export default function AddProductModal({ isOpen, onClose }) {
                                 {/* Dropdown */}
                                 {catOpen && (
                                     <div className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-lg z-50 overflow-hidden">
-                                        {["Necklaces", "Rings", "Bracelets"].map((item, i) => (
+                                        {[
+                                            { id: 2, name: "Mia" },
+                                            { id: 3, name: "Aveen" }
+                                        ].map((item) => (
                                             <div
-                                                key={i}
+                                                key={item.id}
                                                 onClick={() => {
-                                                    setCategory(item);
-                                                    setValue("category", item); // RHF sync
+                                                    setCategory(item.name);
+                                                    setValue("category", item.id); // ✅ IMPORTANT
                                                     setCatOpen(false);
                                                 }}
                                                 className="px-4 py-2 text-sm hover:bg-[#f5f5f5] cursor-pointer"
                                             >
-                                                {item}
+                                                {item.name}
                                             </div>
                                         ))}
                                     </div>
@@ -265,17 +343,21 @@ export default function AddProductModal({ isOpen, onClose }) {
                                 {/* Dropdown */}
                                 {subOpen && (
                                     <div className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-lg z-50 overflow-hidden">
-                                        {["Wedding Sets", "Casual", "Party Wear"].map((item, i) => (
+                                        {[
+                                            { id: 2, name: "Wedding Sets" },
+                                            // { id: 2, name: "Casual" },
+                                            // { id: 3, name: "Party Wear" }
+                                        ].map((item) => (
                                             <div
-                                                key={i}
+                                                key={item.id}
                                                 onClick={() => {
-                                                    setSubcategory(item);
-                                                    setValue("subcategory", item); // RHF sync
+                                                    setSubcategory(item.name);        // UI
+                                                    setValue("subcategory", item.id); // ✅ API
                                                     setSubOpen(false);
                                                 }}
                                                 className="px-4 py-2 text-sm hover:bg-[#f5f5f5] cursor-pointer"
                                             >
-                                                {item}
+                                                {item.name}
                                             </div>
                                         ))}
                                     </div>
@@ -283,7 +365,7 @@ export default function AddProductModal({ isOpen, onClose }) {
 
                             </div>
                         </div>
-                        
+
                         {/* PRICE */}
                         <div>
                             <label className="text-[11px] font-semibold text-gray-500 mb-1 block">
@@ -339,7 +421,7 @@ export default function AddProductModal({ isOpen, onClose }) {
                             type="submit"
                             className="bg-linear-to-r from-[#c75b1f] to-[#ff7a2f] text-white px-6 py-2 rounded-full shadow"
                         >
-                            Save Product
+                            {editData ? "Update Product" : "Save Product"}
                         </button>
                     </div>
 

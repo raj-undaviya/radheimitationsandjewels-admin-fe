@@ -1,36 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InventoryHeader from "../../components/inventory/InventoryHeader";
 import InventoryStats from "../../components/inventory/InventoryStats";
 import InventoryTable from "../../components/inventory/InventoryTable";
 import Pagination from "../../components/common/Pagination";
 import AddProductModal from "../../components/inventory/AddProductModal";
 
+import API from "../../api/axiosInstance";
+import { ProductAPI } from "../../api/api";
+
 export default function Inventory() {
 
     const [open, setOpen] = useState(false);
     const [page, setPage] = useState(1);
 
-    // 🔥 DUMMY DATA (30 PRODUCTS)
-    const products = Array.from({ length: 30 }, (_, i) => ({
-        name: `Product ${i + 1}`,
-        sku: `SKU-${i + 1}`,
-        category: ["Ring", "Necklace", "Bangles"][i % 3],
-        stock: Math.floor(Math.random() * 50),
-        price: `${1000 + i * 100}`,
-        image: "https://via.placeholder.com/40" // replace with real images
-    }));
-    
-    // ✅ STATS
-    const totalItems = products.length;
-    const lowStock = products.filter(p => p.stock < 10 && p.stock > 0).length;
-    const outOfStock = products.filter(p => p.stock === 0).length;
-    const totalValue = products.reduce((acc, p) => {
-        return acc + Number(p.price.replace("$", ""));
-    }, 0);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // ✅ PAGINATION
+    const [stats, setStats] = useState({
+        totalItems: 0,
+        lowStock: 0,
+        outOfStock: 0,
+        totalValue: 0,
+    });
+
     const itemsPerPage = 10;
 
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            const res = await API.get(ProductAPI());
+
+            const apiData = res.data;
+
+            // ✅ products
+            setProducts(apiData.data || []);
+
+            // ✅ stats
+            setStats({
+                totalItems: apiData.total_stock_quantity,
+                totalValue: apiData.total_inventory_value,
+                lowStock: apiData.data.filter(p => p.stock < 10 && p.stock > 0).length,
+                outOfStock: apiData.data.filter(p => p.stock === 0).length,
+            });
+
+        } catch (err) {
+            console.error(err);
+            setProducts([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ✅ pagination
     const totalPages = Math.ceil(products.length / itemsPerPage);
 
     const paginatedProducts = products.slice(
@@ -41,23 +65,22 @@ export default function Inventory() {
     return (
         <div className="space-y-6">
 
-            {/* Header */}
             <InventoryHeader onAddClick={() => setOpen(true)} />
 
-            {/* Stats */}
             <InventoryStats
-                totalItems={totalItems}
-                lowStock={lowStock}
-                outOfStock={outOfStock}
-                totalValue={totalValue}
+                totalItems={stats.totalItems}
+                lowStock={stats.lowStock}
+                outOfStock={stats.outOfStock}
+                totalValue={stats.totalValue}
             />
 
-            {/* Table Container */}
             <div className="bg-white p-5 rounded-2xl shadow-sm">
 
-                <InventoryTable products={paginatedProducts} />
+                <InventoryTable
+                    products={paginatedProducts}
+                    loading={loading}
+                />
 
-                {/* Pagination */}
                 <Pagination
                     currentPage={page}
                     totalPages={totalPages}
@@ -69,11 +92,15 @@ export default function Inventory() {
                 />
 
             </div>
-
-            {/* Modal */}
+            
             <AddProductModal
                 isOpen={open}
                 onClose={() => setOpen(false)}
+                onSuccess={(newProduct) => {
+                    setProducts(prev => [newProduct, ...prev]);
+                    setPage(1);
+                    fetchProducts();
+                }}
             />
 
         </div>
