@@ -5,7 +5,8 @@ import Pagination from "../../components/common/Pagination";
 
 export default function Subcategory() {
 
-    const [openMenu, setOpenMenu] = useState(null);
+    const [editData, setEditData] = useState(null);
+
     const [openModal, setOpenModal] = useState(false);
     const [parentOpen, setParentOpen] = useState(false);
     const [statusOpen, setStatusOpen] = useState(false);
@@ -93,7 +94,7 @@ export default function Subcategory() {
 
     //PAGINATION
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
 
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -101,6 +102,11 @@ export default function Subcategory() {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+    const handleEdit = (item) => {
+        setEditData(item);     // store clicked row data
+        setOpenModal(true);    // open modal
+    };
 
     return (
         <>
@@ -238,7 +244,7 @@ export default function Subcategory() {
                                                 {/* Edit */}
                                                 <button
                                                     type="button"
-                                                    // onClick={() => handleEdit(item)}
+                                                    onClick={() => handleEdit(item)}
                                                     className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
                                                     aria-label="Edit"
                                                 >
@@ -267,34 +273,39 @@ export default function Subcategory() {
                                 ))}
                             </tbody>
 
+
                         </table>
                     </div>
-                </div>
 
-                {/* Footer */}
-                <div className="px-4 sm:px-6 py-4">
-                    <p className="text-sm text-gray-500 mb-3">
-                        Showing {currentData.length} of {data.length} categories
-                    </p>
+                    {/* Footer */}
+                    <div className="px-4 sm:px-6 py-4 border-t flex justify-between items-center">
 
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={(page) => {
-                            if (page >= 1 && page <= totalPages) {
-                                setCurrentPage(page);
-                                setOpenMenu(null);
-                            }
-                        }}
-                    />
+                        {/* <p className="text-sm text-gray-500 hidden sm:block">
+                            Showing {currentData.length} of {data.length}
+                        </p> */}
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={(page) => {
+                                if (page >= 1 && page <= totalPages) {
+                                    setCurrentPage(page);
+                                    setOpenMenu(null);
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
 
             </div>
 
             <AddCategoryModal
                 isOpen={openModal}
-                onClose={() => setOpenModal(false)}
-                showParent={true}   // ✅ Show parent
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null); // reset after close
+                }}
+                editData={editData}
             />
         </>
     );

@@ -2,7 +2,17 @@ import { X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function AddCategoryModal({ isOpen, onClose, onSave, showParent = true, editData }) {
+import API from "../../api/axiosInstance";
+import { CollectionAPI, CollectionEditAPI } from "../../api/api";
+import toast from "react-hot-toast";
+
+export default function AddCategoryModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    editData,
+    showParent = true
+}) {
 
     const {
         register,
@@ -39,17 +49,16 @@ export default function AddCategoryModal({ isOpen, onClose, onSave, showParent =
         };
     }, [isOpen]);
 
-    //pre fill model form data
     useEffect(() => {
         if (editData) {
-            setValue("name", editData.name);
-            setValue("description", editData.desc);
-
-            if (editData.parent) {
-                setValue("parent", editData.parent);
-            }
+            setValue("name", editData.name || "");
+            setValue("description", editData.description || "");
+            setPreview(editData.category_image || null);
+        } else {
+            reset();
+            setPreview(null);
         }
-    }, [editData, setValue]);
+    }, [editData, setValue, reset]);
 
     if (!isOpen) return null;
 
@@ -62,17 +71,44 @@ export default function AddCategoryModal({ isOpen, onClose, onSave, showParent =
     };
 
     // Submit
-    const onSubmit = (data) => {
-        onSave({
-            name: data.name,
-            desc: data.description,
-            parent: data.parent,
-            image: data.image,
-        });
 
-        reset();
-        setPreview(null);
-        onClose();
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                name: data.name,
+                description: data.description,
+                category_image: preview || editData?.category_image || ""
+            };
+
+            console.log("PAYLOAD:", payload);
+
+            let res;
+
+            if (editData) {
+                // ✅ EDIT
+                res = await API.put(CollectionEditAPI(editData.id), payload);
+                console.log("EDIT URL:", CollectionEditAPI(editData.id));
+                toast.success("Category updated successfully");
+            } else {
+                // ✅ CREATE
+                res = await API.post(CollectionAPI(), payload);
+                toast.success("Category added successfully");
+            }
+
+            reset();
+            setPreview(null);
+            onClose();
+
+            // 🔥 REFRESH TABLE
+            if (onSuccess) onSuccess();
+
+        } catch (error) {
+            console.log("FULL ERROR:", error);
+            console.log("RESPONSE:", error.response);
+            console.log("DATA:", error.response?.data);
+            toast.error("Failed to save category");
+        }
+
     };
 
     return (
