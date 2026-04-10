@@ -112,7 +112,7 @@ export default function AddCategoryModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
 
             {/* Overlay */}
             <div
@@ -121,7 +121,7 @@ export default function AddCategoryModal({
             ></div>
 
             {/* Modal */}
-            <div className="relative w-full max-w-2xl h-[90vh] bg-white rounded-3xl shadow-xl flex flex-col">
+            <div className="relative w-full max-w-2xl h-[75vh] bg-white rounded-3xl shadow-xl flex flex-col">
 
                 {/* HEADER */}
                 <div className="flex justify-between items-center p-6 border-b">

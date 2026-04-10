@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-import Pagination from "../../components/common/Pagination";
+import Pagination from "../common/Pagination";
+import AddCategoryModal from "./AddCategoryModal";
 
 import { CollectionDeleteAPI } from "../../api/api";
 import API from "../../api/axiosInstance";
@@ -11,6 +12,9 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
 
     // const [openModal, setOpenModal] = useState(false);
     // const [editData, setEditData] = useState(null);
+
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const ITEMS_PER_PAGE = 10;
     const [currentPage, setCurrentPage] = useState(1);
@@ -62,6 +66,7 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
         ));
     };
 
+    
     return (
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
 
@@ -179,6 +184,16 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                     showParent={false}
                 /> */}
             </div>
+
+            <AddCategoryModal
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null); // reset after close
+                }}
+                editData={editData}
+                showParent={false}
+            />
 
         </div>
     );
