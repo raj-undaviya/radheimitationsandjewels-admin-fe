@@ -1,42 +1,19 @@
-import { useEffect, useState } from "react";
-import API from "../../api/axiosInstance";
-import { OrderAPI } from "../../api/api";
+import { useState } from "react";
 import Pagination from "../common/Pagination";
 import OrderInvoiceModal from "./OrderInvoiceModal";
 
-export default function OrdersTable({ page, setPage, itemsPerPage }) {
-
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(false);
+export default function OrdersTable({
+    orders = [],
+    loading = false,
+    page,
+    setPage,
+    itemsPerPage
+}) {
 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            setLoading(true);
-
-            try {
-                const res = await API.get(OrderAPI());
-                const data = res?.data?.data || [];
-
-                // SORT BY LATEST DATE
-                const sortedOrders = data.sort(
-                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
-                );
-
-                setOrders(sortedOrders);
-
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchOrders();
-    }, []);
-
+    // ✅ pagination
     const totalItems = orders.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -55,10 +32,11 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
         }
     };
 
+    // ⚠️ local status update (UI only)
     const cycleStatus = (orderId) => {
         const flow = ["pending", "processing", "shipped", "delivered"];
 
-        const updatedOrders = orders.map(order => {
+        const updated = orders.map(order => {
             if (order.id === orderId) {
                 const nextIndex = (flow.indexOf(order.status) + 1) % flow.length;
                 return { ...order, status: flow[nextIndex] };
@@ -66,7 +44,8 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
             return order;
         });
 
-        setOrders(updatedOrders);
+        // ⚠️ NOTE: this won't persist unless you use API later
+        console.log("Updated (UI only):", updated);
     };
 
     return (
@@ -107,7 +86,7 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                                             </td>
 
                                             <td>
-                                                {o.items[0]?.product_details?.name || "N/A"}
+                                                {o.items?.[0]?.product_details?.name || "N/A"}
                                             </td>
 
                                             <td className="font-medium">
@@ -162,7 +141,7 @@ export default function OrdersTable({ page, setPage, itemsPerPage }) {
                 </>
             )}
 
-            {/* MODAL (OUTSIDE TABLE) */}
+            {/* MODAL */}
             <OrderInvoiceModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

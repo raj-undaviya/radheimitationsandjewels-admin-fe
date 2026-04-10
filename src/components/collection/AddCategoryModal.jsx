@@ -2,7 +2,17 @@ import { X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function AddCategoryModal({ isOpen, onClose, onSave }) {
+import API from "../../api/axiosInstance";
+import { CollectionAPI, CollectionEditAPI } from "../../api/api";
+import toast from "react-hot-toast";
+
+export default function AddCategoryModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    editData,
+    showParent = true
+}) {
 
     const {
         register,
@@ -39,6 +49,17 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
         };
     }, [isOpen]);
 
+    useEffect(() => {
+        if (editData) {
+            setValue("name", editData.name || "");
+            setValue("description", editData.description || "");
+            setPreview(editData.category_image || null);
+        } else {
+            reset();
+            setPreview(null);
+        }
+    }, [editData, setValue, reset]);
+
     if (!isOpen) return null;
 
     // Image Upload
@@ -50,17 +71,44 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
     };
 
     // Submit
-    const onSubmit = (data) => {
-        onSave({
-            name: data.name,
-            desc: data.description,
-            parent: data.parent,
-            image: data.image,
-        });
 
-        reset();
-        setPreview(null);
-        onClose();
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                name: data.name,
+                description: data.description,
+                category_image: preview || editData?.category_image || ""
+            };
+
+            console.log("PAYLOAD:", payload);
+
+            let res;
+
+            if (editData) {
+                // ✅ EDIT
+                res = await API.put(CollectionEditAPI(editData.id), payload);
+                console.log("EDIT URL:", CollectionEditAPI(editData.id));
+                toast.success("Category updated successfully");
+            } else {
+                // ✅ CREATE
+                res = await API.post(CollectionAPI(), payload);
+                toast.success("Category added successfully");
+            }
+
+            reset();
+            setPreview(null);
+            onClose();
+
+            // 🔥 REFRESH TABLE
+            if (onSuccess) onSuccess();
+
+        } catch (error) {
+            console.log("FULL ERROR:", error);
+            console.log("RESPONSE:", error.response);
+            console.log("DATA:", error.response?.data);
+            toast.error("Failed to save category");
+        }
+
     };
 
     return (
@@ -77,7 +125,9 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
 
                 {/* HEADER */}
                 <div className="flex justify-between items-center p-6 border-b">
-                    <h2 className="text-xl font-semibold">Add New Category</h2>
+                    <h2 className="text-xl font-semibold">
+                        {editData ? "Edit Category" : "Add New Category"}
+                    </h2>
                     <button onClick={onClose}>
                         <X />
                     </button>
@@ -106,36 +156,38 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                             </div>
 
                             {/* Dropdown */}
-                            <div className="relative">
-                                <label className="text-xs text-gray-400">PARENT CATEGORY</label>
+                            {showParent && (
+                                <div className="relative">
+                                    <label className="text-xs text-gray-400">PARENT CATEGORY</label>
 
-                                <input type="hidden" {...register("parent")} />
+                                    <input type="hidden" {...register("parent")} />
 
-                                <div
-                                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                                    className="mt-1 px-4 py-2 rounded-xl bg-gray-100 flex justify-between items-center cursor-pointer"
-                                >
-                                    <span>{selectedParent}</span>
-                                    <ChevronDown size={16} />
-                                </div>
-
-                                {dropdownOpen && (
-                                    <div className="absolute w-full mt-2 bg-white rounded-xl shadow-md z-20">
-                                        {categories.map((cat, i) => (
-                                            <div
-                                                key={i}
-                                                onClick={() => {
-                                                    setValue("parent", cat);
-                                                    setDropdownOpen(false);
-                                                }}
-                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                            >
-                                                {cat}
-                                            </div>
-                                        ))}
+                                    <div
+                                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                                        className="mt-1 px-4 py-2 rounded-xl bg-gray-100 flex justify-between items-center cursor-pointer"
+                                    >
+                                        <span>{selectedParent}</span>
+                                        <ChevronDown size={16} />
                                     </div>
-                                )}
-                            </div>
+
+                                    {dropdownOpen && (
+                                        <div className="absolute w-full mt-2 bg-white rounded-xl shadow-md z-20">
+                                            {categories.map((cat, i) => (
+                                                <div
+                                                    key={i}
+                                                    onClick={() => {
+                                                        setValue("parent", cat);
+                                                        setDropdownOpen(false);
+                                                    }}
+                                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                >
+                                                    {cat}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                         </div>
 
@@ -200,7 +252,7 @@ export default function AddCategoryModal({ isOpen, onClose, onSave }) {
                                 type="submit"
                                 className="px-5 py-2 bg-orange-500 text-white rounded-full"
                             >
-                                Save Category
+                                {editData ? "Update Category" : "Save Category"}
                             </button>
                         </div>
 

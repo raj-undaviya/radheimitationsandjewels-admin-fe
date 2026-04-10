@@ -1,10 +1,17 @@
-import { useState, useRef, useEffect } from "react";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import AddProductModal from "./AddProductModal";
+import toast from "react-hot-toast";
 
-export default function InventoryTable({ products }) {
+import API from "../../api/axiosInstance";
+import { ProductDeleteAPI } from "../../api/api";
 
-    const [openMenu, setOpenMenu] = useState(null);
-    const menuRef = useRef(null);
+export default function InventoryTable({ products = [], loading = false }) {
+
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
+
+    const [localProducts, setLocalProducts] = useState(products);
 
     const getStatus = (stock) => {
         if (stock === 0) return { text: "Out of Stock", color: "text-red-600" };
@@ -12,22 +19,53 @@ export default function InventoryTable({ products }) {
         return { text: "Active", color: "text-green-600" };
     };
 
-    // ✅ CLICK OUTSIDE CLOSE
-    // useEffect(() => {
-        // const handleClickOutside = (e) => {
-        //     if (menuRef.current && !menuRef.current.contains(e.target)) {
-        //         setOpenMenu(null);
-        //     }
-        // };
+    useEffect(() => {
+        setLocalProducts(products);
+    }, [products]);
 
-    //     document.addEventListener("mousedown", handleClickOutside);
-    //     return () => document.removeEventListener("mousedown", handleClickOutside);
-    // }, []);
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2">
+                <span>Delete this product?</span>
+
+                <div className="flex gap-2">
+                    <button
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+
+                            try {
+                                await API.delete(ProductDeleteAPI(id));
+
+                                setLocalProducts(prev =>
+                                    prev.filter(item => item.id !== id)
+                                );
+
+                                toast.success("Product deleted successfully");
+                            } catch (error) {
+                                console.error(error);
+                                toast.error("Failed to delete product");
+                            }
+                        }}
+                        className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                        Yes
+                    </button>
+
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-300 px-3 py-1 rounded"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        ));
+    };
 
     return (
         <div>
 
-            {/* Filters */}
+            {/* FILTERS */}
             <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
                 <div className="flex flex-wrap gap-2">
                     <button className="bg-gray-200 px-4 py-2 rounded-full text-sm">
@@ -39,11 +77,11 @@ export default function InventoryTable({ products }) {
                 </div>
 
                 <p className="text-gray-500 text-sm">
-                    Showing {products.length} items
+                    Showing {localProducts.length} items
                 </p>
             </div>
 
-            {/* Table */}
+            {/* TABLE */}
             <div className="overflow-x-auto">
                 <table className="min-w-175 w-full text-left">
 
@@ -60,39 +98,61 @@ export default function InventoryTable({ products }) {
                     </thead>
 
                     <tbody>
-                        {products.map((item, index) => {
+
+                        {/* LOADING */}
+                        {loading && (
+                            <tr>
+                                <td colSpan="7" className="text-center py-6">
+                                    Loading products...
+                                </td>
+                            </tr>
+                        )}
+
+                        {/* EMPTY */}
+                        {!loading && localProducts.length === 0 && (
+                            <tr>
+                                <td colSpan="7" className="text-center py-6 text-gray-400">
+                                    No products found
+                                </td>
+                            </tr>
+                        )}
+
+                        {/* DATA */}
+                        {!loading && localProducts.map((item) => {
                             const status = getStatus(item.stock);
 
                             return (
-                                <tr key={index} className="border-b last:border-none">
+                                <tr key={item.id} className="border-b last:border-none">
 
                                     {/* PRODUCT */}
                                     <td className="py-4 flex items-center gap-3">
                                         <img
-                                            src={item.image}
-                                            alt=""
+                                            src={item.images?.[0]?.image_url || "https://via.placeholder.com/40"}
+                                            alt={item.name}
                                             className="w-10 h-10 rounded-full object-cover border"
                                         />
                                         <span className="font-medium">{item.name}</span>
                                     </td>
 
-                                    <td>{item.sku}</td>
+                                    {/* SKU */}
+                                    <td>SKU-{item.id}</td>
 
+                                    {/* CATEGORY */}
                                     <td>
                                         <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium">
-                                            {item.category}
+                                            Category {item.category}
                                         </span>
                                     </td>
 
-                                    {/* Stock */}
+                                    {/* STOCK */}
                                     <td className="min-w-40">
                                         <div className="w-full bg-gray-200 h-2 rounded-full">
                                             <div
                                                 className={`h-2 rounded-full ${item.stock === 0
-                                                        ? "bg-red-500"
-                                                        : item.stock < 10
-                                                            ? "bg-yellow-500"
-                                                            : "bg-green-500"
+                                                    ? "bg-red-500"
+                                                    : item.stock < 10
+                                                        ? "bg-yellow-500"
+                                                        : "bg-green-500"
                                                     }`}
                                                 style={{ width: `${Math.min(item.stock, 100)}%` }}
                                             />
@@ -102,44 +162,59 @@ export default function InventoryTable({ products }) {
                                         </p>
                                     </td>
 
-                                    <td>${item.price}</td>
+                                    {/* PRICE */}
+                                    <td>₹{Number(item.price).toLocaleString()}</td>
 
+                                    {/* STATUS */}
                                     <td className={`text-sm font-medium ${status.color}`}>
                                         {status.text}
                                     </td>
 
-                                    {/* 🔥 ADVANCED MENU */}
+                                    {/* ACTIONS */}
                                     <td>
-                                        {/* <button
-                                            onClick={() =>
-                                                setOpenMenu(openMenu === index ? null : index)
-                                            }
-                                            className="p-2 rounded-full hover:bg-gray-100 transition"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button> */}
-
-
                                         <div className="flex gap-2">
-                                            <button className="p-2 rounded-full hover:bg-blue-100 transition">
+                                            <button
+                                                onClick={() => {
+                                                    setEditData(item);
+                                                    setOpenModal(true);
+                                                }}
+                                                className="p-2 rounded-full hover:bg-blue-100 transition"
+                                            >
                                                 <Pencil size={16} className="text-blue-600" />
                                             </button>
 
-                                            <button className="p-2 rounded-full hover:bg-red-100 transition">
+                                            <button
+                                                onClick={() => handleDelete(item.id)}
+                                                className="p-2 rounded-full hover:bg-red-100 transition"
+                                            >
                                                 <Trash2 size={16} className="text-red-600" />
                                             </button>
-                                        </div>
 
+                                        </div>
                                     </td>
 
                                 </tr>
                             );
                         })}
-                    </tbody>
 
+                    </tbody>
                 </table>
             </div>
 
+            {/* MODAL */}
+            <AddProductModal
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null);
+                }}
+                editData={editData}
+                onSuccess={(updatedProduct) => {
+                    setLocalProducts(prev =>
+                        prev.map(p => p.id === updatedProduct.id ? updatedProduct : p)
+                    );
+                }}
+            />
         </div>
     );
 }

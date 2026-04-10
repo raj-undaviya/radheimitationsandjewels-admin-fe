@@ -1,36 +1,6 @@
 import { ShoppingCart, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
 
-import API from "../../api/axiosInstance";
-import { StatsCardAPI } from "../../api/api";
-
-export default function OrdersHeader() {
-
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                const res = await API.get(StatsCardAPI());
-                setStats(res?.data?.data);
-
-            } catch (err) {
-                console.error(err);
-                setError(
-                    err?.response?.data?.message || "Failed to load dashboard"
-                );
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchStats();
-    }, []);
+export default function OrdersHeader({ stats = null, loading = false, error = null }) {
 
     return (
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
