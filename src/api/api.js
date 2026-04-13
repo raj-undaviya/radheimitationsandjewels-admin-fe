@@ -9,6 +9,7 @@ const StatsCards = "/admin-panel/dashboard";
 //Latest Order and Order Page api dashboard and order page
 const Order = "/admin-panel/orders";
 
+// ===========================================
 //product page api /stats api
 const Product = "/products/";
 
@@ -18,7 +19,7 @@ const ProductEdit = (id) => `/products/${id}`;
 //Product delete API
 const ProductDelete = (id) => `/products/${id}`;
 
-
+// ============================================
 //collection add 
 const Collection = "/products/category";
 
@@ -30,9 +31,17 @@ const CollectionById = (id) => `/products/category/${id}`;
 // Category Delete API
 const CollectionDelete = (id) => `/products/category/${id}`;
 
+// ==============================================
 
 //subcategory view API
+// subcategory add 
 const SubCategory = "/products/subcategory";
+
+// subcategory edit api
+const SubCategoryEdit = (id) => `/products/subcategory/${id}`;
+
+const SubCategoryDelete = (id) => `/products/subcategory/${id}`;
+
 
 // ================= EXPORT FUNCTIONS =================
 export const loginAdminAPI = () => loginAdmin;
@@ -44,12 +53,14 @@ export const ProductAPI = () => Product;
 export const ProductEditAPI = (id) => ProductEdit(id);
 export const ProductDeleteAPI = (id) => ProductDelete(id);
 
-// ================= EXPORT FUNCTIONS =================
+// ================= COLLECTION FUNCTION =================
 export const CollectionAPI = () => Collection;
 export const CollectionEditAPI = (id) => CollectionEdit(id);
 export const CollectionByIdAPI = (id) => CollectionById(id);
 export const CollectionDeleteAPI = (id) => CollectionDelete(id);
 
 
-
+// ================= SUBCOLLECTION FUNCTION =================
 export const SubCategoryAPI = () => SubCategory;
+export const SubCategoryEdiAPI = (id) => SubCategoryEdit(id);
+export const SubCategoryDeleteAPI = (id) => SubCategoryDelete(id);

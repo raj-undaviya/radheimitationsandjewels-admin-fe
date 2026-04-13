@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import API from "../../api/axiosInstance";
-import { CollectionAPI, CollectionEditAPI } from "../../api/api";
+import { CollectionAPI, CollectionEditAPI, SubCategoryEdiAPI } from "../../api/api";
 import toast from "react-hot-toast";
+import { SubCategoryAPI } from "../../api/api";
 
 export default function AddCategoryModal({
+    type = "category",
     isOpen,
     onClose,
     onSuccess,
@@ -31,11 +33,26 @@ export default function AddCategoryModal({
         }
     });
 
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        if (type === "subcategory") {
+            fetchCategories();
+        }
+    }, [type]);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await API.get(CollectionAPI());
+            setCategories(res.data.data || []);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [preview, setPreview] = useState(null);
 
-    const categories = ["None (Top Level)", "Rings", "Necklaces", "Bangles"];
-    const selectedParent = watch("parent");
 
     // STOP BACKGROUND SCROLL
     useEffect(() => {
@@ -55,6 +72,8 @@ export default function AddCategoryModal({
             setValue("name", editData.name || "");
             setValue("description", editData.description || "");
             setValue("status", editData.status || "active");
+            setValue("category", editData.category);
+
             setPreview(editData.category_image_url || null);
         } else {
             reset();
@@ -62,56 +81,85 @@ export default function AddCategoryModal({
         }
     }, [editData, setValue, reset]);
 
+
     if (!isOpen) return null;
 
     // Image Upload
     const handleImageUpload = (file) => {
         if (!file) return;
+
         const previewUrl = URL.createObjectURL(file);
         setPreview(previewUrl);
+
         setValue("image", file);
     };
 
     // Submit
-
     const onSubmit = async (data) => {
         try {
-            const payload = {
-                name: data.name,
-                description: data.description,
-                status: data.status,
-                category_image: preview || editData?.category_image_url || ""
-            };
-
-            console.log("PAYLOAD:", payload);
-
             let res;
 
-            if (editData) {
-                // ✅ EDIT
-                res = await API.put(CollectionEditAPI(editData.id), payload);
-                console.log("EDIT URL:", CollectionEditAPI(editData.id));
-                toast.success("Category updated successfully");
-            } else {
-                // ✅ CREATE
-                res = await API.post(CollectionAPI(), payload);
-                toast.success("Category added successfully");
+            // ================= CATEGORY =================
+            if (type === "category") {
+
+                const formData = new FormData();
+
+                formData.append("name", data.name);
+                formData.append("description", data.description);
+                formData.append("status", data.status);
+
+                if (data.image) {
+                    formData.append("category_image", data.image);
+                }
+
+                if (editData) {
+                    // UPDATE CATEGORY
+                    res = await API.put(
+                        CollectionEditAPI(editData.id),
+                        formData,
+                        { headers: { "Content-Type": "multipart/form-data" } }
+                    );
+                } else {
+                    // CREATE CATEGORY
+                    res = await API.post(
+                        CollectionAPI(),
+                        formData,
+                        { headers: { "Content-Type": "multipart/form-data" } }
+                    );
+                }
             }
+
+            // ================= SUBCATEGORY =================
+            else {
+                const payload = {
+                    subcategory_name: data.name,
+                    category: data.category,
+                    description: data.description,
+                    status: data.status
+                };
+
+                if (editData) {
+                    // UPDATE SUBCATEGORY
+                    res = await API.put(SubCategoryEdiAPI(editData.id), payload);
+                } else {
+                    // CREATE SUBCATEGORY
+                    res = await API.post(SubCategoryAPI(), payload);
+                }
+            }
+
+            // ================= COMMON =================
+            toast.success(`${type} ${editData ? "updated" : "added"} successfully`);
 
             reset();
             setPreview(null);
             onClose();
 
-            // 🔥 REFRESH TABLE
             if (onSuccess) onSuccess();
 
         } catch (error) {
-            console.log("FULL ERROR:", error);
-            console.log("RESPONSE:", error.response);
-            console.log("DATA:", error.response?.data);
-            toast.error("Failed to save category");
+            console.error(error);
+            toast.error("Failed to save");
         }
-
     };
 
     return (
@@ -159,17 +207,19 @@ export default function AddCategoryModal({
                             </div>
 
                             {/* Dropdown */}
-                            {showParent && (
+                            {type === "subcategory" && showParent && (
                                 <div className="relative">
                                     <label className="text-xs text-gray-400">PARENT CATEGORY</label>
 
-                                    <input type="hidden" {...register("parent")} />
+                                    <input type="hidden" {...register("category")} />
 
                                     <div
                                         onClick={() => setDropdownOpen(!dropdownOpen)}
                                         className="mt-1 px-4 py-2 rounded-xl bg-gray-100 flex justify-between items-center cursor-pointer"
                                     >
-                                        <span>{selectedParent}</span>
+                                        <span>
+                                            {categories.find(c => c.id === watch("category"))?.name || "Select Category"}
+                                        </span>
                                         <ChevronDown size={16} />
                                     </div>
 
@@ -179,12 +229,12 @@ export default function AddCategoryModal({
                                                 <div
                                                     key={i}
                                                     onClick={() => {
-                                                        setValue("parent", cat);
+                                                        setValue("category", cat.id);
                                                         setDropdownOpen(false);
                                                     }}
                                                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                                 >
-                                                    {cat}
+                                                    {cat?.name}
                                                 </div>
                                             ))}
                                         </div>
@@ -245,14 +295,12 @@ export default function AddCategoryModal({
                                     </>
                                 )}
 
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    hidden
-                                    onChange={(e) =>
-                                        handleImageUpload(e.target.files[0])
-                                    }
-                                />
+                                {type === "category" && (
+                                    <input
+                                        type="file"
+                                        onChange={(e) => handleImageUpload(e.target.files[0])}
+                                    />
+                                )}
                             </label>
                         </div>
 
@@ -270,7 +318,10 @@ export default function AddCategoryModal({
                                 type="submit"
                                 className="px-5 py-2 bg-orange-500 text-white rounded-full"
                             >
-                                {editData ? "Update Category" : "Save Category"}
+                                {editData
+                                    ? `Update ${type === "category" ? "Category" : "Subcategory"}`
+                                    : `Save ${type === "category" ? "Category" : "Subcategory"}`
+                                }
                             </button>
                         </div>
 

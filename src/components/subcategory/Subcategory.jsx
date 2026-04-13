@@ -1,7 +1,11 @@
 import { Plus, ChevronDown, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddCategoryModal from "../collection/AddCategoryModal";
 import Pagination from "../../components/common/Pagination";
+import toast from "react-hot-toast";
+
+import API from "../../api/axiosInstance";
+import { SubCategoryAPI, SubCategoryEdiAPI, SubCategoryDeleteAPI } from "../../api/api";
 
 export default function Subcategory() {
 
@@ -15,72 +19,29 @@ export default function Subcategory() {
     const [selectedStatus, setSelectedStatus] = useState("All Status");
 
     //DATA 
-    const data = [
-        {
-            name: "Diamond Rings",
-            id: "SC-8821",
-            parent: "Bridal & Engagement",
-            items: 124,
-            status: "active",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Pearl Necklaces",
-            id: "SC-8822",
-            parent: "High Jewelry",
-            items: 48,
-            status: "active",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Chronographs",
-            id: "SC-8823",
-            parent: "Timepieces",
-            items: 92,
-            status: "archived",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Cufflinks",
-            id: "SC-8824",
-            parent: "Men's Collections",
-            items: 35,
-            status: "active",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Diamond Rings",
-            id: "SC-8821",
-            parent: "Bridal & Engagement",
-            items: 124,
-            status: "active",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Pearl Necklaces",
-            id: "SC-8822",
-            parent: "High Jewelry",
-            items: 48,
-            status: "active",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Chronographs",
-            id: "SC-8823",
-            parent: "Timepieces",
-            items: 92,
-            status: "archived",
-            image: "https://via.placeholder.com/40",
-        },
-        {
-            name: "Cufflinks",
-            id: "SC-8824",
-            parent: "Men's Collections",
-            items: 35,
-            status: "active",
-            image: "https://via.placeholder.com/40",
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchSubcategories();
+    }, []);
+
+    const fetchSubcategories = async () => {
+        try {
+
+            setLoading(true);
+            const res = await API.get(SubCategoryAPI());
+
+            console.log("SUBCATEGORY API:", res.data);
+
+            setData(res.data.data || []);
+        } catch (error) {
+            console.error("Error:", error);
+            setData([]);
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
 
     const parentOptions = [
         "All Parent Categories",
@@ -90,7 +51,7 @@ export default function Subcategory() {
         "Men's Collections",
     ];
 
-    const statusOptions = ["All Status", "Active", "Archived"];
+    const statusOptions = ["All Status", "Active", "Inactive"];
 
     //PAGINATION
     const [currentPage, setCurrentPage] = useState(1);
@@ -103,9 +64,57 @@ export default function Subcategory() {
         currentPage * itemsPerPage
     );
 
-    const handleEdit = (item) => {
-        setEditData(item);     // store clicked row data
-        setOpenModal(true);    // open modal
+    const handleEdit = async (item) => {
+        try {
+            const res = await API.get(SubCategoryEdiAPI(item.id));
+
+            console.log("EDIT DATA:", res.data);
+
+            setEditData(res.data.data); // full API data
+            setOpenModal(true);
+
+        } catch (error) {
+            console.error("Edit fetch error:", error);
+        }
+    };
+
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-medium">
+                    Are you sure you want to delete?
+                </p>
+
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1 text-sm border rounded-full"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        onClick={async () => {
+                            try {
+                                await API.delete(SubCategoryDeleteAPI(id)); // ✅ FIXED
+
+                                toast.success("Subcategory deleted");
+                                toast.dismiss(t.id);
+
+                                fetchSubcategories(); // ✅ refresh list
+
+                            } catch (error) {
+                                console.log(error);
+                                toast.error("Failed to delete");
+                            }
+                        }}
+                        className="px-3 py-1 text-sm bg-red-500 text-white rounded-full"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        ));
     };
 
     return (
@@ -200,79 +209,101 @@ export default function Subcategory() {
                                 <tr>
                                     <th className="px-6 py-3">Subcategory</th>
                                     <th className="px-6 py-3">Parent Category</th>
-                                    <th className="px-6 py-3">Items Count</th>
+                                    <th className="px-6 py-3">Item Count</th>
                                     <th className="px-6 py-3">Status</th>
                                     <th className="px-6 py-3 text-right">Actions</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {currentData.map((item, index) => (
-                                    <tr key={index} className="border-t hover:bg-gray-50">
-
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <img src={item.image} className="w-10 h-10 rounded bg-gray-100" />
-                                                <div>
-                                                    <p className="font-medium">{item.name}</p>
-                                                    <p className="text-xs text-gray-500">ID: {item.id}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <td className=" md:px-6 md:py-4 ">
-                                            <span className="bg-gray-200 text-xs px-3 py-1 rounded-full">
-                                                {item.parent}
-                                            </span>
-                                        </td>
-
-                                        <td className="px-6 py-4">{item.items} Items</td>
-
-                                        <td className="px-6 py-4">
-                                            <span className={`text-xs px-3 py-1 rounded-full font-medium ${item.status === "active"
-                                                ? "bg-green-100 text-green-600"
-                                                : "bg-gray-200 text-gray-500"
-                                                }`}>
-                                                {item.status.toUpperCase()}
-                                            </span>
-                                        </td>
-
-                                        {/* Actions */}
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end items-center gap-2">
-
-                                                {/* Edit */}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleEdit(item)}
-                                                    className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
-                                                    aria-label="Edit"
-                                                >
-                                                    <Pencil
-                                                        size={16}
-                                                        className="text-blue-600 group-hover:scale-110 transition-transform"
-                                                    />
-                                                </button>
-
-                                                {/* Delete */}
-                                                <button
-                                                    type="button"
-                                                    // onClick={() => handleDelete(item)}
-                                                    className="group p-2 rounded-full bg-red-50 hover:bg-red-100 transition-all duration-200"
-                                                    aria-label="Delete"
-                                                >
-                                                    <Trash2
-                                                        size={16}
-                                                        className="text-red-600 group-hover:scale-110 transition-transform"
-                                                    />
-                                                </button>
-
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="4" className="py-10">
+                                            <div className="flex justify-center items-center">
+                                                <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
-                            </tbody>
+                                ) : currentData.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="4" className="text-center py-6 text-gray-400">
+                                            No data found
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    currentData.map((item, index) => (
+                                        <tr key={index} className="border-t hover:bg-gray-50">
 
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div>
+                                                        <p className="font-medium">{item.name}</p>
+                                                        <p className="text-xs text-gray-500">ID: {item.id}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td className="px-6 py-4">
+                                                <span className="bg-gray-200 text-xs px-3 py-1 rounded-full">
+                                                    Category ID: {item.category}
+                                                </span>
+                                            </td>
+
+                                            <td className="px-12 py-4">--</td>
+
+                                            <td className="px-6 py-4">
+                                                <span
+                                                    className={`text-xs px-3 py-1 rounded-full font-medium ${item.status === "active"
+                                                        ? "bg-green-100 text-green-600"
+                                                        : item.status === "inactive"
+                                                            ? "bg-red-100 text-red-600"
+                                                            : "bg-gray-200 text-gray-500"
+                                                        }`}
+                                                >
+                                                    {item.status?.toUpperCase()}
+                                                </span>
+                                            </td>
+
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end items-center gap-2">
+
+                                                    {/* Actions */}
+                                                    <div className="flex justify-end items-center gap-2">
+
+                                                        {/* Edit */}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleEdit(item)}
+                                                            className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
+                                                            aria-label="Edit"
+                                                        >
+                                                            <Pencil
+                                                                size={16}
+                                                                className="text-blue-600 group-hover:scale-110 transition-transform"
+                                                            />
+                                                        </button>
+
+                                                        {/* Delete */}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleDelete(item.id)}
+                                                            className="group p-2 rounded-full bg-red-50 hover:bg-red-100 transition-all duration-200"
+                                                            aria-label="Delete"
+                                                        >
+                                                            <Trash2
+                                                                size={16}
+                                                                className="text-red-600 group-hover:scale-110 transition-transform"
+                                                            />
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
 
                         </table>
                     </div>
@@ -299,13 +330,14 @@ export default function Subcategory() {
 
             </div>
 
-            <AddCategoryModal
+            <AddCategoryModal type="subcategory"
                 isOpen={openModal}
                 onClose={() => {
                     setOpenModal(false);
                     setEditData(null); // reset after close
                 }}
                 editData={editData}
+                onSuccess={fetchSubcategories}
             />
         </>
     );

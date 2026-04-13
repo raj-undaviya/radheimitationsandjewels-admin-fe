@@ -6,9 +6,9 @@ export default function CustomerTable({
     page,
     totalPages,
     onPageChange,
-    totalItems,
-    itemsPerPage,
-    onToggleStatus   // ✅ NEW PROP
+    // totalItems,
+    // itemsPerPage,
+    onToggleStatus  
 }) {
 
     return (

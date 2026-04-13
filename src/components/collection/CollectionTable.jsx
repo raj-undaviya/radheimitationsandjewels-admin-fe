@@ -79,7 +79,7 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                     <thead className="bg-gray-50 text-gray-400 text-xs uppercase">
                         <tr>
                             <th className="px-6 py-3 text-left">Category Details</th>
-                            <th className="px-6 py-3 text-left">Total Items</th>
+                            {/* <th className="px-6 py-3 text-left">Total Items</th> */}
                             <th className="px-6 py-3 text-left">Status</th>
                             <th className="px-6 py-3 text-right">Actions</th>
                         </tr>
@@ -123,7 +123,7 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                                         </div>
                                     </td>
 
-                                    <td className="px-6 py-4">--</td>
+                                    {/* <td className="px-6 py-4">--</td> */}
 
                                     <td className="px-6 py-4">
                                         <span
@@ -180,16 +180,6 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                         }
                     }}
                 />
-                {/* 
-                <AddCategoryModal
-                    isOpen={openModal}
-                    onClose={() => {
-                        setOpenModal(false);
-                        setEditData(null);
-                    }}
-                    editData={editData}
-                    showParent={false}
-                /> */}
             </div>
 
             <AddCategoryModal

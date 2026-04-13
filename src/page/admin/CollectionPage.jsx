@@ -87,7 +87,7 @@ export default function CollectionPage() {
             />
 
             {/* MODAL */}
-            <AddCategoryModal
+            <AddCategoryModal type="category"
                 isOpen={openModal}
                 onClose={() => {
                     setOpenModal(false);
