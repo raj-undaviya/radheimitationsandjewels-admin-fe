@@ -11,7 +11,7 @@ import Addproductpage from "./page/admin/Addproductpage";
 import Orders from "./page/admin/Orders";
 import CustomerPage from "./page/admin/Customerpage";
 import CollectionPage from "./page/admin/CollectionPage";
-import Subcategory from "./components/subcategory/Subcategory";
+import SubcategoryPage from "./page/admin/SubcategoryPage";
 import Reports from "./page/admin/Reports";
 import CouponsPage from "./page/admin/CouponsPage";
 import PoliciesPage from "./page/admin/PoliciesPage";
@@ -66,7 +66,7 @@ function App() {
           <Route path="policies" element={<PoliciesPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingPage />} />
-          <Route path="subcategory" element={<Subcategory />} />
+          <Route path="subcategory" element={<SubcategoryPage />} />
 
         </Route>
 
