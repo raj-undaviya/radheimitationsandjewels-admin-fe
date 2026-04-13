@@ -1,4 +1,4 @@
-import { Plus, MoreVertical, ChevronDown, Pencil, Trash2 } from "lucide-react";
+import { Plus, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import AddCategoryModal from "../collection/AddCategoryModal";
 import Pagination from "../../components/common/Pagination";
