@@ -7,13 +7,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-
       // '/api': {
       //   target: "https://radheimitationsandjewels-backend.onrender.com",
       //   // changeOrigin: true,
       // }
     },
-    historyApiFallback: true,
     allowedHosts: ['phyllocladioid-rubi-unwise.ngrok-free.dev']
   }
 })
