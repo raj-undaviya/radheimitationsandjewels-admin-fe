@@ -1,6 +1,6 @@
 import { Plus, Package, ClipboardList } from "lucide-react";
 
-export default function CollectionHeader({ onAdd }) {
+export default function CollectionHeader({ onAdd, stats }) {
     return (
         <>
             {/* 🔹 HEADER */}
@@ -28,7 +28,7 @@ export default function CollectionHeader({ onAdd }) {
             </div>
 
             {/* 🔹 STATS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
 
                 <div className="bg-white rounded-2xl p-5 shadow-sm flex items-center gap-4">
                     <div className="bg-orange-100 p-3 rounded-full">
@@ -36,7 +36,7 @@ export default function CollectionHeader({ onAdd }) {
                     </div>
                     <div>
                         <p className="text-xs text-gray-400">TOTAL CATEGORIES</p>
-                        <h2 className="text-xl font-semibold">12</h2>
+                        <h2 className="text-xl font-semibold">{stats?.total}</h2>
                     </div>
                 </div>
 
@@ -46,7 +46,27 @@ export default function CollectionHeader({ onAdd }) {
                     </div>
                     <div>
                         <p className="text-xs text-gray-400">SUB-ITEMS LISTED</p>
-                        <h2 className="text-xl font-semibold">1,284</h2>
+                        <h2 className="text-xl font-semibold">{stats?.subcategories}</h2>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-5 shadow-sm flex items-center gap-4">
+                    <div className="bg-orange-100 p-3 rounded-full">
+                        <ClipboardList className="text-orange-500" size={18} />
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400">ACTIVE</p>
+                        <h2 className="text-xl font-semibold">{stats?.active}</h2>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-5 shadow-sm flex items-center gap-4">
+                    <div className="bg-orange-100 p-3 rounded-full">
+                        <ClipboardList className="text-orange-500" size={18} />
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400">INACTIVE</p>
+                        <h2 className="text-xl font-semibold">{stats?.inactive}</h2>
                     </div>
                 </div>
 

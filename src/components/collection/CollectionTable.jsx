@@ -84,8 +84,10 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan="4" className="text-center py-6">
-                                    Loading...
+                                <td colSpan="4" className="py-10">
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                                    </div>
                                 </td>
                             </tr>
                         ) : currentData.length === 0 ? (
@@ -102,7 +104,7 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                                         <div className="flex items-center gap-3">
 
                                             <img
-                                                src={item.category_image}
+                                                src={item.category_image_url}
                                                 alt={item.name}
                                                 className="w-12 h-12 rounded-lg object-cover"
                                             />
@@ -119,8 +121,13 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                                     <td className="px-6 py-4">--</td>
 
                                     <td className="px-6 py-4">
-                                        <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">
-                                            ACTIVE
+                                        <span
+                                            className={`text-xs px-3 py-1 rounded-full font-medium ${item.status === "active"
+                                                ? "bg-green-100 text-green-600"
+                                                : "bg-red-100 text-red-600"
+                                                }`}
+                                        >
+                                            {item.status?.toUpperCase()}
                                         </span>
                                     </td>
 

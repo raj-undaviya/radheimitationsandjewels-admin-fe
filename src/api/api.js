@@ -25,19 +25,31 @@ const Collection = "/products/category";
 // Category Edit API
 const CollectionEdit = (id) => `/products/category/${id}`;
 
+const CollectionById = (id) => `/products/category/${id}`;
+
 // Category Delete API
 const CollectionDelete = (id) => `/products/category/${id}`;
+
+
+//subcategory view API
+const SubCategory = "/products/subcategory";
 
 // ================= EXPORT FUNCTIONS =================
 export const loginAdminAPI = () => loginAdmin;
 export const StatsCardAPI = () => StatsCards;
-export const OrderAPI = () => Order;
-export const ProductAPI = () => Product;
 
+export const OrderAPI = () => Order;
+
+export const ProductAPI = () => Product;
 export const ProductEditAPI = (id) => ProductEdit(id);
 export const ProductDeleteAPI = (id) => ProductDelete(id);
 
 // ================= EXPORT FUNCTIONS =================
 export const CollectionAPI = () => Collection;
 export const CollectionEditAPI = (id) => CollectionEdit(id);
+export const CollectionByIdAPI = (id) => CollectionById(id);
 export const CollectionDeleteAPI = (id) => CollectionDelete(id);
+
+
+
+export const SubCategoryAPI = () => SubCategory;

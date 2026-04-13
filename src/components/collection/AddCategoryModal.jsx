@@ -26,7 +26,8 @@ export default function AddCategoryModal({
             name: "",
             parent: "None (Top Level)",
             description: "",
-            image: null
+            image: null,
+            status: "active"
         }
     });
 
@@ -53,7 +54,8 @@ export default function AddCategoryModal({
         if (editData) {
             setValue("name", editData.name || "");
             setValue("description", editData.description || "");
-            setPreview(editData.category_image || null);
+            setValue("status", editData.status || "active");
+            setPreview(editData.category_image_url || null);
         } else {
             reset();
             setPreview(null);
@@ -77,7 +79,8 @@ export default function AddCategoryModal({
             const payload = {
                 name: data.name,
                 description: data.description,
-                category_image: preview || editData?.category_image || ""
+                status: data.status,
+                category_image: preview || editData?.category_image_url || ""
             };
 
             console.log("PAYLOAD:", payload);
@@ -201,6 +204,21 @@ export default function AddCategoryModal({
                                 placeholder="Describe the essence..."
                             />
                         </div>
+
+                        {/* Status */}
+
+                        <div className="flex gap-4 mt-2">
+                            <label className="flex items-center gap-2">
+                                <input type="radio" value="active" {...register("status")} />
+                                Active
+                            </label>
+
+                            <label className="flex items-center gap-2">
+                                <input type="radio" value="inactive" {...register("status")} />
+                                Inactive
+                            </label>
+                        </div>
+
 
                         {/* Upload */}
                         <div>

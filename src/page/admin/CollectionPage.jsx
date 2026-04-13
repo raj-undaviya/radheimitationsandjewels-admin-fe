@@ -4,27 +4,43 @@ import CollectionTable from "../../components/collection/CollectionTable";
 import AddCategoryModal from "../../components/collection/AddCategoryModal";
 
 import API from "../../api/axiosInstance";
-import { CollectionAPI } from "../../api/api";
+import { CollectionAPI, CollectionByIdAPI } from "../../api/api";
 
 export default function CollectionPage() {
 
     const [openModal, setOpenModal] = useState(false);
     const [editData, setEditData] = useState(null);
 
+    const [editLoading, setEditLoading] = useState(false);
+
     // ✅ NEW STATE
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [stats, setStats] = useState({
+        total: 0,
+        subcategories: 0,
+        active: 0,
+        inactive: 0
+    });
 
     // ✅ FETCH API
     const fetchCollections = async () => {
         try {
             const res = await API.get(CollectionAPI());
 
-            // 🔥 your API → res.data.data
             setCollections(res.data.data || []);
 
+            // ✅ ADD THIS
+            setStats({
+                total: res.data.total_categories || 0,
+                subcategories: res.data.subcategory_count || 0,
+                active: res.data.active || 0,
+                inactive: res.data.inactive || 0
+            });
+
         } catch (err) {
-            console.error("Error fetching collections:", err);
+            console.error(err);
             setCollections([]);
         } finally {
             setLoading(false);
@@ -45,16 +61,29 @@ export default function CollectionPage() {
                     setEditData(null);
                     setOpenModal(true);
                 }}
+                stats={stats}
             />
 
             {/* TABLE */}
             <CollectionTable
                 collections={collections}   // ✅ PASS DATA
                 loading={loading}           // ✅ PASS LOADING
-                onEdit={(item) => {
-                    setEditData(item);
-                    setOpenModal(true);
+                onEdit={async (item) => {
+                    try {
+                        setEditLoading(true);
+
+                        const res = await API.get(CollectionByIdAPI(item.id));
+
+                        setEditData(res.data.data);
+                        setOpenModal(true);
+
+                    } catch (error) {
+                        console.error(error);
+                    } finally {
+                        setEditLoading(false);
+                    }
                 }}
+                onDeleteSuccess={fetchCollections}
             />
 
             {/* MODAL */}
