@@ -30,7 +30,7 @@ export default function AdminLogin() {
 
             console.log("FULL RESPONSE:", response.data);
 
-            const user = response.data?.data;   // 👈 full user object
+            const user = response.data?.data;  
             const token = user?.token;
 
             if (token && user?.is_staff) {

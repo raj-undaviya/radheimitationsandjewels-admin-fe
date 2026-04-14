@@ -5,7 +5,7 @@ import Pagination from "../../components/common/Pagination";
 import toast from "react-hot-toast";
 
 import API from "../../api/axiosInstance";
-import { SubCategoryAPI, SubCategoryEdiAPI, SubCategoryDeleteAPI } from "../../api/api";
+import { CollectionAPI, SubCategoryAPI, SubCategoryEdiAPI, SubCategoryDeleteAPI } from "../../api/api";
 
 export default function Subcategory() {
 
@@ -15,26 +15,51 @@ export default function Subcategory() {
     const [parentOpen, setParentOpen] = useState(false);
     const [statusOpen, setStatusOpen] = useState(false);
 
-    const [selectedParent, setSelectedParent] = useState("All Parent Categories");
-    const [selectedStatus, setSelectedStatus] = useState("All Status");
+    const [categories, setCategories] = useState([]);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await API.get(CollectionAPI());
+
+            const formatted = [
+                { label: "All Parent Categories", value: "all" },
+                ...(res.data.data || []).map(cat => ({
+                    label: cat.name,
+                    value: cat.id
+                }))
+            ];
+
+            setCategories(formatted);
+
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const [selectedParent, setSelectedParent] = useState({
+        label: "All Parent Categories",
+        value: "all"
+    });
+
+    const [selectedStatus, setSelectedStatus] = useState("all");
 
     //DATA 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        fetchCategories();
         fetchSubcategories();
     }, []);
 
-    const fetchSubcategories = async () => {
+    const fetchSubcategories = async (categoryId = null) => {
         try {
-
             setLoading(true);
-            const res = await API.get(SubCategoryAPI());
 
-            console.log("SUBCATEGORY API:", res.data);
+            const res = await API.get(SubCategoryAPI(categoryId)); // ✅ FIX
 
             setData(res.data.data || []);
+
         } catch (error) {
             console.error("Error:", error);
             setData([]);
@@ -43,23 +68,28 @@ export default function Subcategory() {
         }
     };
 
-    const parentOptions = [
-        "All Parent Categories",
-        "Bridal & Engagement",
-        "High Jewelry",
-        "Timepieces",
-        "Men's Collections",
+    const statusOptions = [
+        { label: "All Status", value: "all" },
+        { label: "Active", value: "active" },
+        { label: "Inactive", value: "inactive" }
     ];
 
-    const statusOptions = ["All Status", "Active", "Inactive"];
+    const filteredData = data.filter(item => {
+        const statusMatch =
+            selectedStatus === "all"
+                ? true
+                : item.status === selectedStatus;
+
+        return statusMatch;
+    });
 
     //PAGINATION
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    const totalPages = Math.ceil(data.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-    const currentData = data.slice(
+    const currentData = filteredData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -145,23 +175,25 @@ export default function Subcategory() {
                             onClick={() => setParentOpen(!parentOpen)}
                             className="w-full sm:w-auto flex justify-between items-center gap-2 px-4 py-2 rounded-full bg-gray-200 text-sm"
                         >
-                            {selectedParent}
+                            {selectedParent.label}
                             <ChevronDown size={16} />
                         </button>
 
                         {parentOpen && (
                             <div className="absolute mt-2 w-full sm:w-56 bg-white shadow-lg rounded-lg overflow-hidden z-10">
-                                {parentOptions.map((option, i) => (
+                                {categories.map((option, i) => (
                                     <div
                                         key={i}
                                         onClick={() => {
                                             setSelectedParent(option);
                                             setParentOpen(false);
                                             setCurrentPage(1);
+
+                                            fetchSubcategories(option.value); // 🔥 API CALL
                                         }}
                                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                                     >
-                                        {option}
+                                        {option.label}
                                     </div>
                                 ))}
                             </div>
@@ -174,7 +206,9 @@ export default function Subcategory() {
                             onClick={() => setStatusOpen(!statusOpen)}
                             className="w-full sm:w-auto flex justify-between items-center gap-2 px-4 py-2 rounded-full bg-gray-200 text-sm"
                         >
-                            {selectedStatus}
+                            {
+                                statusOptions.find(s => s.value === selectedStatus)?.label
+                            }
                             <ChevronDown size={16} />
                         </button>
 
@@ -184,13 +218,13 @@ export default function Subcategory() {
                                     <div
                                         key={i}
                                         onClick={() => {
-                                            setSelectedStatus(option);
+                                            setSelectedStatus(option.value);
                                             setStatusOpen(false);
                                             setCurrentPage(1);
                                         }}
                                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                                     >
-                                        {option}
+                                        {option.label}
                                     </div>
                                 ))}
                             </div>
@@ -202,8 +236,8 @@ export default function Subcategory() {
                 {/* Table */}
                 <div className="bg-white rounded-2xl shadow overflow-hidden">
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-175 text-sm">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full min-w-[700px] md:min-w-[1700px] lg:min-w-full text-sm">
 
                             <thead className="bg-gray-50 text-gray-500 text-left">
                                 <tr>
@@ -211,14 +245,14 @@ export default function Subcategory() {
                                     <th className="px-6 py-3">Parent Category</th>
                                     <th className="px-6 py-3">Item Count</th>
                                     <th className="px-6 py-3">Status</th>
-                                    <th className="px-6 py-3 text-right">Actions</th>
+                                    <th className="px-6 py-3">Actions</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="4" className="py-10">
+                                        <td colSpan="5" className="py-10">
                                             <div className="flex justify-center items-center">
                                                 <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
                                             </div>
@@ -226,7 +260,7 @@ export default function Subcategory() {
                                     </tr>
                                 ) : currentData.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-6 text-gray-400">
+                                        <td colSpan="5" className="text-center py-6 text-gray-400">
                                             No data found
                                         </td>
                                     </tr>
@@ -238,18 +272,18 @@ export default function Subcategory() {
                                                 <div className="flex items-center gap-3">
                                                     <div>
                                                         <p className="font-medium">{item.name}</p>
-                                                        <p className="text-xs text-gray-500">ID: {item.id}</p>
+                                                        <p className="text-xs text-gray-500">ID: {item.name}</p>
                                                     </div>
                                                 </div>
                                             </td>
 
                                             <td className="px-6 py-4">
                                                 <span className="bg-gray-200 text-xs px-3 py-1 rounded-full">
-                                                    Category ID: {item.category}
+                                                    {item.parent_category_name}
                                                 </span>
                                             </td>
 
-                                            <td className="px-12 py-4">--</td>
+                                            <td className="px-14 py-4">{item.items_count}</td>
 
                                             <td className="px-6 py-4">
                                                 <span
@@ -265,10 +299,10 @@ export default function Subcategory() {
                                             </td>
 
                                             <td className="px-6 py-4 text-right">
-                                                <div className="flex justify-end items-center gap-2">
+                                            
 
                                                     {/* Actions */}
-                                                    <div className="flex justify-end items-center gap-2">
+                                                    <div className="flex items-center gap-2">
 
                                                         {/* Edit */}
                                                         <button
@@ -297,7 +331,7 @@ export default function Subcategory() {
                                                         </button>
 
                                                     </div>
-                                                </div>
+                                               
                                             </td>
 
                                         </tr>

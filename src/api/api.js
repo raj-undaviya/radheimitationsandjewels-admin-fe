@@ -61,6 +61,12 @@ export const CollectionDeleteAPI = (id) => CollectionDelete(id);
 
 
 // ================= SUBCOLLECTION FUNCTION =================
-export const SubCategoryAPI = () => SubCategory;
+export const SubCategoryAPI = (categoryId) => {
+    if (categoryId && categoryId !== "all") {
+        return `${SubCategory}?category=${categoryId}`;
+    }
+    return SubCategory;
+};
+
 export const SubCategoryEdiAPI = (id) => SubCategoryEdit(id);
 export const SubCategoryDeleteAPI = (id) => SubCategoryDelete(id);
