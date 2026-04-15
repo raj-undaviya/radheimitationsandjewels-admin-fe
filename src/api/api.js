@@ -42,6 +42,12 @@ const SubCategoryEdit = (id) => `/products/subcategory/${id}`;
 
 const SubCategoryDelete = (id) => `/products/subcategory/${id}`;
 
+// ================= APPOINTMENT =================
+
+const AppointmentAdmin = "/api/admin-panel/appointments";
+
+
+
 
 // ================= EXPORT FUNCTIONS =================
 export const loginAdminAPI = () => loginAdmin;
@@ -70,3 +76,5 @@ export const SubCategoryAPI = (categoryId) => {
 
 export const SubCategoryEdiAPI = (id) => SubCategoryEdit(id);
 export const SubCategoryDeleteAPI = (id) => SubCategoryDelete(id);
+
+export const AppointmentAdminAPI = () => AppointmentAdmin;

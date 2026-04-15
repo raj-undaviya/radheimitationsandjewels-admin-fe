@@ -21,11 +21,13 @@ export default function OrdersHeader({ stats = null, loading = false, error = nu
                     <div className="bg-orange-100 p-2 rounded-full">
                         <ShoppingCart size={18} className="text-orange-600" />
                     </div>
+
                     <div>
                         <p className="text-xs text-gray-500">Pending Orders</p>
 
                         {loading ? (
-                            <p className="text-sm">Loading...</p>
+                            // 🔥 SKELETON
+                            <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mt-1"></div>
                         ) : error ? (
                             <p className="text-sm text-red-500">Error</p>
                         ) : (
@@ -41,11 +43,13 @@ export default function OrdersHeader({ stats = null, loading = false, error = nu
                     <div className="bg-blue-100 p-2 rounded-full">
                         <Wallet size={18} className="text-blue-600" />
                     </div>
+
                     <div>
                         <p className="text-xs text-gray-500">Daily Revenue</p>
 
                         {loading ? (
-                            <p className="text-sm">Loading...</p>
+                            // 🔥 SKELETON
+                            <div className="h-5 w-20 bg-gray-200 rounded animate-pulse mt-1"></div>
                         ) : error ? (
                             <p className="text-sm text-red-500">Error</p>
                         ) : (

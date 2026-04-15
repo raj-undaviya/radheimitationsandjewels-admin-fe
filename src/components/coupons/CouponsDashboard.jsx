@@ -1,6 +1,7 @@
 import { Plus, Filter, Download, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import CreateCouponModal from "./CreateCouponModal";
+import Pagination from "../../components/common/Pagination";
 
 export default function CouponsDashboard() {
 
@@ -40,6 +41,17 @@ export default function CouponsDashboard() {
             status: "ACTIVE",
         },
     ];
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const itemsPerPage = 5;
+
+    const totalPages = Math.ceil(coupons.length / itemsPerPage);
+
+    const currentData = coupons.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     return (
         <>
@@ -122,7 +134,7 @@ export default function CouponsDashboard() {
                             </thead>
 
                             <tbody>
-                                {coupons.map((c, i) => {
+                                {currentData.map((c, i) => {
                                     const [used, total] = c.usage.split("/").map(Number);
                                     const percent = (used / total) * 100;
 
@@ -168,13 +180,29 @@ export default function CouponsDashboard() {
                                             {/* Actions */}
                                             <td className="p-3">
                                                 <div className="flex gap-3 text-gray-400">
-
-                                                    <button className="hover:text-blue-500 transition">
-                                                        <Pencil size={16} />
+                                                    
+                                                    {/* Edit */}
+                                                    <button
+                                                        type="button"
+                                                        className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
+                                                        aria-label="Edit"
+                                                    >
+                                                        <Pencil
+                                                            size={16}
+                                                            className="text-blue-600 group-hover:scale-110 transition-transform"
+                                                        />
                                                     </button>
 
-                                                    <button className="hover:text-red-500 transition">
-                                                        <Trash2 size={16} />
+                                                    {/* Delete */}
+                                                    <button
+                                                        type="button"
+                                                        className="group p-2 rounded-full bg-red-50 hover:bg-red-100 transition-all duration-200"
+                                                        aria-label="Delete"
+                                                    >
+                                                        <Trash2
+                                                            size={16}
+                                                            className="text-red-600 group-hover:scale-110 transition-transform"
+                                                        />
                                                     </button>
 
                                                 </div>
@@ -185,12 +213,20 @@ export default function CouponsDashboard() {
                             </tbody>
                         </table>
                     </div>
-                </div>
 
-                {/* Footer */}
-                <p className="text-xs text-gray-400 mt-4">
-                    Showing 4 of 24 coupons
-                </p>
+                    {/* PAGINATION */}
+                    <div className="px-4 sm:px-6 py-4 border-t flex justify-between items-center">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={(page) => {
+                                if (page >= 1 && page <= totalPages) {
+                                    setCurrentPage(page);
+                                }
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
 
             <CreateCouponModal

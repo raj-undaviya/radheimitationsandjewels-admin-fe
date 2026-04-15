@@ -16,6 +16,7 @@ import Reports from "./page/admin/Reports";
 import CouponsPage from "./page/admin/CouponsPage";
 import PoliciesPage from "./page/admin/PoliciesPage";
 import ProfilePage from "./page/admin/ProfilePage";
+import Appointment from "./page/admin/Appointment";
 import SettingPage from "./page/admin/SettingPage";
 
 // Protected route guard
@@ -64,6 +65,7 @@ function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="coupons" element={<CouponsPage />} />
           <Route path="policies" element={<PoliciesPage />} />
+          <Route path="appointment" element={<Appointment />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingPage />} />
           <Route path="subcategory" element={<SubcategoryPage />} />

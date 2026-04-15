@@ -73,14 +73,11 @@ export default function Dashboard() {
 
             <DashboardHeader filter={filter} setFilter={setFilter} />
 
-            {/* 🔥 Loading State */}
-            {loading && <p>Loading dashboard...</p>}
-
             {/* 🔥 Error State */}
             {error && <p className="text-red-500">{error}</p>}
 
             {/* 🔥 Data */}
-            {!loading && !error && <StatsCards stats={stats} />}
+            <StatsCards stats={stats} />
 
 
             {/* Chart + Appointments */}

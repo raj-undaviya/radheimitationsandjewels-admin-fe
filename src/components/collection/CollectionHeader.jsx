@@ -5,7 +5,7 @@ export default function CollectionHeader({ onAdd, stats }) {
         <>
             {/* 🔹 HEADER */}
             <div className="w-full overflow-x-auto">
-                <div className="min-w-[600px]">
+                <div className="min-w-150">
 
                     {/* 🔹 HEADER */}
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">

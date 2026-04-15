@@ -1,6 +1,6 @@
 import { CreditCard, Landmark, Wallet } from "lucide-react";
 
-export default function PaymentsTable() {
+export default function PaymentsTable({ loading }) {
 
     const payments = [
         { id: "TXN-482910", method: "Visa Ending 4291", amount: "$4,500.00", status: "success" },
@@ -11,15 +11,11 @@ export default function PaymentsTable() {
     ];
 
     const getStatusDot = (status) => {
-        return status === "failed"
-            ? "bg-orange-500"
-            : "bg-green-500";
+        return status === "failed" ? "bg-orange-500" : "bg-green-500";
     };
 
     const getAmountColor = (status) => {
-        return status === "failed"
-            ? "text-orange-500"
-            : "text-green-600";
+        return status === "failed" ? "text-orange-500" : "text-green-600";
     };
 
     const getIcon = (method) => {
@@ -39,11 +35,10 @@ export default function PaymentsTable() {
                 </span>
             </div>
 
-            {/* Table Wrapper */}
+            {/* Table */}
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
 
-                    {/* Head */}
                     <thead className="text-xs text-gray-400 uppercase border-b">
                         <tr>
                             <th className="py-3 px-2">Transaction ID</th>
@@ -52,39 +47,61 @@ export default function PaymentsTable() {
                         </tr>
                     </thead>
 
-                    {/* Body */}
                     <tbody>
-                        {payments.map((item, index) => (
-                            <tr
-                                key={index}
-                                className="border-b last:border-none hover:bg-gray-50 transition"
-                            >
 
-                                {/* Transaction */}
-                                <td className="py-3 px-2">
-                                    <div className="flex items-center gap-2">
-                                        <span className={`w-2 h-2 rounded-full ${getStatusDot(item.status)}`} />
-                                        <span className="font-semibold text-gray-700">
-                                            {item.id}
-                                        </span>
-                                    </div>
-                                </td>
+                        {/* 🔥 SKELETON */}
+                        {loading ? (
+                            [...Array(5)].map((_, i) => (
+                                <tr key={i} className="border-b animate-pulse">
 
-                                {/* Method */}
-                                <td className="py-3 px-2">
-                                    <div className="flex items-center gap-2 text-gray-600 text-sm">
-                                        {getIcon(item.method)}
-                                        {item.method}
-                                    </div>
-                                </td>
+                                    <td className="py-3 px-2">
+                                        <div className="h-3 bg-gray-200 rounded w-32"></div>
+                                    </td>
 
-                                {/* Amount */}
-                                <td className={`py-3 px-2 text-right font-semibold ${getAmountColor(item.status)}`}>
-                                    {item.amount}
-                                </td>
+                                    <td className="py-3 px-2">
+                                        <div className="h-3 bg-gray-200 rounded w-40"></div>
+                                    </td>
 
-                            </tr>
-                        ))}
+                                    <td className="py-3 px-2 text-right">
+                                        <div className="h-3 bg-gray-200 rounded w-20 ml-auto"></div>
+                                    </td>
+
+                                </tr>
+                            ))
+                        ) : (
+                            payments.map((item, index) => (
+                                <tr
+                                    key={index}
+                                    className="border-b last:border-none hover:bg-gray-50 transition"
+                                >
+
+                                    {/* Transaction */}
+                                    <td className="py-3 px-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className={`w-2 h-2 rounded-full ${getStatusDot(item.status)}`} />
+                                            <span className="font-semibold text-gray-700">
+                                                {item.id}
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    {/* Method */}
+                                    <td className="py-3 px-2">
+                                        <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                            {getIcon(item.method)}
+                                            {item.method}
+                                        </div>
+                                    </td>
+
+                                    {/* Amount */}
+                                    <td className={`py-3 px-2 text-right font-semibold ${getAmountColor(item.status)}`}>
+                                        {item.amount}
+                                    </td>
+
+                                </tr>
+                            ))
+                        )}
+
                     </tbody>
 
                 </table>

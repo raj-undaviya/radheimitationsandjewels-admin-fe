@@ -19,6 +19,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         { label: "Reports", path: "/admin/reports", icon: <BarChart size={18} /> },
         { label: "Coupons", path: "/admin/coupons", icon: <Ticket size={18} /> },
         { label: "Policies", path: "/admin/policies", icon: <FileText size={18} /> },
+        { label: "Appointment", path: "/admin/appointment", icon: <FileText size={18} /> },
         { label: "Settings", path: "/admin/settings", icon: <Settings size={18} /> },
     ];
 
@@ -40,7 +41,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             {/* Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
@@ -49,14 +50,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             <div
                 className={`fixed top-0 left-0 h-dvh w-64 bg-gray-100 z-50 flex flex-col
                 transform transition-transform duration-300 ease-in-out
-                ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+                ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
             >
 
                 {/* Scrollable Area */}
                 <div className="flex-1 overflow-y-auto p-4">
 
                     {/* Mobile Header */}
-                    <div className="flex justify-between items-center mb-6 md:hidden">
+                    <div className="flex justify-between items-center mb-6 lg:hidden">
                         <h1 className="text-orange-600 font-bold">Menu</h1>
                         <button onClick={() => setIsOpen(false)}>
                             <X />

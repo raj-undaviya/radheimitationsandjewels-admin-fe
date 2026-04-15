@@ -16,12 +16,7 @@ export default function Inventory() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [stats, setStats] = useState({
-        totalItems: 0,
-        lowStock: 0,
-        outOfStock: 0,
-        totalValue: 0,
-    });
+    const [stats, setStats] = useState(null);
 
     const itemsPerPage = 10;
 
@@ -31,14 +26,14 @@ export default function Inventory() {
 
     const fetchProducts = async () => {
         try {
+            setLoading(true); // 🔥 ADD THIS
+
             const res = await API.get(ProductAPI());
 
             const apiData = res.data;
 
-            // ✅ products
             setProducts(apiData.data || []);
 
-            // ✅ stats
             setStats({
                 totalItems: apiData.total_stock_quantity,
                 totalValue: apiData.total_inventory_value,
@@ -55,7 +50,7 @@ export default function Inventory() {
     };
 
     // ✅ pagination
-    const totalPages = Math.ceil(products.length / itemsPerPage);
+    const totalPages = Math.max(1, Math.ceil(products.length / itemsPerPage));
 
     const paginatedProducts = products.slice(
         (page - 1) * itemsPerPage,
@@ -68,10 +63,10 @@ export default function Inventory() {
             <InventoryHeader onAddClick={() => setOpen(true)} />
 
             <InventoryStats
-                totalItems={stats.totalItems}
-                lowStock={stats.lowStock}
-                outOfStock={stats.outOfStock}
-                totalValue={stats.totalValue}
+                totalItems={stats?.totalItems}
+                lowStock={stats?.lowStock}
+                outOfStock={stats?.outOfStock}
+                totalValue={stats?.totalValue}
             />
 
             <div className="bg-white p-5 rounded-2xl shadow-sm">
@@ -92,7 +87,7 @@ export default function Inventory() {
                 />
 
             </div>
-            
+
             <AddProductModal
                 isOpen={open}
                 onClose={() => setOpen(false)}

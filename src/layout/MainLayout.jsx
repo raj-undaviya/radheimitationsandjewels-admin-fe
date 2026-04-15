@@ -13,10 +13,10 @@ const MainLayout = () => {
             <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col w-full md:ml-64 transition-all duration-300">
+            <div className="flex-1 flex flex-col w-full lg:ml-64 transition-all duration-300">
 
                 {/* Mobile Navbar */}
-                <div className="md:hidden flex items-center p-4 shadow bg-white sticky top-0 z-50">
+                <div className="lg:hidden flex items-center p-4 shadow bg-white sticky top-0 z-50">
                     <button onClick={() => setIsOpen(true)}>
                         <Menu size={26} />
                     </button>

@@ -237,7 +237,7 @@ export default function Subcategory() {
                 <div className="bg-white rounded-2xl shadow overflow-hidden">
 
                     <div className="w-full overflow-x-auto">
-                        <table className="w-full min-w-[700px] md:min-w-[1700px] lg:min-w-full text-sm">
+                        <table className="w-full min-w-175 text-sm">
 
                             <thead className="bg-gray-50 text-gray-500 text-left">
                                 <tr>

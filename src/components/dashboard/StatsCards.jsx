@@ -2,7 +2,24 @@ import StatCard from "./StatCard";
 
 export default function StatsCards({ stats }) {
 
-    if (!stats) return <p>Loading...</p>;
+    // 🔥 SKELETON LOADER
+    if (!stats) {
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                {[1, 2, 3, 4].map((_, i) => (
+                    <div
+                        key={i}
+                        className="bg-white p-5 rounded-2xl shadow animate-pulse"
+                    >
+                        <div className="h-3 bg-gray-200 rounded w-1/2 mb-3"></div>
+                        <div className="h-6 bg-gray-300 rounded w-1/3"></div>
+                    </div>
+                ))}
+
+            </div>
+        );
+    }
 
     const data = [
         {
