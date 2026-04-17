@@ -73,10 +73,10 @@ export default function Dashboard() {
 
             <DashboardHeader filter={filter} setFilter={setFilter} />
 
-            {/* 🔥 Error State */}
+            {/* Error State */}
             {error && <p className="text-red-500">{error}</p>}
 
-            {/* 🔥 Data */}
+            {/* Data */}
             <StatsCards stats={stats} />
 
 

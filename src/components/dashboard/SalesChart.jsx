@@ -16,7 +16,7 @@ export default function SalesChart({ loading }) {
 
                 </div>
             ) : (
-                // ✅ ACTUAL CHART (later)
+                // ACTUAL CHART (later)
                 <div className="h-full flex items-center justify-center text-gray-400">
                     Chart will come here (Recharts)
                 </div>

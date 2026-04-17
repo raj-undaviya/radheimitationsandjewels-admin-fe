@@ -13,7 +13,7 @@ export default function OrdersTable({
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // ✅ pagination
+    // pagination
     const totalItems = orders.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -44,7 +44,7 @@ export default function OrdersTable({
             return order;
         });
 
-        // ⚠️ NOTE: this won't persist unless you use API later
+        // ⚠️ NOTE: this won't persist unless use API later
         console.log("Updated (UI only):", updated);
     };
 

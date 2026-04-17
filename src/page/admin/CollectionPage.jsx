@@ -13,7 +13,7 @@ export default function CollectionPage() {
 
     const [editLoading, setEditLoading] = useState(false);
 
-    // ✅ NEW STATE
+    // NEW STATE
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -24,14 +24,13 @@ export default function CollectionPage() {
         inactive: 0
     });
 
-    // ✅ FETCH API
+    //  FETCH API
     const fetchCollections = async () => {
         try {
             const res = await API.get(CollectionAPI());
 
             setCollections(res.data.data || []);
 
-            // ✅ ADD THIS
             setStats({
                 total: res.data.total_categories || 0,
                 subcategories: res.data.subcategory_count || 0,
@@ -47,7 +46,7 @@ export default function CollectionPage() {
         }
     };
 
-    // ✅ LOAD ON PAGE LOAD
+    //  LOAD ON PAGE LOAD
     useEffect(() => {
         fetchCollections();
     }, []);
@@ -66,8 +65,8 @@ export default function CollectionPage() {
 
             {/* TABLE */}
             <CollectionTable
-                collections={collections}   // ✅ PASS DATA
-                loading={loading}           // ✅ PASS LOADING
+                collections={collections}   //  PASS DATA
+                loading={loading}           //  PASS LOADING
                 onEdit={async (item) => {
                     try {
                         setEditLoading(true);
@@ -96,7 +95,7 @@ export default function CollectionPage() {
                 editData={editData}
                 showParent={false}
 
-                // 🔥 REFRESH AFTER ADD/EDIT
+                //REFRESH AFTER ADD/EDIT
                 onSuccess={fetchCollections}
                 onDeleteSuccess={fetchCollections}
             />

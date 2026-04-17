@@ -37,7 +37,7 @@ export default function CollectionHeader({ onAdd, stats }) {
                     {/* 🔹 STATS */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
-                        {/* CARD */}
+                        {/* CARD 1*/}
                         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4">
                             <div className="bg-orange-100 p-2.5 sm:p-3 rounded-full">
                                 <Package className="text-orange-500" size={18} />
@@ -52,7 +52,7 @@ export default function CollectionHeader({ onAdd, stats }) {
                             </div>
                         </div>
 
-                        {/* CARD */}
+                        {/* CARD 2 */}
                         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4">
                             <div className="bg-orange-100 p-2.5 sm:p-3 rounded-full">
                                 <ClipboardList className="text-orange-500" size={18} />
@@ -67,7 +67,7 @@ export default function CollectionHeader({ onAdd, stats }) {
                             </div>
                         </div>
 
-                        {/* CARD */}
+                        {/* CARD 3 */}
                         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4">
                             <div className="bg-orange-100 p-2.5 sm:p-3 rounded-full">
                                 <ClipboardList className="text-orange-500" size={18} />
@@ -82,7 +82,7 @@ export default function CollectionHeader({ onAdd, stats }) {
                             </div>
                         </div>
 
-                        {/* CARD */}
+                        {/* CARD 4 */}
                         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4">
                             <div className="bg-orange-100 p-2.5 sm:p-3 rounded-full">
                                 <ClipboardList className="text-orange-500" size={18} />

@@ -14,13 +14,13 @@ export default function AppointmentDashboard({
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    // ✅ FILTER
+    // FILTER
     const filteredData =
         statusFilter === "All"
             ? data
             : data.filter(item => item.status === statusFilter);
 
-    // ✅ PAGINATION
+    // PAGINATION
     const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
 
     const currentData = filteredData.slice(
@@ -50,7 +50,7 @@ export default function AppointmentDashboard({
                 </div>
             </div>
 
-            {/* 🔥 STATS (FROM API) */}
+            {/* STATS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
                 <div className="bg-white p-5 rounded-2xl shadow">
@@ -141,7 +141,7 @@ export default function AppointmentDashboard({
 
                         <tbody>
 
-                            {/* 🔥 LOADING */}
+                            {/* LOADING */}
                             {loading ? (
                                 [...Array(6)].map((_, i) => (
                                     <tr key={i} className="border-t animate-pulse">

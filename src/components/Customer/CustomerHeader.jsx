@@ -26,7 +26,7 @@ export default function CustomerHeader({ statusFilter, setStatusFilter }) {
                 {/* RIGHT */}
                 <div className="flex flex-col sm:flex-row gap-3 relative">
 
-                    {/* ✅ FILTER DROPDOWN */}
+                    {/* FILTER DROPDOWN */}
                     <div className="relative">
 
                         <button

@@ -13,7 +13,7 @@ export default function AddPolicyModal({ isOpen, onClose, onSave }) {
         reset
     } = useForm();
 
-    // ✅ Tiptap Editor for bold-italic
+    // Tiptap Editor for bold-italic
     const editor = useEditor({
         extensions: [StarterKit],
         content: "",
@@ -66,7 +66,7 @@ export default function AddPolicyModal({ isOpen, onClose, onSave }) {
                     )}
                 </div>
 
-                {/* 🔥 TOOLBAR */}
+                {/* TOOLBAR */}
                 <div className="flex gap-3 mb-2 text-sm border p-2 rounded-xl bg-gray-50">
                     <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>
                         <b>B</b>
@@ -79,7 +79,7 @@ export default function AddPolicyModal({ isOpen, onClose, onSave }) {
                     </button>
                 </div>
 
-                {/* 🔥 EDITOR */}
+                {/* EDITOR */}
                 <div className="border rounded-xl p-3 min-h-30 bg-white">
                     <EditorContent editor={editor} />
                 </div>

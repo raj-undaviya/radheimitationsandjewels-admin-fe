@@ -72,7 +72,7 @@ export default function CustomerTable({
                                 <td className="text-right">
                                     <div className="flex justify-end items-center gap-3">
 
-                                        {/* ✅ TOGGLE STATUS */}
+                                        {/* TOGGLE STATUS */}
                                         <button
                                             onClick={() => onToggleStatus(c.id)}
                                             title={c.status === "ACTIVE" ? "Disable" : "Activate"}

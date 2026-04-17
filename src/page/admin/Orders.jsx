@@ -22,7 +22,7 @@ export default function Orders() {
         try {
             setLoading(true);
 
-            // 🔥 BOTH APIs
+            // BOTH APIs
             const [orderRes, statsRes] = await Promise.all([
                 API.get(OrderAPI()),
                 API.get(StatsCardAPI())

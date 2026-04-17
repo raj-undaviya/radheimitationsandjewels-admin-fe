@@ -9,7 +9,7 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
         0
     ) || 0;
 
-    // 🔥 DOWNLOAD FUNCTION
+    // DOWNLOAD FUNCTION
     const downloadInvoice = () => {
         const pdf = new jsPDF();
 

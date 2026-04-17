@@ -49,7 +49,7 @@ export default function PaymentsTable({ loading }) {
 
                     <tbody>
 
-                        {/* 🔥 SKELETON */}
+                        {/* SKELETON Loader */}
                         {loading ? (
                             [...Array(5)].map((_, i) => (
                                 <tr key={i} className="border-b animate-pulse">

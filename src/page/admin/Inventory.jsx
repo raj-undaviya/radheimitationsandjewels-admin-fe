@@ -49,7 +49,7 @@ export default function Inventory() {
         }
     };
 
-    // ✅ pagination
+    // pagination
     const totalPages = Math.max(1, Math.ceil(products.length / itemsPerPage));
 
     const paginatedProducts = products.slice(

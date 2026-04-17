@@ -6,7 +6,7 @@ export default function StatCard({ title, value, change, extra }) {
         <div className="bg-white p-4 rounded-xl shadow hover:shadow-md transition">
 
             {isLoading ? (
-                // 🔥 SKELETON
+                // SKELETON Loader
                 <div className="animate-pulse">
                     <div className="h-3 bg-gray-200 rounded w-1/2 mb-3"></div>
                     <div className="h-6 bg-gray-300 rounded w-1/3"></div>

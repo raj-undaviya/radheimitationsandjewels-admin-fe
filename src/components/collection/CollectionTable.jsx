@@ -7,7 +7,6 @@ import { CollectionDeleteAPI } from "../../api/api";
 import API from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 
-
 export default function CollectionTable({ collections = [], loading, onEdit, onDeleteSuccess }) {
 
     // const [openModal, setOpenModal] = useState(false);

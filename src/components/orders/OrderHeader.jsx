@@ -26,7 +26,7 @@ export default function OrdersHeader({ stats = null, loading = false, error = nu
                         <p className="text-xs text-gray-500">Pending Orders</p>
 
                         {loading ? (
-                            // 🔥 SKELETON
+                            // SKELETON LOADER
                             <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mt-1"></div>
                         ) : error ? (
                             <p className="text-sm text-red-500">Error</p>
@@ -48,7 +48,7 @@ export default function OrdersHeader({ stats = null, loading = false, error = nu
                         <p className="text-xs text-gray-500">Daily Revenue</p>
 
                         {loading ? (
-                            // 🔥 SKELETON
+                            // SKELETON LOADER
                             <div className="h-5 w-20 bg-gray-200 rounded animate-pulse mt-1"></div>
                         ) : error ? (
                             <p className="text-sm text-red-500">Error</p>

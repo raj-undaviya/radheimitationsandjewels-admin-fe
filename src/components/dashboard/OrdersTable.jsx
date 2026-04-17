@@ -46,7 +46,7 @@ export default function OrdersTable({ orders, loading }) {
 
                     <tbody>
 
-                        {/* 🔥 SKELETON */}
+                        {/* SKELETON */}
                         {loading ? (
                             [...Array(5)].map((_, i) => (
                                 <tr key={i} className="border-b animate-pulse">

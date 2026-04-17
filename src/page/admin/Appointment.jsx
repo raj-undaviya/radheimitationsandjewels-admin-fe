@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import InquiryManager from "../../components/inquiry/InquiryManager";
+
 import API from "../../api/axiosInstance";
 import { AppointmentAdminAPI } from "../../api/api";
 
@@ -21,10 +22,10 @@ export default function Appointment() {
 
       const apiData = res.data;
 
-      // ✅ list
+      // list
       setAppointments(apiData.data || []);
 
-      // ✅ stats
+      // stats
       setStats({
         total: apiData.total,
         pending: apiData.pending,

@@ -1,8 +1,6 @@
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings, User, Shapes } from "lucide-react";
 import logo from "../assets/Logo.png";
-import { User } from "lucide-react";
-import { Shapes } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 

@@ -16,8 +16,8 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
     const [subcategory, setSubcategory] = useState("");
 
     const [active, setActive] = useState(true);
-    const [images, setImages] = useState([]); // preview
-    const [imageFiles, setImageFiles] = useState([]); // ✅ actual files
+    const [images, setImages] = useState([]); 
+    const [imageFiles, setImageFiles] = useState([]); 
 
     const {
         register,
@@ -73,12 +73,12 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
                 description: data.description,
                 price: data.price,
                 stock: data.stock,
-                category: data.category,        // ✅ dynamic
-                subcategory: data.subcategory,  // ✅ dynamic
-                product_images: images,         // ✅ FIXED (was wrong before)
+                category: data.category,        
+                subcategory: data.subcategory,  
+                product_images: images,         
             };
 
-            console.log("FINAL PAYLOAD:", payload); // ✅ DEBUG
+            console.log("FINAL PAYLOAD:", payload); 
 
             let res;
 
@@ -142,8 +142,6 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
     }, [editData, setValue]);
 
     if (!isOpen) return null;
-
-
 
     return (
         <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto">

@@ -7,7 +7,7 @@ export default function CustomerPage() {
     const [page, setPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState("ALL");
 
-    // ✅ STATE CUSTOMERS
+    //  STATE CUSTOMERS
     const [customers, setCustomers] = useState(
         Array.from({ length: 30 }, (_, i) => {
 
@@ -35,13 +35,13 @@ export default function CustomerPage() {
 
     const itemsPerPage = 10;
 
-    // ✅ FILTER LOGIC
+    //  FILTER LOGIC
     const filteredCustomers = customers.filter((c) => {
         if (statusFilter === "ALL") return true;
         return c.status === statusFilter;
     });
 
-    // ✅ PAGINATION ON FILTERED DATA
+    //  PAGINATION ON FILTERED DATA
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
     const paginatedCustomers = filteredCustomers.slice(
@@ -49,7 +49,7 @@ export default function CustomerPage() {
         page * itemsPerPage
     );
 
-    // ✅ TOGGLE STATUS
+    //  TOGGLE STATUS
     const toggleStatus = (id) => {
         setCustomers((prev) =>
             prev.map((c) =>
@@ -70,7 +70,7 @@ export default function CustomerPage() {
                 statusFilter={statusFilter}
                 setStatusFilter={(value) => {
                     setStatusFilter(value);
-                    setPage(1); // 🔥 IMPORTANT
+                    setPage(1);
                 }}
             />
 

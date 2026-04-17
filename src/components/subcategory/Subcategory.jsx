@@ -56,7 +56,7 @@ export default function Subcategory() {
         try {
             setLoading(true);
 
-            const res = await API.get(SubCategoryAPI(categoryId)); // ✅ FIX
+            const res = await API.get(SubCategoryAPI(categoryId));
 
             setData(res.data.data || []);
 
