@@ -182,23 +182,39 @@ export default function AppointmentDashboard({
                                         {/* STATUS */}
                                         <td className="p-3">
                                             <span className={`px-3 py-1 text-xs rounded-full ${item.status === "confirmed"
-                                                    ? "bg-green-100 text-green-600"
-                                                    : "bg-orange-100 text-orange-600"
+                                                ? "bg-green-100 text-green-600"
+                                                : "bg-orange-100 text-orange-600"
                                                 }`}>
                                                 {item.status}
                                             </span>
                                         </td>
 
                                         {/* CONTACT */}
-                                        <td className="p-3 flex gap-2">
-                                            <a href={`tel:${item.phone_number}`}>
-                                                <Phone size={16} />
-                                            </a>
-                                            <a href={`mailto:${item.email}`}>
-                                                <Mail size={16} />
-                                            </a>
-                                        </td>
+                                        <td className="p-6 flex gap-4">
 
+                                            {/* CALL */}
+                                            <div className="relative group">
+                                                <a href={`tel:${item.phone_number}`}>
+                                                    <Phone size={16} className="cursor-pointer" />
+                                                </a>
+
+                                                <span className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                                                    Call
+                                                </span>
+                                            </div>
+
+                                            {/* EMAIL */}
+                                            <div className="relative group">
+                                                <a href={`mailto:${item.email}`}>
+                                                    <Mail size={16} className="cursor-pointer" />
+                                                </a>
+
+                                                <span className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                                                    Email
+                                                </span>
+                                            </div>
+
+                                        </td>
                                         {/* ACTION */}
                                         <td className="p-3">
                                             <MoreVertical size={18} />

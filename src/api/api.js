@@ -44,7 +44,7 @@ const SubCategoryDelete = (id) => `/products/subcategory/${id}`;
 
 // ================= APPOINTMENT =================
 
-const AppointmentAdmin = "/api/admin-panel/appointments";
+const AppointmentAdmin = "/admin-panel/appointments";
 
 
 
