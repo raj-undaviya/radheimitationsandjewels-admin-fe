@@ -1,7 +1,7 @@
 import { X, Truck, ShieldCheck, Globe } from "lucide-react";
 import { useEffect } from "react";
 
-export default function PolicyModal({ isOpen, onClose }) {
+export default function PolicyModal({ isOpen, onClose, data }) {
 
     // 🔒 Lock background scroll
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function PolicyModal({ isOpen, onClose }) {
 
                         <div>
                             <h2 className="text-xl font-bold flex items-center gap-2">
-                                Shipping Policy
+                               {data?.title || "Policy"}
                                 <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
                                     ACTIVE
                                 </span>
@@ -51,11 +51,16 @@ export default function PolicyModal({ isOpen, onClose }) {
                         <h3 className="font-semibold border-l-4 border-orange-500 pl-2 mb-2">
                             Introduction
                         </h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                            The Curated Atelier is committed to ensuring the safe and timely delivery
-                            of our bespoke jewelry collections. Every piece represents a significant
-                            investment, and our shipping protocols are designed with the highest standards.
-                        </p>
+                        {data?.description ? (
+                            <div
+                                className="text-sm text-gray-600 leading-relaxed"
+                                dangerouslySetInnerHTML={{ __html: data.description }}
+                            />
+                        ) : (
+                            <p className="text-sm text-gray-400">
+                                No policy content available
+                            </p>
+                        )}
                     </div>
 
                     {/* CARDS */}

@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+/* 🔥 IMPORTANT FIX */
+.ProseMirror {
+    white-space: pre-wrap !important;
+    word-break: break-word;
+    outline: none;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+/* already correct */
+.ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
+
+.ProseMirror a {
+    color: #2563eb;
+    text-decoration: underline;
+    cursor: pointer;
+}

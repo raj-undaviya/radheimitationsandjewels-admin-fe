@@ -9,6 +9,9 @@ export default function PoliciesDashboard() {
 
     const [viewModal, setViewModal] = useState(false);
 
+    const [policies, setPolicies] = useState([]);
+    const [selectedPolicy, setSelectedPolicy] = useState(null);
+
     return (
         <>
             <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 space-y-6">
@@ -50,10 +53,26 @@ export default function PoliciesDashboard() {
                             </span>
 
                             <div className="flex gap-2">
-                                <button onClick={() => setViewModal(true)}>
+                                <button
+                                    onClick={() => {
+                                        setSelectedPolicy(policies[0]); // for now test
+                                        setViewModal(true);
+                                    }}>
                                     <Eye size={16} />
                                 </button>
-                                <Pencil size={16} />
+                                <button
+                                    onClick={() => {
+                                        const dummy = {
+                                            title: "Test Policy",
+                                            description: "<p>Test description</p>",
+                                        };
+
+                                        setSelectedPolicy(dummy);
+                                        setOpenModal(true);
+                                    }}
+                                >
+                                    <Pencil size={16} />
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -77,7 +96,19 @@ export default function PoliciesDashboard() {
                                 <button onClick={() => setViewModal(true)}>
                                     <Eye size={16} />
                                 </button>
-                                <Pencil size={16} />
+                                <button
+                                    onClick={() => {
+                                        const dummy = {
+                                            title: "Test Policy",
+                                            description: "<p>Test description</p>",
+                                        };
+
+                                        setSelectedPolicy(dummy);
+                                        setOpenModal(true);
+                                    }}
+                                >
+                                    <Pencil size={16} />
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -101,7 +132,19 @@ export default function PoliciesDashboard() {
                                 <button onClick={() => setViewModal(true)}>
                                     <Eye size={16} />
                                 </button>
-                                <Pencil size={16} />
+                                <button
+                                    onClick={() => {
+                                        const dummy = {
+                                            title: "Test Policy",
+                                            description: "<p>Test description</p>",
+                                        };
+
+                                        setSelectedPolicy(dummy);
+                                        setOpenModal(true);
+                                    }}
+                                >
+                                    <Pencil size={16} />
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -125,7 +168,19 @@ export default function PoliciesDashboard() {
                                 <button onClick={() => setViewModal(true)}>
                                     <Eye size={16} />
                                 </button>
-                                <Pencil size={16} />
+                                <button
+                                    onClick={() => {
+                                        const dummy = {
+                                            title: "Test Policy",
+                                            description: "<p>Test description</p>",
+                                        };
+
+                                        setSelectedPolicy(dummy);
+                                        setOpenModal(true);
+                                    }}
+                                >
+                                    <Pencil size={16} />
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -176,13 +231,15 @@ export default function PoliciesDashboard() {
                 isOpen={openModal}
                 onClose={() => setOpenModal(false)}
                 onSave={(data) => {
-                    console.log("Saved Policy:", data);
+                    setPolicies((prev) => [...prev, data]);
                 }}
+                editData={selectedPolicy}
             />
 
             <PolicyModal
                 isOpen={viewModal}
                 onClose={() => setViewModal(false)}
+                data={selectedPolicy}
             />
         </>
     );
