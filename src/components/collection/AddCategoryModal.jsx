@@ -94,6 +94,11 @@ export default function AddCategoryModal({
         setValue("image", file);
     };
 
+    const handleRemoveImage = () => {
+        setPreview(null);
+        setValue("image", null);
+    };
+
     // Submit
     const onSubmit = async (data) => {
         try {
@@ -279,11 +284,25 @@ export default function AddCategoryModal({
                             <label className="block mt-2 border-2 border-dashed border-orange-200 rounded-2xl p-6 text-center cursor-pointer hover:bg-gray-50">
 
                                 {preview ? (
-                                    <img
-                                        src={preview}
-                                        alt="preview"
-                                        className="h-32 mx-auto object-contain"
-                                    />
+                                    <div className="relative inline-block">
+                                        <img
+                                            src={preview}
+                                            alt="preview"
+                                            className="h-32 mx-auto object-contain rounded-lg"
+                                        />
+
+                                        {/* ❌ REMOVE BUTTON */}
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault(); // prevent file dialog
+                                                handleRemoveImage();
+                                            }}
+                                            className="absolute top-1 right-1 bg-black/70 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-500"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
                                 ) : (
                                     <>
                                         <p className="text-gray-500">
@@ -298,6 +317,7 @@ export default function AddCategoryModal({
                                 {type === "category" && (
                                     <input
                                         type="file"
+                                        className="hidden"
                                         onChange={(e) => handleImageUpload(e.target.files[0])}
                                     />
                                 )}

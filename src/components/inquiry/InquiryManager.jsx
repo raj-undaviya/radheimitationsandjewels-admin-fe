@@ -1,12 +1,22 @@
 import { Phone, Mail, MoreVertical, ChevronDown, Pencil } from "lucide-react";
 import Pagination from "../../components/common/Pagination";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import EditAppointmentModal from "./EditAppointmentModal";
+
+import API from "../../api/axiosInstance";
+import { AppointmentByIdAPI } from "../../api/api";
 
 export default function AppointmentDashboard({
     data = [],
     stats,
     loading,
+    onUpdate
 }) {
+
+    const [selectedId, setSelectedId] = useState(null);
+
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const [filterOpen, setFilterOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState("All");
@@ -27,6 +37,21 @@ export default function AppointmentDashboard({
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+    useEffect(() => {
+        if (!selectedId) return;
+
+        const fetchData = async () => {
+            try {
+                const res = await API.get(AppointmentByIdAPI(selectedId));
+                setEditData(res.data.data);
+            } catch (err) {
+                console.error("Error fetching appointment:", err);
+            }
+        };
+
+        fetchData();
+    }, [selectedId]);
 
     return (
         <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
@@ -220,7 +245,10 @@ export default function AppointmentDashboard({
                                             <div className="flex">
                                                 <button
                                                     type="button"
-                                                    // onClick={() => handleEdit(item)}
+                                                    onClick={() => {
+                                                        setSelectedId(item.id);   // 👈 trigger fetch
+                                                        setOpenModal(true);
+                                                    }}
                                                     className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
                                                 >
                                                     <Pencil
@@ -250,6 +278,18 @@ export default function AppointmentDashboard({
                 </div>
 
             </div>
+
+            <EditAppointmentModal
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null);
+                }}
+                editData={editData}
+                onSave={(updated) => {
+                    onUpdate(editData.id, updated);
+                }}
+            />
 
         </div>
     );
