@@ -1,12 +1,28 @@
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
-import { X, UserPlus } from "lucide-react";
+import { ChevronDown, X, UserPlus } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export default function AddCustomerModal({ isOpen, onClose }) {
-    if (!isOpen) return null;
+export default function AddCustomerModal({ isOpen, onClose, editData }) {
+
 
     const [roleOpen, setRoleOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState("");
+
+    const [active, setActive] = useState(true);
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        // cleanup (important)
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isOpen]);
+
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
@@ -30,10 +46,13 @@ export default function AddCustomerModal({ isOpen, onClose }) {
 
                     <div>
                         <h2 className="text-lg sm:text-xl font-semibold">
-                            Add New User
+                            {editData ? "Edit User" : "Add New User"}
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
-                            Create a new account and assign a specific role.
+                            {editData
+                                ? "Update user details and role."
+                                : "Create a new account and assign a specific role."
+                            }
                         </p>
                     </div>
                 </div>
@@ -105,7 +124,7 @@ export default function AddCustomerModal({ isOpen, onClose }) {
                         {roleOpen && (
                             <div className="absolute w-full mt-2 bg-white rounded-xl shadow-lg z-10 overflow-hidden">
 
-                                {["Admin", "Customer", "Manager"].map((role) => (
+                                {["Admin", "Customer"].map((role) => (
                                     <div
                                         key={role}
                                         onClick={() => {
@@ -122,6 +141,41 @@ export default function AddCustomerModal({ isOpen, onClose }) {
                         )}
                     </div>
 
+                    <div>
+                        <label className="text-xs font-semibold text-gray-500 uppercase">
+                            Status
+                        </label>
+
+                        <div className="flex gap-3 mt-2">
+
+                            {/* ACTIVE */}
+                            <button
+                                type="button"
+                                onClick={() => setActive(true)}
+                                className={`px-4 py-2 rounded-full text-sm ${active
+                                    ? "bg-green-100 text-green-600"
+                                    : "bg-gray-100 text-gray-500"
+                                    }`}
+                            >
+                                Active
+                            </button>
+
+                            {/* INACTIVE */}
+                            <button
+                                type="button"
+                                onClick={() => setActive(false)}
+                                className={`px-4 py-2 rounded-full text-sm ${!active
+                                    ? "bg-red-100 text-red-600"
+                                    : "bg-gray-100 text-gray-500"
+                                    }`}
+                            >
+                                Inactive
+                            </button>
+
+                        </div>
+                    </div>
+
+
                     {/* Footer */}
                     <div className="flex flex-col sm:flex-row justify-end items-center gap-3 pt-4">
 
@@ -137,7 +191,7 @@ export default function AddCustomerModal({ isOpen, onClose }) {
                             type="submit"
                             className="bg-orange-500 text-white px-6 py-2.5 rounded-full text-sm shadow-lg hover:bg-orange-600 transition"
                         >
-                            Create User
+                            {editData ? "Update User" : "Create User"}
                         </button>
 
                     </div>

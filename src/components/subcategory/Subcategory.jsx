@@ -251,13 +251,42 @@ export default function Subcategory() {
 
                             <tbody>
                                 {loading ? (
-                                    <tr>
-                                        <td colSpan="5" className="py-10">
-                                            <div className="flex justify-center items-center">
-                                                <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    [...Array(6)].map((_, i) => (
+                                        <tr key={i} className="border-t animate-pulse">
+
+                                            {/* Subcategory */}
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                                                    <div className="w-24 h-2 bg-gray-200 rounded"></div>
+                                                </div>
+                                            </td>
+
+                                            {/* Parent Category */}
+                                            <td className="px-6 py-4">
+                                                <div className="w-24 h-6 bg-gray-200 rounded-full"></div>
+                                            </td>
+
+                                            {/* Item Count */}
+                                            <td className="px-14 py-4">
+                                                <div className="w-10 h-3 bg-gray-200 rounded"></div>
+                                            </td>
+
+                                            {/* Status */}
+                                            <td className="px-6 py-4">
+                                                <div className="w-20 h-6 bg-gray-200 rounded-full"></div>
+                                            </td>
+
+                                            {/* Actions */}
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                                    <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                    ))
                                 ) : currentData.length === 0 ? (
                                     <tr>
                                         <td colSpan="5" className="text-center py-6 text-gray-400">
@@ -299,39 +328,39 @@ export default function Subcategory() {
                                             </td>
 
                                             <td className="px-6 py-4 text-right">
-                                            
 
-                                                    {/* Actions */}
-                                                    <div className="flex items-center gap-2">
 
-                                                        {/* Edit */}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleEdit(item)}
-                                                            className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
-                                                            aria-label="Edit"
-                                                        >
-                                                            <Pencil
-                                                                size={16}
-                                                                className="text-blue-600 group-hover:scale-110 transition-transform"
-                                                            />
-                                                        </button>
+                                                {/* Actions */}
+                                                <div className="flex items-center gap-2">
 
-                                                        {/* Delete */}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleDelete(item.id)}
-                                                            className="group p-2 rounded-full bg-red-50 hover:bg-red-100 transition-all duration-200"
-                                                            aria-label="Delete"
-                                                        >
-                                                            <Trash2
-                                                                size={16}
-                                                                className="text-red-600 group-hover:scale-110 transition-transform"
-                                                            />
-                                                        </button>
+                                                    {/* Edit */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleEdit(item)}
+                                                        className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
+                                                        aria-label="Edit"
+                                                    >
+                                                        <Pencil
+                                                            size={16}
+                                                            className="text-blue-600 group-hover:scale-110 transition-transform"
+                                                        />
+                                                    </button>
 
-                                                    </div>
-                                               
+                                                    {/* Delete */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDelete(item.id)}
+                                                        className="group p-2 rounded-full bg-red-50 hover:bg-red-100 transition-all duration-200"
+                                                        aria-label="Delete"
+                                                    >
+                                                        <Trash2
+                                                            size={16}
+                                                            className="text-red-600 group-hover:scale-110 transition-transform"
+                                                        />
+                                                    </button>
+
+                                                </div>
+
                                             </td>
 
                                         </tr>

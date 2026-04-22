@@ -42,6 +42,9 @@ export default function CouponsDashboard() {
         },
     ];
 
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
+
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 5;
@@ -71,7 +74,10 @@ export default function CouponsDashboard() {
 
                     {/* Button */}
                     <button
-                        onClick={() => setOpen(true)}
+                        onClick={() => {
+                            setEditData(null);     // reset
+                            setOpenModal(true);    // open modal
+                        }}
                         className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-full shadow w-full sm:w-auto">
                         <Plus size={18} />
                         <span className="text-sm sm:text-base">Create New Coupon</span>
@@ -180,12 +186,15 @@ export default function CouponsDashboard() {
                                             {/* Actions */}
                                             <td className="p-3">
                                                 <div className="flex gap-3 text-gray-400">
-                                                    
+
                                                     {/* Edit */}
                                                     <button
                                                         type="button"
+                                                        onClick={() => {
+                                                            setEditData(c);        // ✅ pass selected coupon
+                                                            setOpenModal(true);    // ✅ open modal
+                                                        }}
                                                         className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
-                                                        aria-label="Edit"
                                                     >
                                                         <Pencil
                                                             size={16}
@@ -230,8 +239,12 @@ export default function CouponsDashboard() {
             </div>
 
             <CreateCouponModal
-                isOpen={open}
-                onClose={() => setOpen(false)}
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null);
+                }}
+                editData={editData}
             />
         </>
     );

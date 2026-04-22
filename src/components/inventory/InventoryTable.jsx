@@ -99,103 +99,121 @@ export default function InventoryTable({ products = [], loading = false }) {
 
                     <tbody>
 
-                        {/* LOADING */}
-                        {loading && (
-                            <tr>
-                                <td colSpan="7" className="text-center py-6">
-                                    Loading products...
-                                </td>
-                            </tr>
-                        )}
+                        {loading ? (
+                            [...Array(6)].map((_, i) => (
+                                <tr key={i} className="border-b animate-pulse">
 
-                        {/* EMPTY */}
-                        {!loading && localProducts.length === 0 && (
+                                    <td className="py-4 flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                                        <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="w-20 h-3 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="w-24 h-6 bg-gray-200 rounded-full"></div>
+                                    </td>
+
+                                    <td className="min-w-40">
+                                        <div className="w-full bg-gray-200 h-2 rounded-full"></div>
+                                        <div className="w-16 h-2 bg-gray-200 rounded mt-2"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="w-16 h-3 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="w-20 h-3 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="flex gap-2">
+                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            ))
+                        ) : localProducts.length === 0 ? (
                             <tr>
                                 <td colSpan="7" className="text-center py-6 text-gray-400">
                                     No products found
                                 </td>
                             </tr>
-                        )}
+                        ) : (
+                            localProducts.map((item) => {
+                                const status = getStatus(item.stock);
 
-                        {/* DATA */}
-                        {!loading && localProducts.map((item) => {
-                            const status = getStatus(item.stock);
+                                return (
+                                    <tr key={item.id} className="border-b last:border-none">
 
-                            return (
-                                <tr key={item.id} className="border-b last:border-none">
-
-                                    {/* PRODUCT */}
-                                    <td className="py-4 flex items-center gap-3">
-                                        <img
-                                            src={item.images?.[0]?.image_url || "https://via.placeholder.com/40"}
-                                            alt={item.name}
-                                            className="w-10 h-10 rounded-full object-cover border"
-                                        />
-                                        <span className="font-medium">{item.name}</span>
-                                    </td>
-
-                                    {/* SKU */}
-                                    <td>SKU-{item.id}</td>
-
-                                    {/* CATEGORY */}
-                                    <td>
-                                        <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium">
-                                            Category {item.category}
-                                        </span>
-                                    </td>
-
-                                    {/* STOCK */}
-                                    <td className="min-w-40">
-                                        <div className="w-full bg-gray-200 h-2 rounded-full">
-                                            <div
-                                                className={`h-2 rounded-full ${item.stock === 0
-                                                    ? "bg-red-500"
-                                                    : item.stock < 10
-                                                        ? "bg-yellow-500"
-                                                        : "bg-green-500"
-                                                    }`}
-                                                style={{ width: `${Math.min(item.stock, 100)}%` }}
+                                        <td className="py-4 flex items-center gap-3">
+                                            <img
+                                                src={item.images?.[0]?.image_url || "/no-image.png"}
+                                                alt={item.name}
+                                                className="w-10 h-10 rounded-full object-cover border"
                                             />
-                                        </div>
-                                        <p className="text-xs mt-1">
-                                            {item.stock} units
-                                        </p>
-                                    </td>
+                                            <span className="font-medium">{item.name}</span>
+                                        </td>
 
-                                    {/* PRICE */}
-                                    <td>₹{Number(item.price).toLocaleString()}</td>
+                                        <td>SKU-{item.id}</td>
 
-                                    {/* STATUS */}
-                                    <td className={`text-sm font-medium ${status.color}`}>
-                                        {status.text}
-                                    </td>
+                                        <td>
+                                            <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium">
+                                                Category {item.category}
+                                            </span>
+                                        </td>
 
-                                    {/* ACTIONS */}
-                                    <td>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => {
-                                                    setEditData(item);
-                                                    setOpenModal(true);
-                                                }}
-                                                className="p-2 rounded-full hover:bg-blue-100 transition"
-                                            >
-                                                <Pencil size={16} className="text-blue-600" />
-                                            </button>
+                                        <td className="min-w-40">
+                                            <div className="w-full bg-gray-200 h-2 rounded-full">
+                                                <div
+                                                    className={`h-2 rounded-full ${item.stock === 0
+                                                        ? "bg-red-500"
+                                                        : item.stock < 10
+                                                            ? "bg-yellow-500"
+                                                            : "bg-green-500"
+                                                        }`}
+                                                    style={{ width: `${Math.min(item.stock, 100)}%` }}
+                                                />
+                                            </div>
+                                            <p className="text-xs mt-1">{item.stock} units</p>
+                                        </td>
 
-                                            <button
-                                                onClick={() => handleDelete(item.id)}
-                                                className="p-2 rounded-full hover:bg-red-100 transition"
-                                            >
-                                                <Trash2 size={16} className="text-red-600" />
-                                            </button>
+                                        <td>₹{Number(item.price).toLocaleString()}</td>
 
-                                        </div>
-                                    </td>
+                                        <td className={`text-sm font-medium ${status.color}`}>
+                                            {status.text}
+                                        </td>
 
-                                </tr>
-                            );
-                        })}
+                                        <td>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setEditData(item);
+                                                        setOpenModal(true);
+                                                    }}
+                                                    className="p-2 rounded-full hover:bg-blue-100 transition"
+                                                >
+                                                    <Pencil size={16} className="text-blue-600" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleDelete(item.id)}
+                                                    className="p-2 rounded-full hover:bg-red-100 transition"
+                                                >
+                                                    <Trash2 size={16} className="text-red-600" />
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                );
+                            })
+                        )}
 
                     </tbody>
                 </table>

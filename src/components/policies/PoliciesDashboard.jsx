@@ -1,10 +1,13 @@
 import { FileText, Truck, Shield, RotateCcw, Eye, Pencil } from "lucide-react";
 import { useState } from "react";
 import AddPolicyModal from "./AddPolicyModal";
+import PolicyModal from "./PolicyModal";
 
 export default function PoliciesDashboard() {
 
     const [openModal, setOpenModal] = useState(false);
+
+    const [viewModal, setViewModal] = useState(false);
 
     return (
         <>
@@ -47,12 +50,10 @@ export default function PoliciesDashboard() {
                             </span>
 
                             <div className="flex gap-2">
-                                <button className="text-xs px-3 py-1 border rounded-full">
-                                    View
+                                <button onClick={() => setViewModal(true)}>
+                                    <Eye size={16} />
                                 </button>
-                                <button className="text-xs px-3 py-1 bg-orange-500 text-white rounded-full">
-                                    Edit
-                                </button>
+                                <Pencil size={16} />
                             </div>
                         </div>
                     </div>
@@ -73,7 +74,9 @@ export default function PoliciesDashboard() {
                             </span>
 
                             <div className="flex gap-3 text-gray-500">
-                                <Eye size={16} />
+                                <button onClick={() => setViewModal(true)}>
+                                    <Eye size={16} />
+                                </button>
                                 <Pencil size={16} />
                             </div>
                         </div>
@@ -95,7 +98,9 @@ export default function PoliciesDashboard() {
                             </span>
 
                             <div className="flex gap-3 text-gray-500">
-                                <Eye size={16} />
+                                <button onClick={() => setViewModal(true)}>
+                                    <Eye size={16} />
+                                </button>
                                 <Pencil size={16} />
                             </div>
                         </div>
@@ -117,7 +122,9 @@ export default function PoliciesDashboard() {
                             </span>
 
                             <div className="flex gap-3 text-gray-500">
-                                <Eye size={16} />
+                                <button onClick={() => setViewModal(true)}>
+                                    <Eye size={16} />
+                                </button>
                                 <Pencil size={16} />
                             </div>
                         </div>
@@ -171,6 +178,11 @@ export default function PoliciesDashboard() {
                 onSave={(data) => {
                     console.log("Saved Policy:", data);
                 }}
+            />
+
+            <PolicyModal
+                isOpen={viewModal}
+                onClose={() => setViewModal(false)}
             />
         </>
     );

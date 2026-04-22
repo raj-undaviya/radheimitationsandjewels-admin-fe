@@ -46,6 +46,8 @@ const SubCategoryDelete = (id) => `/products/subcategory/${id}`;
 
 const AppointmentAdmin = "/admin-panel/appointments";
 
+//================= CUSTOMER ========================
+const CustomerView = "/admin-panel/users";
 
 
 
@@ -77,4 +79,10 @@ export const SubCategoryAPI = (categoryId) => {
 export const SubCategoryEdiAPI = (id) => SubCategoryEdit(id);
 export const SubCategoryDeleteAPI = (id) => SubCategoryDelete(id);
 
+//================== APPOINTMENT APPOINTMENT =============
+
 export const AppointmentAdminAPI = () => AppointmentAdmin;
+
+//================== CUSTOMER ===========================
+export const CustomerViewAPI = () => CustomerView;
+

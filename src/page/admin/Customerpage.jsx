@@ -1,44 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomerHeader from "../../components/Customer/CustomerHeader";
 import CustomerTable from "../../components/Customer/CustomerTable";
+import AddCustomerModal from "../../components/Customer/AddCustomerModal";
+
+import API from "../../api/axiosInstance";
+import { CustomerViewAPI } from "../../api/api";
 
 export default function CustomerPage() {
+
+    const [openModal, setOpenModal] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const [page, setPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState("ALL");
 
-    //  STATE CUSTOMERS
-    const [customers, setCustomers] = useState(
-        Array.from({ length: 30 }, (_, i) => {
+    const [customers, setCustomers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-            const names = [
-                "Isabella Rossellini",
-                "Sebastian Sterling",
-                "Amara Okafor",
-                "Dr. Julian Thorne",
-                "Aarav Patel",
-                "Riya Shah",
-                "David Miller",
-                "Chris Evans"
-            ];
+    useEffect(() => {
+        const fetchCustomers = async () => {
+            try {
+                const res = await API.get(CustomerViewAPI());
 
-            return {
-                id: i + 1,
-                name: names[i % names.length],
-                memberSince: `Jan ${2020 + (i % 5)}`,
-                email: `user${i + 1}@example.com`,
-                status: i % 3 === 0 ? "INACTIVE" : "ACTIVE",
-                image: `https://i.pravatar.cc/40?img=${i + 1}`
-            };
-        })
-    );
+                // 👇 your API structure
+                setCustomers(
+                    (res.data.data || []).map((item) => ({
+                        ...item,
+                        isActive: true   // ✅ ADD THIS
+                    }))
+                );
+
+            } catch (error) {
+                console.error("Customer fetch error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCustomers();
+    }, []);
 
     const itemsPerPage = 10;
 
     //  FILTER LOGIC
     const filteredCustomers = customers.filter((c) => {
         if (statusFilter === "ALL") return true;
-        return c.status === statusFilter;
+        if (statusFilter === "ACTIVE") return c.isActive === true;
+        if (statusFilter === "INACTIVE") return c.isActive === false;
+        return true;
     });
 
     //  PAGINATION ON FILTERED DATA
@@ -56,7 +65,7 @@ export default function CustomerPage() {
                 c.id === id
                     ? {
                         ...c,
-                        status: c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+                        isActive: !c.isActive
                     }
                     : c
             )
@@ -71,6 +80,14 @@ export default function CustomerPage() {
                 setStatusFilter={(value) => {
                     setStatusFilter(value);
                     setPage(1);
+
+                    // show skeleton
+                    setLoading(true);
+
+                    // simulate API delay (or real API call)
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 500); // 0.5 sec
                 }}
             />
 
@@ -82,6 +99,20 @@ export default function CustomerPage() {
                 totalItems={filteredCustomers.length}
                 itemsPerPage={itemsPerPage}
                 onToggleStatus={toggleStatus}
+                loading={loading}   // ✅ ADD THIS
+                onEdit={(customer) => {
+                    setEditData(customer);
+                    setOpenModal(true);
+                }}
+            />
+
+            <AddCustomerModal
+                isOpen={openModal}
+                onClose={() => {
+                    setOpenModal(false);
+                    setEditData(null);
+                }}
+                editData={editData}
             />
 
         </div>

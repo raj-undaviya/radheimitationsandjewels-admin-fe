@@ -1,4 +1,4 @@
-import { Phone, Mail, MoreVertical, ChevronDown } from "lucide-react";
+import { Phone, Mail, MoreVertical, ChevronDown, Pencil } from "lucide-react";
 import Pagination from "../../components/common/Pagination";
 import { useState } from "react";
 
@@ -217,7 +217,18 @@ export default function AppointmentDashboard({
                                         </td>
                                         {/* ACTION */}
                                         <td className="p-3">
-                                            <MoreVertical size={18} />
+                                            <div className="flex">
+                                                <button
+                                                    type="button"
+                                                    // onClick={() => handleEdit(item)}
+                                                    className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"
+                                                >
+                                                    <Pencil
+                                                        size={16}
+                                                        className="text-blue-600 group-hover:scale-110 transition-transform"
+                                                    />
+                                                </button>
+                                            </div>
                                         </td>
 
                                     </tr>

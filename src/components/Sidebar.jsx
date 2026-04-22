@@ -18,7 +18,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         { label: "Coupons", path: "/admin/coupons", icon: <Ticket size={18} /> },
         { label: "Policies", path: "/admin/policies", icon: <FileText size={18} /> },
         { label: "Appointment", path: "/admin/appointment", icon: <FileText size={18} /> },
-        { label: "Settings", path: "/admin/settings", icon: <Settings size={18} /> },
+        // { label: "Settings", path: "/admin/settings", icon: <Settings size={18} /> },
     ];
 
     // Disable background scroll

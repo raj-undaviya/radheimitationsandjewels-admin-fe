@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
 import { X, ChevronDown } from "lucide-react";
 
-export default function CreateCouponModal({ isOpen, onClose }) {
+export default function CreateCouponModal({ isOpen, onClose, editData }) {
     const [openDropdown, setOpenDropdown] = useState(false);
     const dropdownRef = useRef();
 
@@ -16,6 +16,18 @@ export default function CreateCouponModal({ isOpen, onClose }) {
         document.addEventListener("mousedown", handler);
         return () => document.removeEventListener("mousedown", handler);
     }, []);
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isOpen]);
 
     const {
         register,
@@ -45,10 +57,12 @@ export default function CreateCouponModal({ isOpen, onClose }) {
                 <div className="flex justify-between items-center p-5 border-b">
                     <div>
                         <h2 className="text-lg sm:text-xl font-bold">
-                            Create New Coupon
+                            {editData ? "Edit Coupon" : "Create New Coupon"}
                         </h2>
                         <p className="text-gray-500 text-xs sm:text-sm">
-                            Define the parameters of your exclusive offer.
+                            {editData
+                                ? "Update your coupon details."
+                                : "Define the parameters of your exclusive offer."}
                         </p>
                     </div>
 
@@ -192,7 +206,7 @@ export default function CreateCouponModal({ isOpen, onClose }) {
                             type="submit"
                             className="bg-orange-600 text-white px-6 py-2 rounded-full shadow hover:bg-orange-700"
                         >
-                            Save Coupon
+                            {editData ? "Update Coupon" : "Save Coupon"}
                         </button>
 
                     </div>

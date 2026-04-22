@@ -5,7 +5,7 @@ import { IoClose, IoChevronDown } from "react-icons/io5";
 import toast from "react-hot-toast";
 
 import API from "../../api/axiosInstance";
-import { ProductAPI } from "../../api/api";
+import { ProductAPI, CollectionAPI } from "../../api/api";
 
 export default function AddProductModal({ isOpen, onClose, onSuccess, editData }) {
 
@@ -15,9 +15,11 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
     const [category, setCategory] = useState("");
     const [subcategory, setSubcategory] = useState("");
 
+    const [categories, setCategories] = useState([]);
+
     const [active, setActive] = useState(true);
-    const [images, setImages] = useState([]); 
-    const [imageFiles, setImageFiles] = useState([]); 
+    const [images, setImages] = useState([]);
+    const [imageFiles, setImageFiles] = useState([]);
 
     const {
         register,
@@ -31,6 +33,19 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
         document.body.style.overflow = isOpen ? "hidden" : "auto";
         return () => (document.body.style.overflow = "auto");
     }, [isOpen]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await API.get(CollectionAPI());
+                setCategories(res.data.data || []);
+            } catch (err) {
+                console.error("Category fetch error:", err);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const MAX_IMAGES = 5;
 
@@ -68,47 +83,49 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
         );
 
         try {
-            const payload = {
-                name: data.name,
-                description: data.description,
-                price: data.price,
-                stock: data.stock,
-                category: data.category,        
-                subcategory: data.subcategory,  
-                product_images: images,         
-            };
+            const formData = new FormData();
 
-            console.log("FINAL PAYLOAD:", payload); 
+            formData.append("name", data.name);
+            formData.append("description", data.description);
+            formData.append("price", data.price);
+            formData.append("stock", data.stock);
+            formData.append("category", data.category);
+            formData.append("subcategory", data.subcategory);
 
-            let res;
+            imageFiles.forEach(file => {
+                formData.append("product_images[]", file);
+            });
+
+            let res; // IMPORTANT (declare here)
 
             if (editData) {
-                res = await API.put(`${ProductAPI()}${editData.id}`, payload);
-                toast.success("Product updated successfully");
+                res = await API.put(`${ProductAPI()}${editData.id}`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
             } else {
-                res = await API.post(ProductAPI(), payload);
-                toast.success("Product added successfully");
+                res = await API.post(ProductAPI(), formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
             }
 
+            // now res is defined
+            if (onSuccess) onSuccess(res.data.data);
+
+            toast.success("Saved successfully");
             toast.dismiss(loadingToast);
 
             reset();
-            setCategory("");
-            setSubcategory("");
             setImages([]);
             setImageFiles([]);
 
             onClose();
-            if (onSuccess) onSuccess(res.data.data);
 
         } catch (error) {
             toast.dismiss(loadingToast);
-
             console.error(error);
-            toast.error(
-                error.response?.data?.message || "Failed to save product"
-            );
+            toast.error("Failed to save product");
         }
+        
     };
 
     useEffect(() => {
@@ -289,15 +306,12 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
                                 {/* Dropdown */}
                                 {catOpen && (
                                     <div className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-lg z-50 overflow-hidden">
-                                        {[
-                                            { id: 2, name: "Mia" },
-                                            { id: 3, name: "Aveen" }
-                                        ].map((item) => (
+                                        {categories.map((item) => (
                                             <div
                                                 key={item.id}
                                                 onClick={() => {
                                                     setCategory(item.name);
-                                                    setValue("category", item.id); // ✅ IMPORTANT
+                                                    setValue("category", item.id);
                                                     setCatOpen(false);
                                                 }}
                                                 className="px-4 py-2 text-sm hover:bg-[#f5f5f5] cursor-pointer"
@@ -375,7 +389,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
                                     required: "Price required",
                                     min: { value: 1, message: "Must be > 0" }
                                 })}
-                                placeholder="$ 0.00"
+                                placeholder="₹ 0.00"
                                 className="w-full bg-[#e9e7e5] px-4 py-2.5 rounded-full text-sm"
                             />
                             {errors.price && <p className="text-red-500 text-xs">{errors.price.message}</p>}

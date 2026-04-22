@@ -65,7 +65,7 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
         ));
     };
 
-    
+
     return (
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
 
@@ -87,13 +87,35 @@ export default function CollectionTable({ collections = [], loading, onEdit, onD
                     {/* BODY */}
                     <tbody>
                         {loading ? (
-                            <tr>
-                                <td colSpan="4" className="py-10">
-                                    <div className="flex justify-center items-center">
-                                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                                    </div>
-                                </td>
-                            </tr>
+                            [...Array(5)].map((_, index) => (
+                                <tr key={index} className="border-t animate-pulse">
+
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+
+                                            <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+
+                                            <div className="flex flex-col gap-2">
+                                                <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                                                <div className="w-48 h-3 bg-gray-200 rounded"></div>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                    <td className="px-6 py-4">
+                                        <div className="w-20 h-6 bg-gray-200 rounded-full"></div>
+                                    </td>
+
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            ))
                         ) : currentData.length === 0 ? (
                             <tr>
                                 <td colSpan="4" className="text-center py-6">

@@ -61,6 +61,7 @@ export default function CollectionPage() {
                     setOpenModal(true);
                 }}
                 stats={stats}
+                loading={loading}
             />
 
             {/* TABLE */}
