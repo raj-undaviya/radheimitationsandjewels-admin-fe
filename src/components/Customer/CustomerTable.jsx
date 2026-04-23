@@ -110,7 +110,7 @@ export default function CustomerTable({
                                     <td className="px-4">
                                         <span
                                             className={`px-3 py-1 text-xs rounded-full ${c.role === "admin"
-                                                ? "bg-red-100 text-red-600"
+                                                ? "bg-orange-100 text-orange-600"
                                                 : "bg-blue-100 text-blue-600"
                                                 }`}
                                         >
