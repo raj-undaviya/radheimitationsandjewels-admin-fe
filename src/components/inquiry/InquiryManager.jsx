@@ -4,22 +4,54 @@ import { useState, useEffect } from "react";
 import EditAppointmentModal from "./EditAppointmentModal";
 
 import toast from "react-hot-toast";
-
 import API from "../../api/axiosInstance";
-import { AppointmentByIdAPI, AppointmentUpdateAPI } from "../../api/api";
+import { AppointmentByIdAPI, AppointmentUpdateAPI, AppointmentExportCSVAPI } from "../../api/api";
 
 export default function AppointmentDashboard({
     data = [],
     stats,
     loading,
     onUpdate,
-    refresh  
+    refresh
 }) {
     const statusStyles = {
         confirmed: "bg-green-100 text-green-600",
         pending: "bg-orange-100 text-orange-600",
         cancelled: "bg-red-100 text-red-600",
         completed: "bg-blue-100 text-blue-600",
+    };
+
+    //handle CSV data from here
+    const handleExportCSV = async () => {
+        try {
+            const res = await API.get(
+                AppointmentExportCSVAPI(statusFilter),
+                {
+                    responseType: "blob", // 🔥 VERY IMPORTANT
+                }
+            );
+
+            // Create file URL
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+
+            // Create link
+            const link = document.createElement("a");
+            link.href = url;
+
+            // File name
+            link.setAttribute(
+                "download",
+                `appointments-${statusFilter.toLowerCase()}.csv`
+            );
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+        } catch (err) {
+            console.error("CSV Export Error:", err);
+            toast.error("Failed to export CSV");
+        }
     };
 
     const [selectedId, setSelectedId] = useState(null);
@@ -94,7 +126,10 @@ export default function AppointmentDashboard({
                 </div>
 
                 <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-gray-200 rounded-full text-sm">
+                    <button
+                        onClick={handleExportCSV}
+                        className="px-4 py-2 bg-gray-200 rounded-full text-sm hover:bg-gray-300"
+                    >
                         Export CSV
                     </button>
                     <button className="px-4 py-2 bg-orange-600 text-white rounded-full text-sm">

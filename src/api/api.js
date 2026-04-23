@@ -98,6 +98,9 @@ export const AppointmentAdminAPI = () => AppointmentAdmin;
 export const AppointmentByIdAPI = (id) => AppointmentById(id);
 export const AppointmentUpdateAPI = (id) => `/appointments/${id}`;
 
+export const AppointmentExportCSVAPI = (status) =>
+  `/appointments/export-csv${status !== "All" ? `?status=${status}` : ""}`;
+
 //================== CUSTOMER ===========================
 export const CustomerViewAPI = () => CustomerView;
 export const RegisterUserAPI = () => RegisterUser;
