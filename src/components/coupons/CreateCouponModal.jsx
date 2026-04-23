@@ -2,7 +2,13 @@ import { useForm } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
 import { X, ChevronDown } from "lucide-react";
 
-export default function CreateCouponModal({ isOpen, onClose, editData }) {
+import API from "../../api/axiosInstance";
+import { CreateCouponAPI, CouponEditAPI } from "../../api/api";
+import toast from "react-hot-toast";
+
+export default function CreateCouponModal({ isOpen, onClose, editData, addCoupon }) {
+    const [loadingBtn, setLoadingBtn] = useState(false);
+
     const [openDropdown, setOpenDropdown] = useState(false);
     const dropdownRef = useRef();
 
@@ -41,9 +47,66 @@ export default function CreateCouponModal({ isOpen, onClose, editData }) {
         },
     });
 
-    const onSubmit = (data) => {
-        console.log("Coupon Data:", data);
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                code: data.code,
+                type: data.discountType,
+                value: Number(data.value),
+                max_usage: Number(data.usageLimit),
+                min_order_value: Number(data.minPurchase),
+                expiry_date: data.expiry || null,
+                status: data.status ? "active" : "inactive"
+            };
+
+            let res;
+
+            if (editData) {
+                // ✏️ EDIT API
+                res = await API.put(
+                    CouponEditAPI(editData.id),
+                    payload
+                );
+
+                toast.success("Coupon updated successfully");
+
+            } else {
+                // ➕ CREATE API
+                res = await API.post(
+                    CreateCouponAPI(),
+                    payload
+                );
+
+                toast.success("Coupon created successfully");
+            }
+
+            // 🔥 UPDATE UI WITHOUT REFRESH
+            if (typeof addCoupon === "function") {
+                addCoupon(res.data.data);
+            }
+
+            onClose();
+
+        } catch (err) {
+            console.error(err);
+
+            toast.error(
+                err?.response?.data?.message || "Something went wrong"
+            );
+        }
     };
+
+    useEffect(() => {
+        if (editData) {
+            setValue("code", editData.code);
+            setValue("discountType", editData.type);
+            setValue("value", Number(editData.value));
+            setValue("usageLimit", editData.max_usage);
+            setValue("minPurchase", Number(editData.min_order_value));
+            setValue("expiry", editData.expiry_date || "");
+            setValue("status", editData.status === "active");
+        }
+    }, [editData, setValue]);
 
     if (!isOpen) return null;
 
@@ -204,9 +267,19 @@ export default function CreateCouponModal({ isOpen, onClose, editData }) {
 
                         <button
                             type="submit"
-                            className="bg-orange-600 text-white px-6 py-2 rounded-full shadow hover:bg-orange-700"
+                            disabled={loadingBtn}
+                            className={`px-6 py-2 rounded-full shadow text-white ${loadingBtn
+                                ? "bg-orange-300 cursor-not-allowed"
+                                : "bg-orange-600 hover:bg-orange-700"
+                                }`}
                         >
-                            {editData ? "Update Coupon" : "Save Coupon"}
+                            {loadingBtn
+                                ? editData
+                                    ? "Updating..."
+                                    : "Saving..."
+                                : editData
+                                    ? "Update Coupon"
+                                    : "Save Coupon"}
                         </button>
 
                     </div>

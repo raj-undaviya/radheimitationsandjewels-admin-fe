@@ -55,6 +55,13 @@ const CustomerEdit = (id) => `/users/customers/${id}`;
 // 🔥 DELETE USER
 const CustomerDelete = (id) => `/users/customers/${id}`;
 
+//======================= COUPONS =======================
+const CouponView = "/admin-panel/coupons/";
+const CreateCoupon = "/admin-panel/coupons/";
+const CouponEdit = (id) => `/admin-panel/coupons/${id}/`;
+// DELETE COUPON
+const CouponDelete = (id) => `/admin-panel/coupons/${id}/`;
+
 
 
 // ================= EXPORT FUNCTIONS =================
@@ -96,3 +103,8 @@ export const RegisterUserAPI = () => RegisterUser;
 export const CustomerEditAPI = (id) => CustomerEdit(id);
 export const CustomerDeleteAPI = (id) => CustomerDelete(id);
 
+//========================= COUPONS FUNCTION ==================
+export const CouponViewAPI = () => CouponView;
+export const CreateCouponAPI = () => CreateCoupon;
+export const CouponEditAPI = (id) => CouponEdit(id);
+export const CouponDeleteAPI = (id) => CouponDelete(id);
