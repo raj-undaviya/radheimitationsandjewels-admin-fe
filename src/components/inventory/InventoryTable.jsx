@@ -90,10 +90,10 @@ export default function InventoryTable({ products = [], loading = false }) {
                             <th className="pb-2">Product</th>
                             <th>SKU</th>
                             <th>Category</th>
-                            <th>Stock Level</th>
+                            <th>Stock Units</th>
                             <th>Unit Price</th>
                             <th>Status</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
@@ -168,19 +168,15 @@ export default function InventoryTable({ products = [], loading = false }) {
                                             </span>
                                         </td>
 
-                                        <td className="min-w-40">
-                                            <div className="w-full bg-gray-200 h-2 rounded-full">
-                                                <div
-                                                    className={`h-2 rounded-full ${item.stock === 0
-                                                        ? "bg-red-500"
-                                                        : item.stock < 10
-                                                            ? "bg-yellow-500"
-                                                            : "bg-green-500"
-                                                        }`}
-                                                    style={{ width: `${Math.min(item.stock, 100)}%` }}
-                                                />
-                                            </div>
-                                            <p className="text-xs mt-1">{item.stock} units</p>
+                                        <td className="p-3">
+                                            <p className={`text-sm font-medium ${item.stock === 0
+                                                ? "text-red-600"
+                                                : item.stock < 10
+                                                    ? "text-yellow-600"
+                                                    : "text-green-600"
+                                                }`}>
+                                                {item.stock} units
+                                            </p>
                                         </td>
 
                                         <td>₹{Number(item.price).toLocaleString()}</td>

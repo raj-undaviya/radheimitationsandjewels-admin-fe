@@ -24,13 +24,13 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            console.log("Token expired → logging out");
 
+        const isAuthAPI = error.config?.url?.includes("/users/auth");
+
+        if (error.response?.status === 401 && !isAuthAPI) {
             localStorage.removeItem("adminToken");
             localStorage.removeItem("adminUser");
-
-            window.location.href = "/admin/login"; // redirect
+            window.location.href = "/admin/login";
         }
 
         return Promise.reject(error);

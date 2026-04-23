@@ -49,6 +49,11 @@ const AppointmentById = (id) => `/appointments/${id}`;
 
 //================= CUSTOMER ========================
 const CustomerView = "/admin-panel/users";
+// Register / Create User API
+const RegisterUser = "/users/auth";
+const CustomerEdit = (id) => `/users/customers/${id}`;
+// 🔥 DELETE USER
+const CustomerDelete = (id) => `/users/customers/${id}`;
 
 
 
@@ -87,4 +92,7 @@ export const AppointmentByIdAPI = (id) => AppointmentById(id);
 
 //================== CUSTOMER ===========================
 export const CustomerViewAPI = () => CustomerView;
+export const RegisterUserAPI = () => RegisterUser;
+export const CustomerEditAPI = (id) => CustomerEdit(id);
+export const CustomerDeleteAPI = (id) => CustomerDelete(id);
 

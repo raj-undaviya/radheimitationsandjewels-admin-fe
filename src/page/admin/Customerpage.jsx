@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import CustomerHeader from "../../components/Customer/CustomerHeader";
 import CustomerTable from "../../components/Customer/CustomerTable";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
+import toast from "react-hot-toast";
 
 import API from "../../api/axiosInstance";
-import { CustomerViewAPI } from "../../api/api";
+import { CustomerViewAPI, CustomerDeleteAPI } from "../../api/api";
 
 export default function CustomerPage() {
 
@@ -17,26 +18,27 @@ export default function CustomerPage() {
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const fetchCustomers = async () => {
+        setLoading(true);
+
+        try {
+            const res = await API.get(CustomerViewAPI());
+
+            setCustomers(
+                (res.data.data || []).map((item) => ({
+                    ...item,
+                    isActive: item.isActive ?? true
+                }))
+            );
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                const res = await API.get(CustomerViewAPI());
-
-                // 👇 your API structure
-                setCustomers(
-                    (res.data.data || []).map((item) => ({
-                        ...item,
-                        isActive: true   // ✅ ADD THIS
-                    }))
-                );
-
-            } catch (error) {
-                console.error("Customer fetch error:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchCustomers();
     }, []);
 
@@ -72,6 +74,48 @@ export default function CustomerPage() {
         );
     };
 
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-medium">
+                    Are you sure you want to delete?
+                </p>
+
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1 bg-gray-200 rounded"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+
+                            try {
+                                await API.delete(CustomerDeleteAPI(id));
+
+                                setCustomers((prev) =>
+                                    prev.filter((c) => c.id !== id)
+                                );
+
+                                toast.success("User deleted successfully");
+
+                            } catch (err) {
+                                console.error(err);
+                                toast.error("Failed to delete user");
+                            }
+                        }}
+                        className="px-3 py-1 bg-red-500 text-white rounded"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        ));
+    };
+
     return (
         <div className="p-3 sm:p-4 space-y-4">
 
@@ -80,14 +124,6 @@ export default function CustomerPage() {
                 setStatusFilter={(value) => {
                     setStatusFilter(value);
                     setPage(1);
-
-                    // show skeleton
-                    setLoading(true);
-
-                    // simulate API delay (or real API call)
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 500); // 0.5 sec
                 }}
             />
 
@@ -104,9 +140,26 @@ export default function CustomerPage() {
                     setEditData(customer);
                     setOpenModal(true);
                 }}
+                 onDelete={handleDelete}
             />
 
             <AddCustomerModal
+                addUser={(user) =>
+                    setCustomers((prev) => {
+                        const exists = prev.find((c) => c.id === user.id);
+
+                        if (exists) {
+                            // 🔥 UPDATE
+                            return prev.map((c) =>
+                                c.id === user.id ? user : c
+                            );
+                        }
+
+                        // 🔥 ADD
+                        return [user, ...prev];
+                    })
+                }
+                refreshUsers={fetchCustomers}
                 isOpen={openModal}
                 onClose={() => {
                     setOpenModal(false);

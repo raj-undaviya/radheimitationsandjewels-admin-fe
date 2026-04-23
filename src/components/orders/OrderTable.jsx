@@ -44,101 +44,127 @@ export default function OrdersTable({
             return order;
         });
 
-        // ⚠️ NOTE: this won't persist unless use API later
         console.log("Updated (UI only):", updated);
     };
 
     return (
         <div className="bg-white p-5 rounded-2xl shadow">
 
-            {loading ? (
-                <p className="text-center py-5 text-gray-500">Loading...</p>
-            ) : (
-                <>
-                    {/* TABLE */}
-                    <div className="w-full overflow-x-auto">
-                        <table className="min-w-175 w-full text-left">
+            {/* TABLE */}
+            <div className="w-full overflow-x-auto">
+                <table className="min-w-175 w-full text-left">
 
-                            <thead className="text-xs text-gray-400 border-b">
-                                <tr>
-                                    <th className="py-3">Order ID</th>
-                                    <th>Product</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                    <th className="text-right">Action</th>
+                    <thead className="text-xs text-gray-400 border-b">
+                        <tr>
+                            <th className="py-3">Order ID</th>
+                            <th>Product</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th className="text-right">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {loading ? (
+                            // 🔥 Skeleton Loader Rows
+                            Array.from({ length: itemsPerPage }).map((_, i) => (
+                                <tr key={i} className="border-b animate-pulse">
+
+                                    <td className="py-4">
+                                        <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                                    </td>
+
+                                    <td className="text-right">
+                                        <div className="h-4 w-12 bg-gray-200 rounded ml-auto"></div>
+                                    </td>
+
                                 </tr>
-                            </thead>
+                            ))
+                        ) : paginatedOrders.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" className="text-center py-5">
+                                    No orders found
+                                </td>
+                            </tr>
+                        ) : (
+                            paginatedOrders.map((o) => (
+                                <tr key={o.id} className="border-b hover:bg-gray-50">
 
-                            <tbody>
-                                {paginatedOrders.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center py-5">
-                                            No orders found
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    paginatedOrders.map((o) => (
-                                        <tr key={o.id} className="border-b hover:bg-gray-50">
+                                    <td className="py-4 text-orange-600 font-semibold">
+                                        #{o.id}
+                                    </td>
 
-                                            <td className="py-4 text-orange-600 font-semibold">
-                                                #{o.id}
-                                            </td>
+                                    <td>
+                                        {o.items?.[0]?.product_details?.name || "N/A"}
+                                    </td>
 
-                                            <td>
-                                                {o.items?.[0]?.product_details?.name || "N/A"}
-                                            </td>
+                                    <td className="font-medium">
+                                        ₹{o.total_amount}
+                                    </td>
 
-                                            <td className="font-medium">
-                                                ₹{o.total_amount}
-                                            </td>
+                                    <td>
+                                        <span
+                                            onClick={() => cycleStatus(o.id)}
+                                            className={`px-3 py-1 rounded-full text-xs cursor-pointer ${getStatusStyle(o.status)}`}
+                                        >
+                                            {o.status}
+                                        </span>
+                                    </td>
 
-                                            <td>
-                                                <span
-                                                    onClick={() => cycleStatus(o.id)}
-                                                    className={`px-3 py-1 rounded-full text-xs cursor-pointer ${getStatusStyle(o.status)}`}
-                                                >
-                                                    {o.status}
-                                                </span>
-                                            </td>
+                                    <td className="text-sm text-gray-500">
+                                        {new Date(o.created_at).toLocaleDateString()}
+                                    </td>
 
-                                            <td className="text-sm text-gray-500">
-                                                {new Date(o.created_at).toLocaleDateString()}
-                                            </td>
+                                    <td className="text-right">
+                                        <button
+                                            onClick={() => {
+                                                setSelectedOrder(o);
+                                                setIsModalOpen(true);
+                                            }}
+                                            className="text-orange-600 text-sm font-semibold hover:underline"
+                                        >
+                                            VIEW
+                                        </button>
+                                    </td>
 
-                                            <td className="text-right">
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedOrder(o);
-                                                        setIsModalOpen(true);
-                                                    }}
-                                                    className="text-orange-600 text-sm font-semibold hover:underline"
-                                                >
-                                                    VIEW
-                                                </button>
-                                            </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
 
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
+                </table>
+            </div>
 
-                        </table>
-                    </div>
-
-                    {/* PAGINATION */}
-                    <div className="mt-4 flex justify-center">
-                        <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={(newPage) => {
-                                if (newPage >= 1 && newPage <= totalPages) {
-                                    setPage(newPage);
-                                }
-                            }}
-                        />
-                    </div>
-                </>
+            {/* PAGINATION */}
+            {!loading && (
+                <div className="mt-4 flex justify-center">
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={(newPage) => {
+                            if (newPage >= 1 && newPage <= totalPages) {
+                                setPage(newPage);
+                            }
+                        }}
+                    />
+                </div>
             )}
 
             {/* MODAL */}
