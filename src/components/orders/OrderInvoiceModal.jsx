@@ -1,5 +1,4 @@
 import { IoClose } from "react-icons/io5";
-import jsPDF from "jspdf";
 
 export default function OrderInvoiceModal({ isOpen, onClose, order }) {
     if (!isOpen || !order) return null;
@@ -9,99 +8,6 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
         0
     ) || 0;
 
-    // DOWNLOAD FUNCTION
-    const downloadInvoice = () => {
-        const pdf = new jsPDF();
-
-        let y = 15;
-
-        // TITLE
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(18);
-        pdf.text("INVOICE", 90, y);
-
-        y += 10;
-
-        // ORDER INFO
-        pdf.setFontSize(11);
-        pdf.setFont("helvetica", "normal");
-
-        pdf.text(`Order ID: ${order.id}`, 10, y);
-        pdf.text(
-            `Date: ${new Date(order.created_at).toLocaleDateString()}`,
-            140,
-            y
-        );
-
-        y += 10;
-
-        // CUSTOMER
-        pdf.setFont("helvetica", "bold");
-        pdf.text("Customer Details:", 10, y);
-
-        y += 6;
-        pdf.setFont("helvetica", "normal");
-
-        pdf.text(`Name: ${order.name || "N/A"}`, 10, y);
-        y += 6;
-        pdf.text(`Phone: ${order.phone || "N/A"}`, 10, y);
-        y += 6;
-        pdf.text(`Email: ${order.email || "N/A"}`, 10, y);
-
-        y += 10;
-
-        // ADDRESS
-        pdf.setFont("helvetica", "bold");
-        pdf.text("Shipping Address:", 10, y);
-
-        y += 6;
-        pdf.setFont("helvetica", "normal");
-        pdf.text(order.address || "N/A", 10, y);
-
-        y += 10;
-
-        // TABLE HEADER
-        pdf.setFont("helvetica", "bold");
-        pdf.text("Product", 10, y);
-        pdf.text("Qty", 110, y);
-        pdf.text("Price", 140, y);
-        pdf.text("Total", 170, y);
-
-        y += 5;
-        pdf.line(10, y, 200, y);
-        y += 6;
-
-        // PRODUCTS
-        pdf.setFont("helvetica", "normal");
-
-        order.items?.forEach((item) => {
-            const total = item.price * item.quantity;
-
-            pdf.text(item.product_details?.name || "Product", 10, y);
-            pdf.text(String(item.quantity), 110, y);
-            pdf.text(`₹${item.price}`, 140, y);
-            pdf.text(`₹${total}`, 170, y);
-
-            y += 8;
-        });
-
-        y += 5;
-        pdf.line(10, y, 200, y);
-        y += 8;
-
-        // TOTAL
-        pdf.setFont("helvetica", "bold");
-        pdf.text(`Subtotal: ₹${subtotal}`, 140, y);
-        y += 6;
-        pdf.text(`Tax: ₹0`, 140, y);
-        y += 6;
-        pdf.text(`Shipping: ₹0`, 140, y);
-        y += 6;
-        pdf.text(`Total: ₹${subtotal}`, 140, y);
-
-        // SAVE
-        pdf.save(`invoice-${order.id}.pdf`);
-    };
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

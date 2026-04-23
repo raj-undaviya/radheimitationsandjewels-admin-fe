@@ -112,3 +112,6 @@ export const CouponViewAPI = () => CouponView;
 export const CreateCouponAPI = () => CreateCoupon;
 export const CouponEditAPI = (id) => CouponEdit(id);
 export const CouponDeleteAPI = (id) => CouponDelete(id);
+
+//=============== ADMIN PROFILE API FUNCTION ======================
+export const UpdateCustomerAPI = (id) => `/users/customers/${id}`;

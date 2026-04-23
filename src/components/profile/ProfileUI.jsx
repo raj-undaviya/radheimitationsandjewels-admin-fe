@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import logo from "../../assets/Logo.png";
-
 import { useNavigate } from "react-router-dom";
 
 export default function ProfileUI() {

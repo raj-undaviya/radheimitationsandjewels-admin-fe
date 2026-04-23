@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings, User, Shapes } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings, User, Shapes, Calendar } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 
@@ -12,12 +12,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         { label: "Inventory", path: "/admin/inventory", icon: <Package size={18} /> },
         { label: "Orders", path: "/admin/orders", icon: <ShoppingCart size={18} /> },
         { label: "Customers", path: "/admin/customers", icon: <Users size={18} /> },
-        { label: "Collection", path: "/admin/collection", icon: <Shapes size={18} /> },
+        { label: "Category", path: "/admin/collection", icon: <Shapes size={18} /> },
         { label: "SubCategory", path: "/admin/subcategory", icon: <ChevronRight size={18} /> },
         { label: "Reports", path: "/admin/reports", icon: <BarChart size={18} /> },
         { label: "Coupons", path: "/admin/coupons", icon: <Ticket size={18} /> },
         { label: "Policies", path: "/admin/policies", icon: <FileText size={18} /> },
-        { label: "Appointment", path: "/admin/appointment", icon: <FileText size={18} /> },
+        { label: "Appointment", path: "/admin/appointment", icon: <Calendar size={18} /> },
         // { label: "Settings", path: "/admin/settings", icon: <Settings size={18} /> },
     ];
 
