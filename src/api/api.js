@@ -96,6 +96,7 @@ export const SubCategoryDeleteAPI = (id) => SubCategoryDelete(id);
 
 export const AppointmentAdminAPI = () => AppointmentAdmin;
 export const AppointmentByIdAPI = (id) => AppointmentById(id);
+export const AppointmentUpdateAPI = (id) => `/appointments/${id}`;
 
 //================== CUSTOMER ===========================
 export const CustomerViewAPI = () => CustomerView;

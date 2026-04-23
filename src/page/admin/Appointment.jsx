@@ -42,12 +42,21 @@ export default function Appointment() {
     }
   };
 
+  const handleUpdate = (id, updatedItem) => {
+    setAppointments((prev) =>
+      prev.map((item) =>
+        item.id === id ? updatedItem : item
+      )
+    );
+  };
+
   return (
     <InquiryManager
       data={appointments}
       stats={stats}
       loading={loading}
       refresh={fetchAppointments}
+      onUpdate={handleUpdate}  
     />
   );
 }

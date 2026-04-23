@@ -3,15 +3,24 @@ import Pagination from "../../components/common/Pagination";
 import { useState, useEffect } from "react";
 import EditAppointmentModal from "./EditAppointmentModal";
 
+import toast from "react-hot-toast";
+
 import API from "../../api/axiosInstance";
-import { AppointmentByIdAPI } from "../../api/api";
+import { AppointmentByIdAPI, AppointmentUpdateAPI } from "../../api/api";
 
 export default function AppointmentDashboard({
     data = [],
     stats,
     loading,
-    onUpdate
+    onUpdate,
+    refresh  
 }) {
+    const statusStyles = {
+        confirmed: "bg-green-100 text-green-600",
+        pending: "bg-orange-100 text-orange-600",
+        cancelled: "bg-red-100 text-red-600",
+        completed: "bg-blue-100 text-blue-600",
+    };
 
     const [selectedId, setSelectedId] = useState(null);
 
@@ -52,6 +61,25 @@ export default function AppointmentDashboard({
 
         fetchData();
     }, [selectedId]);
+
+    const handleSave = async (updatedData) => {
+        try {
+            const res = await API.patch(
+                AppointmentUpdateAPI(editData.id),
+                updatedData
+            );
+
+            // ✅ UPDATE UI WITHOUT REFRESH
+            onUpdate(editData.id, res.data.data);
+            refresh();   // 🔥 ADD THIS
+
+            toast.success("Status updated");
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to update appointment");
+        }
+    };
 
     return (
         <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
@@ -206,10 +234,10 @@ export default function AppointmentDashboard({
 
                                         {/* STATUS */}
                                         <td className="p-3">
-                                            <span className={`px-3 py-1 text-xs rounded-full ${item.status === "confirmed"
-                                                ? "bg-green-100 text-green-600"
-                                                : "bg-orange-100 text-orange-600"
-                                                }`}>
+                                            <span
+                                                className={`px-3 py-1 text-xs rounded-full ${statusStyles[item.status] || "bg-gray-100 text-gray-600"
+                                                    }`}
+                                            >
                                                 {item.status}
                                             </span>
                                         </td>
@@ -286,9 +314,7 @@ export default function AppointmentDashboard({
                     setEditData(null);
                 }}
                 editData={editData}
-                onSave={(updated) => {
-                    onUpdate(editData.id, updated);
-                }}
+                onSave={handleSave}
             />
 
         </div>
