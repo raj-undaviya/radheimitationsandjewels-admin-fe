@@ -1,4 +1,9 @@
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import API from "../../api/axiosInstance";
+import { SalesChartAPI } from '../../api/api';
+
 export default function SalesChart({ loading }) {
+    
     return (
         <div className="bg-white p-4 rounded-xl shadow h-72">
 

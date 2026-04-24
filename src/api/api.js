@@ -9,6 +9,8 @@ const StatsCards = "/admin-panel/dashboard";
 //Latest Order and Order Page api dashboard and order page
 const Order = "/admin-panel/orders";
 
+const SALES_CHART = "/admin-panel/sales-performance/";
+
 // ===========================================
 //product page api /stats api
 const Product = "/products/";
@@ -119,3 +121,6 @@ export const UpdateCustomerAPI = (id) => `/users/customers/${id}`;
 //========== ORDER API FUNCTION ====================
 export const updateOrderStatusAPI = (id) =>
   `/admin-panel/orders/${id}/status`;
+
+
+export const SalesChartAPI = () => SALES_CHART;

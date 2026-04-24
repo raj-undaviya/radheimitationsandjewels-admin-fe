@@ -22,6 +22,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    //status card api
     useEffect(() => {
         const fetchStats = async () => {
             try {
@@ -47,6 +48,7 @@ export default function Dashboard() {
         fetchStats();
     }, []);
 
+    //order api
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -91,7 +93,7 @@ export default function Dashboard() {
             {/* Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <OrdersTable orders={orders} loading={ordersLoading} />
-                <PaymentsTable />
+                <PaymentsTable loading={loading} orders={orders}/>
             </div>
 
         </div>
