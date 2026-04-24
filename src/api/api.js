@@ -115,3 +115,7 @@ export const CouponDeleteAPI = (id) => CouponDelete(id);
 
 //=============== ADMIN PROFILE API FUNCTION ======================
 export const UpdateCustomerAPI = (id) => `/users/customers/${id}`;
+
+//========== ORDER API FUNCTION ====================
+export const updateOrderStatusAPI = (id) =>
+  `/admin-panel/orders/${id}/status`;

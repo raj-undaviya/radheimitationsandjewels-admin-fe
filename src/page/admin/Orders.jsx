@@ -56,6 +56,7 @@ export default function Orders() {
                 page={page}
                 setPage={setPage}
                 itemsPerPage={itemsPerPage}
+                refreshOrders={fetchData}
             />
 
         </div>

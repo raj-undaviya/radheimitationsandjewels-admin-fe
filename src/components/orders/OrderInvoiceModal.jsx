@@ -1,6 +1,11 @@
 import { IoClose } from "react-icons/io5";
+import { downloadInvoice } from "../utils/downloadInvoice";
 
-export default function OrderInvoiceModal({ isOpen, onClose, order }) {
+export default function OrderInvoiceModal({ isOpen,
+    onClose,
+    order,
+    // mode = "view" 
+}) {
     if (!isOpen || !order) return null;
 
     const subtotal = order.items?.reduce(
@@ -23,55 +28,101 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                 </button>
 
                 {/* CONTENT */}
-                <div id="invoice">
+                <div
+                    id="invoice"
+                    style={{
+                        backgroundColor: "#ffffff",
+                        color: "#000000",
+                        padding: "20px",
+                        fontFamily: "Arial, sans-serif"
+                    }}
+                >
 
-                    <h2 className="text-xl font-semibold mb-4 text-center">
-                        Order Invoice
-                    </h2>
-
-                    <div className="flex justify-between mb-4">
+                    {/* HEADER */}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
                         <div>
-                            <p className="font-semibold">Order ID</p>
-                            <p>{order.id}</p>
+                            <h2 style={{ margin: 0, color: "#ea580c" }}>INVOICE</h2>
+                            <p style={{ margin: 0, fontSize: "12px" }}>Order #{order.id}</p>
                         </div>
 
-                        <div>
-                            <p className="font-semibold">Date</p>
-                            <p>{new Date(order.created_at).toLocaleDateString()}</p>
+                        <div style={{ textAlign: "right", fontSize: "12px" }}>
+                            <p style={{ margin: 0 }}><b>Date:</b></p>
+                            <p style={{ margin: 0 }}>
+                                {new Date(order.created_at).toLocaleDateString()}
+                            </p>
                         </div>
                     </div>
 
-                    <div className="mb-4">
-                        <p className="font-semibold">Customer Details</p>
-                        <p>Name: {order.name || "N/A"}</p>
-                        <p>Phone: {order.phone || "N/A"}</p>
-                        <p>Email: {order.email || "N/A"}</p>
+                    {/* CUSTOMER + STATUS */}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+
+                        <div>
+                            <p style={{ fontSize: "12px", color: "#555", marginBottom: "5px" }}>
+                                <b>Customer Details</b>
+                            </p>
+                            <p style={{ margin: 0 }}>{order.name || "N/A"}</p>
+                            <p style={{ margin: 0, fontSize: "12px" }}>{order.phone || "N/A"}</p>
+                            <p style={{ margin: 0, fontSize: "12px" }}>{order.email || "N/A"}</p>
+                        </div>
+
+                        <div style={{ textAlign: "right" }}>
+                            <p style={{ fontSize: "12px", color: "#555", marginBottom: "5px" }}>
+                                <b>Status</b>
+                            </p>
+                            <span
+                                style={{
+                                    padding: "4px 10px",
+                                    borderRadius: "20px",
+                                    fontSize: "12px",
+                                    backgroundColor: "#f3f4f6",
+                                    color: "#333"
+                                }}
+                            >
+                                {order.status}
+                            </span>
+                        </div>
+
                     </div>
 
-                    <div className="mb-4">
-                        <p className="font-semibold">Shipping Address</p>
-                        <p>{order.address || "N/A"}</p>
+                    {/* ADDRESS */}
+                    <div style={{ marginBottom: "20px" }}>
+                        <p style={{ fontSize: "12px", color: "#555", marginBottom: "5px" }}>
+                            <b>Shipping Address</b>
+                        </p>
+                        <p style={{ margin: 0 }}>{order.address || "N/A"}</p>
                     </div>
 
-                    <table className="w-full text-sm border mb-4">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="p-2 text-left">Product</th>
-                                <th>Qty</th>
-                                <th>Price</th>
-                                <th>Total</th>
+                    {/* TABLE */}
+                    <table
+                        style={{
+                            width: "100%",
+                            borderCollapse: "collapse",
+                            marginBottom: "20px",
+                            fontSize: "12px"
+                        }}
+                    >
+                        <thead>
+                            <tr style={{ backgroundColor: "#f3f4f6" }}>
+                                <th style={{ padding: "8px", textAlign: "left", border: "1px solid #ddd" }}>Product</th>
+                                <th style={{ border: "1px solid #ddd" }}>Qty</th>
+                                <th style={{ border: "1px solid #ddd" }}>Price</th>
+                                <th style={{ border: "1px solid #ddd" }}>Total</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {order.items?.map((item, index) => (
-                                <tr key={index} className="border-t">
-                                    <td className="p-2">
-                                        {item.product_details?.name}
+                                <tr key={index}>
+                                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                        {item.product_details?.name || "Product"}
                                     </td>
-                                    <td className="text-center">{item.quantity}</td>
-                                    <td className="text-center">₹{item.price}</td>
-                                    <td className="text-center font-semibold">
+                                    <td style={{ textAlign: "center", border: "1px solid #ddd" }}>
+                                        {item.quantity}
+                                    </td>
+                                    <td style={{ textAlign: "center", border: "1px solid #ddd" }}>
+                                        ₹{item.price}
+                                    </td>
+                                    <td style={{ textAlign: "center", border: "1px solid #ddd" }}>
                                         ₹{item.quantity * item.price}
                                     </td>
                                 </tr>
@@ -79,11 +130,40 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                         </tbody>
                     </table>
 
-                    <div className="text-right">
-                        <p>Subtotal: ₹{subtotal}</p>
-                        <p>Tax: ₹0</p>
-                        <p>Shipping: ₹0</p>
-                        <p className="font-semibold">Total: ₹{subtotal}</p>
+                    {/* TOTAL */}
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <div style={{ width: "250px", fontSize: "12px" }}>
+
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <span>Subtotal</span>
+                                <span>₹{subtotal}</span>
+                            </div>
+
+                            <div style={{ display: "flex", justifyContent: "space-between", color: "#666" }}>
+                                <span>Tax</span>
+                                <span>₹0</span>
+                            </div>
+
+                            <div style={{ display: "flex", justifyContent: "space-between", color: "#666" }}>
+                                <span>Shipping</span>
+                                <span>₹0</span>
+                            </div>
+
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    fontWeight: "bold",
+                                    borderTop: "1px solid #ddd",
+                                    marginTop: "8px",
+                                    paddingTop: "8px"
+                                }}
+                            >
+                                <span>Total</span>
+                                <span>₹{subtotal}</span>
+                            </div>
+
+                        </div>
                     </div>
 
                 </div>
@@ -97,12 +177,16 @@ export default function OrderInvoiceModal({ isOpen, onClose, order }) {
                         Close
                     </button>
 
+
+                    {/* {mode === "view" && ( */}
                     <button
-                        onClick={downloadInvoice}
+                        onClick={() => downloadInvoice(order)}
                         className="px-4 py-2 bg-black text-white rounded"
                     >
                         Download Invoice
                     </button>
+                    {/* )} */}
+
                 </div>
 
             </div>

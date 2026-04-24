@@ -1,80 +1,32 @@
-import { Eye, Download } from "lucide-react";
+import { Eye, Download, Pencil } from "lucide-react";
 import { useState } from "react";
 import Pagination from "../common/Pagination";
 import OrderInvoiceModal from "./OrderInvoiceModal";
 import jsPDF from "jspdf";
+
+import { downloadInvoice } from "../utils/downloadInvoice";
+import EditOrderModal from "./EditOrderModal";
 
 export default function OrdersTable({
     orders = [],
     loading = false,
     page,
     setPage,
-    itemsPerPage
+    itemsPerPage,
+    refreshOrders
 }) {
 
-    // ✅ DOWNLOAD FUNCTION
-    const generateInvoicePDF = (order) => {
-        if (!order) return;
-
-        const pdf = new jsPDF();
-        let y = 15;
-
-        const subtotal = Array.isArray(order.items)
-            ? order.items.reduce(
-                (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
-                0
-            )
-            : 0;
-
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(18);
-        pdf.text("INVOICE", 90, y);
-
-        y += 10;
-
-        pdf.setFontSize(11);
-        pdf.setFont("helvetica", "normal");
-
-        pdf.text(`Order ID: ${order.id || "N/A"}`, 10, y);
-        pdf.text(
-            order.created_at
-                ? new Date(order.created_at).toLocaleDateString()
-                : "N/A",
-            140,
-            y
-        );
-
-        y += 10;
-
-        pdf.text(`Name: ${order.name || "N/A"}`, 10, y);
-        y += 6;
-        pdf.text(`Phone: ${order.phone || "N/A"}`, 10, y);
-        y += 6;
-        pdf.text(`Email: ${order.email || "N/A"}`, 10, y);
-
-        y += 10;
-
-        if (Array.isArray(order.items)) {
-            order.items.forEach((item) => {
-                const total = (item.price || 0) * (item.quantity || 0);
-
-                pdf.text(item?.product_details?.name || "Product", 10, y);
-                pdf.text(String(item?.quantity || 0), 110, y);
-                pdf.text(`₹${item?.price || 0}`, 140, y);
-                pdf.text(`₹${total}`, 170, y);
-
-                y += 8;
-            });
-        }
-
-        y += 10;
-        pdf.text(`Total: ₹${subtotal}`, 140, y);
-
-        pdf.save(`invoice-${order.id}.pdf`);
-    };
+    const [invoiceMode, setInvoiceMode] = useState("view");
 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const handleEdit = (order) => {
+        setSelectedOrder(order);
+        setIsEditModalOpen(true);
+    };
 
     // pagination
     const totalItems = orders.length;
@@ -88,7 +40,6 @@ export default function OrdersTable({
     const getStatusStyle = (status) => {
         switch (status?.toLowerCase()) {
             case "delivered": return "bg-green-100 text-green-600";
-            case "processing": return "bg-orange-100 text-orange-600";
             case "shipped": return "bg-blue-100 text-blue-600";
             case "pending": return "bg-gray-200 text-gray-600";
             default: return "bg-gray-100";
@@ -99,16 +50,16 @@ export default function OrdersTable({
         <div className="bg-white p-5 rounded-2xl shadow">
 
             <div className="w-full overflow-x-auto">
-                <table className="min-w-175 w-full text-left">
+                <table className="w-full text-left border-collapse">
 
                     <thead className="text-xs text-gray-400 border-b">
                         <tr>
-                            <th className="py-3">Order ID</th>
-                            <th>Product</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th className="text-right">Action</th>
+                            <th className="py-3 px-4">Order ID</th>
+                            <th className="px-4">Product</th>
+                            <th className="px-4">Amount</th>
+                            <th className="px-4">Status</th>
+                            <th className="px-4">Date</th>
+                            <th className="px-4 text-right">Action</th>
                         </tr>
                     </thead>
 
@@ -116,7 +67,8 @@ export default function OrdersTable({
                         {loading ? (
                             Array.from({ length: itemsPerPage }).map((_, i) => (
                                 <tr key={i} className="border-b animate-pulse">
-                                    <td className="py-4"><div className="h-4 w-16 bg-gray-200 rounded"></div></td>
+                                    <td className="py-4">
+                                        <div className="h-4 w-16 bg-gray-200 rounded"></div></td>
                                     <td><div className="h-4 w-32 bg-gray-200 rounded"></div></td>
                                     <td><div className="h-4 w-20 bg-gray-200 rounded"></div></td>
                                     <td><div className="h-6 w-20 bg-gray-200 rounded-full"></div></td>
@@ -135,42 +87,49 @@ export default function OrdersTable({
                                 if (!o) return null;
 
                                 return (
-                                    <tr key={o.id || index} className="border-b hover:bg-gray-50">
 
-                                        <td className="py-4 text-orange-600 font-semibold">
+                                    <tr key={o.id || index} className="border-b hover:bg-gray-50 transition">
+
+                                        {/* ORDERID */}
+                                        <td className="py-4 px-4 text-orange-600 font-semibold">
                                             #{o?.id || "N/A"}
                                         </td>
 
-                                        <td>
+                                        {/* PRODUCT */}
+                                        <td className="px-4">
                                             {Array.isArray(o.items) && o.items.length > 0
                                                 ? o.items[0]?.product_details?.name || "N/A"
                                                 : "N/A"}
                                         </td>
 
-                                        <td className="font-medium">
+                                        {/* AMOUNT */}
+                                        <td className="px-4 font-medium">
                                             ₹{o?.total_amount ?? 0}
                                         </td>
 
-                                        <td>
-                                            <span
-                                                className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(o?.status)}`}
-                                            >
+                                        {/* STATUS */}
+                                        <td className="px-4">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyle(o?.status)}`}>
                                                 {o?.status || "unknown"}
                                             </span>
                                         </td>
 
-                                        <td className="text-sm text-gray-500">
+                                        {/* DATE */}
+                                        <td className="px-4 text-sm text-gray-500">
                                             {o?.created_at
                                                 ? new Date(o.created_at).toLocaleDateString()
                                                 : "N/A"}
                                         </td>
 
-                                        <td className="text-right">
-                                            <div className="flex justify-end gap-3">
+                                        {/* ACTION */}
+                                        <td className="px-4">
+                                            <div className="flex justify-end items-center gap-2">
 
+                                                {/* VIEW */}
                                                 <button
                                                     onClick={() => {
                                                         setSelectedOrder(o);
+                                                        setInvoiceMode("view");
                                                         setIsModalOpen(true);
                                                     }}
                                                     className="p-2 rounded-full bg-blue-50 hover:bg-blue-100"
@@ -178,9 +137,28 @@ export default function OrdersTable({
                                                     <Eye size={16} className="text-blue-600" />
                                                 </button>
 
+                                                {/* EDIT */}
                                                 <button
-                                                    onClick={() => generateInvoicePDF(o)}
+                                                    onClick={() => handleEdit(o)}
+                                                    className="p-2 rounded-full bg-yellow-50 hover:bg-yellow-100"
+                                                    title="Edit Order"
+                                                >
+                                                    <Pencil size={16} className="text-yellow-600" />
+                                                </button>
+
+                                                {/* DOWNLOAD */}
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedOrder(o);
+                                                        setInvoiceMode("download");
+                                                        setIsModalOpen(true);
+
+                                                        setTimeout(() => {
+                                                            downloadInvoice(o);
+                                                        }, 300);
+                                                    }}
                                                     className="p-2 rounded-full bg-green-50 hover:bg-green-100"
+                                                    title="Download Invoice"
                                                 >
                                                     <Download size={16} className="text-green-600" />
                                                 </button>
@@ -197,25 +175,36 @@ export default function OrdersTable({
                 </table>
             </div>
 
-            {!loading && (
-                <div className="mt-4 flex justify-center">
-                    <Pagination
-                        currentPage={page}
-                        totalPages={totalPages}
-                        onPageChange={(newPage) => {
-                            if (newPage >= 1 && newPage <= totalPages) {
-                                setPage(newPage);
-                            }
-                        }}
-                    />
-                </div>
-            )}
+            {
+                !loading && (
+                    <div className="mt-4 flex justify-center">
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={(newPage) => {
+                                if (newPage >= 1 && newPage <= totalPages) {
+                                    setPage(newPage);
+                                }
+                            }}
+                        />
+                    </div>
+                )
+            }
 
             <OrderInvoiceModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 order={selectedOrder}
+                mode={invoiceMode} // 🔥 IMPORTANT
             />
-        </div>
+
+            <EditOrderModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                order={selectedOrder}
+                onUpdate={refreshOrders} // 🔥 IMPORTANT
+            />
+
+        </div >
     );
 }
