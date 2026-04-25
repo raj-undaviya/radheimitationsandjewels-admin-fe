@@ -80,6 +80,15 @@ const ClientInsights = "/admin-panel/reports/client-insights/";
 const Policies = "/admin-panel/policies/";
 
 
+//=============================== ADMIN PROFILE API ========================================
+// PROFILE API view
+const AdminProfile = "/admin/profile/";
+//CHANGE PASSWORD API
+const ChangePassword = "/admin/profile/change-password/";
+//REMOVE PROFILE IMAGE
+const RemoveProfileImage = "/admin/profile/remove-image/";
+
+
 
 
 
@@ -181,3 +190,11 @@ export const CreatePolicyAPI = () => Policies;
 export const UpdatePolicyAPI = (id) => `${Policies}${id}/`;
 // view
 export const PolicyDetailsAPI = (id) => `${Policies}${id}/`;
+
+
+//======================================= ADMIN FUNCTION ====================================
+export const AdminProfileAPI = () => AdminProfile;
+
+export const ChangePasswordAPI = () => ChangePassword;
+
+export const RemoveProfileImageAPI = () => RemoveProfileImage;
