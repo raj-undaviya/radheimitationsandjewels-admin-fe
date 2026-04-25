@@ -58,7 +58,7 @@ export default function Inventory() {
     );
 
     return (
-        <div className="space-y-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
             <InventoryHeader onAddClick={() => setOpen(true)} />
 

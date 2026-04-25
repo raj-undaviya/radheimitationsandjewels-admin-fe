@@ -11,9 +11,12 @@ const Order = "/admin-panel/orders";
 
 const SALES_CHART = "/admin-panel/sales-performance/";
 
-// ===========================================
+// =================== PRODUCT ========================
 //product page api /stats api
 const Product = "/products/";
+
+// filter category vise
+const ProductSubCategory = "/products/subcategory";
 
 // Product Edit API
 const ProductEdit = (id) => `/products/${id}`;
@@ -64,6 +67,21 @@ const CouponEdit = (id) => `/admin-panel/coupons/${id}/`;
 // DELETE COUPON
 const CouponDelete = (id) => `/admin-panel/coupons/${id}/`;
 
+//=================== REPORTS API =====================
+const PerformanceReport = "/admin-panel/reports/performance/";
+
+const SalesAnalytics = "/admin-panel/reports/sales-analytics/";
+
+const OrderProcessing = "/admin-panel/reports/order-processing/";
+
+const ClientInsights = "/admin-panel/reports/client-insights/";
+
+//=========================== POLICIES API ==============================
+const Policies = "/admin-panel/policies/";
+
+
+
+
 
 
 // ================= EXPORT FUNCTIONS =================
@@ -72,7 +90,16 @@ export const StatsCardAPI = () => StatsCards;
 
 export const OrderAPI = () => Order;
 
+//==================== PRODUCT FUNCTION ==================
 export const ProductAPI = () => Product;
+
+export const ProductSubCategoryAPI = (categoryId) => {
+    if (categoryId && categoryId !== "all") {
+        return `${ProductSubCategory}?category=${categoryId}`;
+    }
+    return ProductSubCategory;
+};
+
 export const ProductEditAPI = (id) => ProductEdit(id);
 export const ProductDeleteAPI = (id) => ProductDelete(id);
 
@@ -101,7 +128,7 @@ export const AppointmentByIdAPI = (id) => AppointmentById(id);
 export const AppointmentUpdateAPI = (id) => `/appointments/${id}`;
 
 export const AppointmentExportCSVAPI = (status) =>
-  `/appointments/export-csv${status !== "All" ? `?status=${status}` : ""}`;
+    `/appointments/export-csv${status !== "All" ? `?status=${status}` : ""}`;
 
 //================== CUSTOMER ===========================
 export const CustomerViewAPI = () => CustomerView;
@@ -118,9 +145,39 @@ export const CouponDeleteAPI = (id) => CouponDelete(id);
 //=============== ADMIN PROFILE API FUNCTION ======================
 export const UpdateCustomerAPI = (id) => `/users/customers/${id}`;
 
-//========== ORDER API FUNCTION ====================
+//================== ORDER API FUNCTION ====================
 export const updateOrderStatusAPI = (id) =>
-  `/admin-panel/orders/${id}/status`;
-
+    `/admin-panel/orders/${id}/status`;
 
 export const SalesChartAPI = () => SALES_CHART;
+
+//================= REPORTS FUNCTION ======================
+export const PerformanceReportAPI = () => PerformanceReport;
+
+export const SalesAnalyticsAPI = (period = "current_month", currency = "INR") => {
+    return `${SalesAnalytics}?period=${period}&currency=${currency}`;
+};
+
+//(DOWNLOAD API)
+export const SalesAnalyticsDownloadAPI = (
+    period = "current_month",
+    currency = "INR",
+    type = "pdf"
+) => {
+    return `${SalesAnalytics}?period=${period}&currency=${currency}&download=${type}`;
+};
+
+export const OrderProcessingAPI = (period = "last_30_days") =>
+    `${OrderProcessing}?period=${period}`;
+
+export const ClientInsightsAPI = (period = "last_30_days") =>
+    `${ClientInsights}?period=${period}`;
+
+// =============================== POLICIES API FUNCTIONS ====================================
+export const PoliciesAPI = () => Policies;
+// create
+export const CreatePolicyAPI = () => Policies;
+// update
+export const UpdatePolicyAPI = (id) => `${Policies}${id}/`;
+// view
+export const PolicyDetailsAPI = (id) => `${Policies}${id}/`;

@@ -1,100 +1,148 @@
-import { X, Link as LinkIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
-import Link from "@tiptap/extension-link";
+import toast from "react-hot-toast";
 
-export default function AddPolicyModal({ isOpen, onClose, onSave, editData }) {
+import API from "../../api/axiosInstance";
+import { CreatePolicyAPI, UpdatePolicyAPI } from "../../api/api";
+
+import {
+    Editor,
+    EditorProvider,
+    Toolbar,
+    BtnBold,
+    BtnItalic,
+    BtnUnderline,
+    BtnLink,
+    BtnUndo,
+    BtnRedo,
+} from "react-simple-wysiwyg";
+
+export default function AddPolicyModal({
+    isOpen,
+    onClose,
+    onSave,
+    editData,
+    policies = [],
+}) {
 
     const {
         register,
         handleSubmit,
         setValue,
         formState: { errors },
-        reset
+        reset,
     } = useForm();
 
-    // 🔥 TIPTAP EDITOR
-    const editor = useEditor({
-        extensions: [
-            StarterKit.configure({
-                bulletList: true,
-                orderedList: true,
-                link: false, // ✅ disable duplicate
-            }),
-            Link.configure({
-                openOnClick: false,
-                autolink: true,
-                linkOnPaste: true,
-            }),
-        ],
-        content: editData?.description || "",
-        onUpdate: ({ editor }) => {
-            setValue("description", editor.getHTML());
-        }
-    });
+    const [content, setContent] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [preview, setPreview] = useState(false);
 
-    // 🔥 Prefill (EDIT MODE)
+    // Prefill edit
     useEffect(() => {
-        if (editData && editor) {
+        if (editData) {
             setValue("title", editData.title || "");
-            editor.commands.setContent(editData.description || "");
+            setValue("policy_type", editData.policy_type || "");
+            setContent(editData.content || "");
         }
-    }, [editData, editor, setValue]);
+    }, [editData, setValue]);
 
-    // 🔒 Lock scroll
+    // Lock scroll
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "auto";
-        return () => (document.body.style.overflow = "auto");
     }, [isOpen]);
 
     if (!isOpen) return null;
 
-    const onSubmit = (data) => {
+    // Convert type
+    const normalizeType = (value) => {
+        return value.toLowerCase().trim().replace(/\s+/g, "_");
+    };
 
-        // ✅ FORCE latest editor content
-        const html = editor?.getHTML();
+    const isEmptyContent = (html) => {
+        const text = html.replace(/<[^>]+>/g, "").trim();
+        return text.length === 0;
+    };
 
-        const finalData = {
-            ...data,
-            description: html,
-        };
+    const onSubmit = async (data) => {
+        if (isEmptyContent(content)) {
+            toast.error("Description required");
+            return;
+        }
 
-        console.log("FINAL DATA:", finalData); // debug
+        try {
+            setLoading(true);
 
-        onSave(finalData);
+            const normalizedType = normalizeType(data.policy_type);
 
-        reset();
-        editor?.commands.setContent("");
-        onClose();
+            const existing = policies.find(
+                (p) => p.policy_type === normalizedType
+            );
+
+            const payload = {
+                title: data.title,
+                policy_type: normalizedType,
+                description: content.replace(/<[^>]+>/g, ""),
+                content: content,
+                is_active: true,
+            };
+
+            let res;
+
+            if (existing) {
+                res = await API.put(UpdatePolicyAPI(existing.id), payload);
+                toast.success("Policy updated ✅");
+            } else {
+                res = await API.post(CreatePolicyAPI(), payload);
+                toast.success("Policy created ✅");
+            }
+
+            onSave(res.data.data);
+
+            reset();
+            setContent("");
+            onClose();
+
+        } catch (err) {
+            console.error(err);
+
+            const msg =
+                err?.response?.data?.errors?.policy_type?.[0] ||
+                err?.response?.data?.message ||
+                "Something went wrong";
+
+            toast.error(msg);
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-3 sm:px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
 
-            {/* Overlay */}
+            {/* OVERLAY */}
             <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 onClick={onClose}
             />
 
-            {/* Modal */}
+            {/* MODAL */}
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="relative z-10 w-full max-w-lg sm:max-w-xl bg-white rounded-3xl shadow-xl p-5 sm:p-6"
+                className="
+                    relative z-10 w-full max-w-2xl 
+                    bg-white rounded-2xl sm:rounded-3xl shadow-2xl 
+                    p-4 sm:p-6 space-y-4 sm:space-y-5
+                    max-h-[95vh] overflow-y-auto
+                "
             >
 
                 {/* HEADER */}
-                <div className="flex justify-between mb-4">
-                    <div>
-                        <h2 className="text-lg font-semibold">
-                            {editData ? "Edit Policy" : "Create Policy"}
-                        </h2>
-                        <p className="text-xs text-gray-400">
-                            {editData ? "Update legal framework" : "Create new policy"}
-                        </p>
-                    </div>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-base sm:text-lg font-semibold">
+                        {editData ? "Edit Policy" : "Create Policy"}
+                    </h2>
 
                     <button type="button" onClick={onClose}>
                         <X size={18} />
@@ -102,137 +150,113 @@ export default function AddPolicyModal({ isOpen, onClose, onSave, editData }) {
                 </div>
 
                 {/* TITLE */}
-                <div className="mb-4">
-                    <label className="text-xs text-gray-400">POLICY TITLE</label>
+                <div>
+                    <label className="text-xs text-gray-400">TITLE</label>
                     <input
                         {...register("title", { required: "Title required" })}
-                        className="w-full mt-1 px-4 py-2.5 rounded-full bg-gray-100"
-                        placeholder="Enter policy title"
+                        className="w-full mt-1 px-4 py-2.5 rounded-full bg-gray-100 text-sm"
                     />
                     {errors.title && (
                         <p className="text-red-500 text-xs">{errors.title.message}</p>
                     )}
                 </div>
 
-                {/* DESCRIPTION */}
-                <label className="text-xs text-gray-400 mt-2 block">
-                    POLICY DESCRIPTION
-                </label>
+                {/* POLICY TYPE */}
+                <div>
+                    <label className="text-xs text-gray-400">
+                        POLICY TYPE
+                    </label>
 
-                <div className="mt-1 border rounded-2xl overflow-hidden bg-white">
+                    <input
+                        placeholder="e.g. Shipping Policy"
+                        {...register("policy_type", { required: "Type required" })}
+                        className="w-full mt-1 px-4 py-2.5 rounded-full bg-gray-100 text-sm"
+                    />
 
-                    {/* TOOLBAR */}
-                    <div className="flex gap-2 px-3 py-2 border-b bg-gray-50">
+                    <p className="text-xs text-gray-400 mt-1">
+                        Auto converts to backend format
+                    </p>
 
-                        {/* BOLD */}
-                        <button
-                            type="button"
-                            onClick={() => editor?.chain().focus().toggleBold().run()}
-                            className={`px-2 py-1 rounded ${editor?.isActive("bold") ? "bg-gray-200" : ""
-                                }`}
-                        >
-                            <b>B</b>
-                        </button>
-
-                        {/* ITALIC */}
-                        <button
-                            type="button"
-                            onClick={() => editor?.chain().focus().toggleItalic().run()}
-                            className={`px-2 py-1 rounded ${editor?.isActive("italic") ? "bg-gray-200" : ""
-                                }`}
-                        >
-                            <i>I</i>
-                        </button>
-
-                        {/* BULLET */}
-                        <button
-                            type="button"
-                            onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                            className={`px-2 py-1 rounded ${editor?.isActive("bulletList") ? "bg-gray-200" : ""
-                                }`}
-                        >
-                            •
-                        </button>
-
-                        {/* NUMBER LIST */}
-                        <button
-                            type="button"
-                            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-                            className="px-2 py-1 rounded hover:bg-gray-200"
-                        >
-                            1.
-                        </button>
-
-                        {/* LINK */}
-                        <button
-                            type="button"
-                            onClick={() => {
-                                if (!editor) return;
-
-                                const { from, to } = editor.state.selection;
-
-                                // ❗ ensure text is selected
-                                if (from === to) {
-                                    alert("Please select text first");
-                                    return;
-                                }
-
-                                const previousUrl = editor.getAttributes("link").href || "";
-                                const url = window.prompt("Enter URL", previousUrl);
-
-                                if (url === null) return;
-
-                                if (url === "") {
-                                    editor.chain().focus().unsetLink().run();
-                                    return;
-                                }
-
-                                editor
-                                    .chain()
-                                    .focus()
-                                    .extendMarkRange("link")
-                                    .setLink({ href: url })
-                                    .run();
-                            }}
-                            className={`px-2 py-1 rounded ${editor?.isActive("link") ? "bg-gray-200" : ""
-                                }`}
-                        >
-                            <LinkIcon size={16} />
-                        </button>
-
-                    </div>
-
-                    {/* EDITOR */}
-                    <div className="p-4 min-h-37.5 text-sm">
-                        <EditorContent editor={editor} />
-                    </div>
-
+                    {errors.policy_type && (
+                        <p className="text-red-500 text-xs">
+                            {errors.policy_type.message}
+                        </p>
+                    )}
                 </div>
 
-                {/* hidden field */}
-                <input
-                    type="hidden"
-                    {...register("description", { required: "Description required" })}
-                />
+                {/* EDIT / PREVIEW */}
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setPreview(false)}
+                        className={`px-4 py-1.5 rounded-full text-xs sm:text-sm ${!preview ? "bg-orange-500 text-white" : "bg-gray-100"
+                            }`}
+                    >
+                        Edit
+                    </button>
 
-                {errors.description && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {errors.description.message}
-                    </p>
+                    <button
+                        type="button"
+                        onClick={() => setPreview(true)}
+                        className={`px-4 py-1.5 rounded-full text-xs sm:text-sm ${preview ? "bg-orange-500 text-white" : "bg-gray-100"
+                            }`}
+                    >
+                        Preview
+                    </button>
+                </div>
+
+                {/* EDITOR */}
+                {!preview ? (
+                    <div className="border rounded-xl overflow-hidden">
+
+                        <EditorProvider>
+
+                            <Toolbar className="border-b bg-gray-50 px-2 flex flex-wrap gap-2 text-xs sm:text-sm">
+                                <BtnUndo />
+                                <BtnRedo />
+                                <BtnBold />
+                                <BtnItalic />
+                                <BtnUnderline />
+                                <BtnLink />
+                            </Toolbar>
+
+                            <Editor
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                className="min-h-[180px] sm:min-h-[220px] p-3 sm:p-4 text-sm"
+                            />
+
+                        </EditorProvider>
+
+                    </div>
+                ) : (
+                    <div className="border rounded-xl p-3 sm:p-4 bg-gray-50 min-h-[180px] sm:min-h-[220px] overflow-auto">
+                        <div
+                            className="text-sm"
+                            dangerouslySetInnerHTML={{ __html: content }}
+                        />
+                    </div>
                 )}
 
                 {/* FOOTER */}
-                <div className="flex justify-end gap-4 mt-6">
-                    <button type="button" onClick={onClose} className="text-gray-500">
+                <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-full sm:w-auto text-sm text-gray-600"
+                    >
                         Cancel
                     </button>
 
                     <button
                         type="submit"
-                        className="bg-orange-500 text-white px-5 py-2 rounded-full"
+                        disabled={loading}
+                        className="w-full sm:w-auto bg-orange-500 text-white px-6 py-2 rounded-full text-sm"
                     >
-                        {editData ? "Save Changes" : "Create Policy"}
+                        {loading ? "Saving..." : "Save Policy"}
                     </button>
+
                 </div>
 
             </form>

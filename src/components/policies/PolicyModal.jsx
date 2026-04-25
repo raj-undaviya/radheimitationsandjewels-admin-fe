@@ -1,9 +1,36 @@
-import { X, Truck, ShieldCheck, Globe } from "lucide-react";
-import { useEffect } from "react";
+import { X, Truck } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function PolicyModal({ isOpen, onClose, data }) {
+import API from "../../api/axiosInstance";
+import { PolicyDetailsAPI } from "../../api/api";
 
-    // 🔒 Lock background scroll
+export default function PolicyModal({ isOpen, onClose, policyId }) {
+
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    // 🔥 FETCH DATA
+    useEffect(() => {
+        if (!isOpen || !policyId) return;
+
+        const fetchPolicy = async () => {
+            try {
+                setLoading(true);
+
+                const res = await API.get(PolicyDetailsAPI(policyId));
+                setData(res.data.data);
+
+            } catch (err) {
+                console.error("Error fetching policy:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPolicy();
+    }, [isOpen, policyId]);
+
+    // 🔒 LOCK SCROLL
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "auto";
         return () => (document.body.style.overflow = "auto");
@@ -12,137 +39,122 @@ export default function PolicyModal({ isOpen, onClose, data }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4 py-4">
+
+            {/* OVERLAY */}
+            <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                onClick={onClose}
+            />
 
             {/* MODAL */}
-            <div className="bg-white w-full max-w-3xl rounded-3xl shadow-xl max-h-[90vh] overflow-y-auto">
+            <div
+                className="
+                    relative z-10
+                    bg-white w-full 
+                    max-w-md sm:max-w-2xl lg:max-w-4xl mx-auto
+                    rounded-2xl sm:rounded-3xl shadow-xl
+                    max-h-[95vh] overflow-y-auto
+                "
+            >
 
                 {/* HEADER */}
-                <div className="flex justify-between items-start p-6 border-b">
+                <div className="sticky top-0 bg-white p-4 sm:p-6 border-b">
 
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 flex items-center justify-center bg-orange-100 rounded-full">
-                            <Truck className="text-orange-600" />
+                    {/* TOP ROW */}
+                    <div className="flex justify-between items-start">
+
+                        {/* LEFT CONTENT */}
+                        <div className="flex items-center gap-3 sm:gap-4">
+
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-orange-100 rounded-full">
+                                <Truck className="text-orange-600" size={20} />
+                            </div>
+
+                            <div>
+                                <h2 className="text-base sm:text-lg lg:text-xl font-bold">
+                                    {data?.title || "Policy"}
+                                </h2>
+
+                                <p className="text-xs text-gray-400">
+                                    {data?.last_updated || "—"}
+                                </p>
+                            </div>
+
                         </div>
 
-                        <div>
-                            <h2 className="text-xl font-bold flex items-center gap-2">
-                               {data?.title || "Policy"}
-                                <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
-                                    ACTIVE
-                                </span>
-                            </h2>
-                            <p className="text-xs text-gray-400">
-                                Last updated: October 12, 2023 • Version 4.2
-                            </p>
-                        </div>
+                        {/* CLOSE BUTTON */}
+                        <button onClick={onClose}>
+                            <X className="text-gray-400 hover:text-black" />
+                        </button>
+
                     </div>
 
-                    <button onClick={onClose}>
-                        <X className="text-gray-400 hover:text-black" />
-                    </button>
                 </div>
 
                 {/* CONTENT */}
-                <div className="p-6 space-y-6">
+                <div className="p-4 sm:p-6 space-y-5 sm:space-y-6">
 
-                    {/* INTRO */}
-                    <div>
-                        <h3 className="font-semibold border-l-4 border-orange-500 pl-2 mb-2">
-                            Introduction
-                        </h3>
-                        {data?.description ? (
-                            <div
-                                className="text-sm text-gray-600 leading-relaxed"
-                                dangerouslySetInnerHTML={{ __html: data.description }}
-                            />
-                        ) : (
-                            <p className="text-sm text-gray-400">
-                                No policy content available
-                            </p>
-                        )}
-                    </div>
+                    {loading ? (
+                        <p className="text-gray-400 text-sm">Loading...</p>
+                    ) : (
+                        <>
+                            {/* DESCRIPTION */}
+                            <div>
+                                <h3 className="font-semibold border-l-4 border-orange-500 pl-2 mb-2 text-sm sm:text-base">
+                                    Description
+                                </h3>
 
-                    {/* CARDS */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                        <div className="bg-gray-100 p-4 rounded-2xl">
-                            <Globe className="text-orange-600 mb-2" />
-                            <h4 className="font-semibold text-sm">Global Reach</h4>
-                            <p className="text-xs text-gray-500 mt-1">
-                                We ship to 140+ countries with specialized logistics partners.
-                            </p>
-                        </div>
-
-                        <div className="bg-gray-100 p-4 rounded-2xl">
-                            <ShieldCheck className="text-orange-600 mb-2" />
-                            <h4 className="font-semibold text-sm">Full Insurance</h4>
-                            <p className="text-xs text-gray-500 mt-1">
-                                All shipments are insured for full retail value.
-                            </p>
-                        </div>
-
-                    </div>
-
-                    {/* HANDLING */}
-                    <div>
-                        <h3 className="font-semibold border-l-4 border-orange-500 pl-2 mb-4">
-                            Handling & Processing
-                        </h3>
-
-                        <div className="space-y-4 text-sm">
-
-                            <div className="flex gap-4">
-                                <span className="text-orange-500 font-bold">01</span>
-                                <p>
-                                    <strong>Security Appraisal</strong> – Every item undergoes final quality check.
+                                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                                    {data?.description || "No description"}
                                 </p>
                             </div>
 
-                            <div className="flex gap-4">
-                                <span className="text-orange-500 font-bold">02</span>
-                                <p>
-                                    <strong>Discreet Packaging</strong> – No branding for safety.
-                                </p>
+                            {/* CONTENT */}
+                            <div>
+                                <h3 className="font-semibold border-l-4 border-orange-500 pl-2 mb-2 text-sm sm:text-base">
+                                    Content
+                                </h3>
+
+                                <div
+                                    className="text-xs sm:text-sm text-gray-700 leading-relaxed break-words"
+                                    dangerouslySetInnerHTML={{
+                                        __html: data?.content || "<p>No content</p>",
+                                    }}
+                                />
                             </div>
 
-                            <div className="flex gap-4">
-                                <span className="text-orange-500 font-bold">03</span>
-                                <p>
-                                    <strong>Courier Hand-off</strong> – Direct bonded delivery only.
-                                </p>
+                            {/* INFO */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+
+                                <div className="bg-gray-100 p-3 sm:p-4 rounded-xl">
+                                    <p className="text-gray-400 text-xs">Policy Type</p>
+                                    <p className="font-semibold text-sm break-words capitalize">
+                                        {data?.policy_type?.replaceAll("_", " ")}
+                                    </p>
+                                </div>
+
+                                <div className="bg-gray-100 p-3 sm:p-4 rounded-xl">
+                                    <p className="text-gray-400 text-xs">Status</p>
+                                    <p className="font-semibold text-sm">
+                                        {data?.is_active ? "Active" : "Inactive"}
+                                    </p>
+                                </div>
+
                             </div>
-
-                        </div>
-                    </div>
-
-                    {/* FOOTER BOX */}
-                    <div className="bg-orange-50 p-4 rounded-2xl text-sm text-orange-700">
-                        <strong>Signature Requirement</strong> – Government ID and signature required.
-                    </div>
+                        </>
+                    )}
 
                 </div>
 
                 {/* FOOTER */}
-                <div className="flex justify-between items-center p-5 border-t">
-
-                    <button className="text-sm text-gray-500">
-                        Print Version
+                <div className="sticky bottom-0 bg-white flex justify-end p-4 sm:p-5 border-t">
+                    <button
+                        onClick={onClose}
+                        className="w-full sm:w-auto px-5 py-2 bg-black text-white rounded-full text-sm"
+                    >
+                        Close
                     </button>
-
-                    <div className="flex gap-3">
-                        <button className="px-4 py-2 rounded-full border text-sm">
-                            Edit Policy
-                        </button>
-
-                        <button
-                            onClick={onClose}
-                            className="px-5 py-2 bg-black text-white rounded-full text-sm"
-                        >
-                            Dismiss
-                        </button>
-                    </div>
-
                 </div>
 
             </div>

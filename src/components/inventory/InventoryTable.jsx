@@ -1,12 +1,53 @@
 import { useEffect, useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ChevronDown } from "lucide-react";
 import AddProductModal from "./AddProductModal";
 import toast from "react-hot-toast";
 
 import API from "../../api/axiosInstance";
-import { ProductDeleteAPI } from "../../api/api";
+import { ProductDeleteAPI, ProductSubCategoryAPI, CollectionAPI } from "../../api/api";
 
 export default function InventoryTable({ products = [], loading = false }) {
+
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState({
+        label: "All Categories",
+        value: "all"
+    });
+    const [categoryOpen, setCategoryOpen] = useState(false);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await API.get(CollectionAPI());
+
+            const formatted = [
+                { label: "All Categories", value: "all" },
+                ...(res.data.data || []).map(cat => ({
+                    label: cat.name,
+                    value: cat.id
+                }))
+            ];
+
+            setCategories(formatted);
+
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchProducts = async (categoryId = null) => {
+        try {
+            const res = await API.get(ProductSubCategoryAPI(categoryId));
+
+            setLocalProducts(res.data.data || []);
+        } catch (err) {
+            console.error(err);
+            setLocalProducts([]);
+        }
+    };
 
     const [openModal, setOpenModal] = useState(false);
     const [editData, setEditData] = useState(null);
@@ -22,6 +63,29 @@ export default function InventoryTable({ products = [], loading = false }) {
     useEffect(() => {
         setLocalProducts(products);
     }, [products]);
+
+    const [sortOpen, setSortOpen] = useState(false);
+
+    const [selectedSort, setSelectedSort] = useState({
+        label: "Sort by Stock",
+        value: null
+    });
+    const sortOptions = [
+        { label: "High to Low", value: "desc" },
+        { label: "Low to High", value: "asc" }
+    ];
+
+    const applySort = (order) => {
+        let sorted = [...localProducts];
+
+        if (order === "asc") {
+            sorted.sort((a, b) => a.stock - b.stock);
+        } else if (order === "desc") {
+            sorted.sort((a, b) => b.stock - a.stock);
+        }
+
+        setLocalProducts(sorted);
+    };
 
     const handleDelete = (id) => {
         toast((t) => (
@@ -68,12 +132,82 @@ export default function InventoryTable({ products = [], loading = false }) {
             {/* FILTERS */}
             <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
                 <div className="flex flex-wrap gap-2">
-                    <button className="bg-gray-200 px-4 py-2 rounded-full text-sm">
-                        Filter by Category
-                    </button>
-                    <button className="bg-gray-200 px-4 py-2 rounded-full text-sm">
-                        Sort by Stock
-                    </button>
+                    <div className="relative">
+                        <button
+                            onClick={() => setCategoryOpen(!categoryOpen)}
+                            className="flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full text-sm"
+                        >
+                            {selectedCategory.label}
+
+                            <ChevronDown
+                                size={16}
+                                className={`transition-transform duration-200 ${categoryOpen ? "rotate-180" : ""
+                                    }`}
+                            />
+                        </button>
+
+                        {categoryOpen && (
+                            <div className="absolute mt-2 bg-white shadow rounded w-48 z-10">
+                                {categories.map((option, i) => (
+                                    <div
+                                        key={i}
+                                        onClick={() => {
+                                            setSelectedCategory(option);
+                                            setCategoryOpen(false);
+
+                                            // 🔥 API CALL (MAIN PART)
+                                            if (option.value === "all") {
+                                                fetchProducts();
+                                            } else {
+                                                fetchProducts(option.value);
+                                            }
+                                        }}
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    >
+                                        {option.label}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* //sort by stock */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setSortOpen(!sortOpen)}
+                            className="flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full text-sm"
+                        >
+                            {selectedSort.label}
+
+                            <ChevronDown
+                                size={16}
+                                className={`transition-transform duration-200 ${sortOpen ? "rotate-180" : ""
+                                    }`}
+                            />
+                        </button>
+
+                        {sortOpen && (
+                            <div className="absolute mt-2 bg-white shadow rounded w-48 z-10">
+
+                                {sortOptions.map((option, i) => (
+                                    <div
+                                        key={i}
+                                        onClick={() => {
+                                            setSelectedSort(option);
+                                            setSortOpen(false);
+
+                                            applySort(option.value); // 🔥 MAIN LOGIC
+                                        }}
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    >
+                                        {option.label}
+                                    </div>
+                                ))}
+
+                            </div>
+                        )}
+                    </div>
+
                 </div>
 
                 <p className="text-gray-500 text-sm">
@@ -229,6 +363,6 @@ export default function InventoryTable({ products = [], loading = false }) {
                     );
                 }}
             />
-        </div>
+        </div >
     );
 }

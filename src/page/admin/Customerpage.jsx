@@ -117,7 +117,7 @@ export default function CustomerPage() {
     };
 
     return (
-        <div className="p-3 sm:p-4 space-y-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-4">
 
             <CustomerHeader
                 statusFilter={statusFilter}
