@@ -7,30 +7,31 @@ export default function Pagination({
     const getPages = () => {
         const pages = [];
 
-        // Always show first page
-        if (currentPage > 2) {
-            pages.push(1);
-        }
+        const left = Math.max(1, currentPage - 1);
+        const right = Math.min(totalPages, currentPage + 1);
+
+        // Always include first page
+        pages.push(1);
 
         // Left dots
-        if (currentPage > 3) {
+        if (left > 2) {
             pages.push("...");
         }
 
         // Middle pages
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-            if (i > 0 && i <= totalPages) {
+        for (let i = left; i <= right; i++) {
+            if (i !== 1 && i !== totalPages) {
                 pages.push(i);
             }
         }
 
         // Right dots
-        if (currentPage < totalPages - 2) {
+        if (right < totalPages - 1) {
             pages.push("...");
         }
 
-        // Last page
-        if (currentPage < totalPages - 1) {
+        // Always include last page
+        if (totalPages !== 1) {
             pages.push(totalPages);
         }
 
@@ -66,11 +67,12 @@ export default function Pagination({
 
                     return (
                         <button
-                            key={page}
+                            // key={page}
+                            key={`${page}-${index}`}
                             onClick={() => onPageChange(page)}
                             className={`w-9 h-9 flex items-center justify-center rounded-full transition ${currentPage === page
-                                    ? "bg-orange-500 text-white shadow-md"
-                                    : "text-gray-600 hover:bg-gray-100"
+                                ? "bg-orange-500 text-white shadow-md"
+                                : "text-gray-600 hover:bg-gray-100"
                                 }`}
                         >
                             {page}

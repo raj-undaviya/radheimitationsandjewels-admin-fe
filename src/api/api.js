@@ -24,6 +24,9 @@ const ProductEdit = (id) => `/products/${id}`;
 //Product delete API
 const ProductDelete = (id) => `/products/${id}`;
 
+//bulk product api
+const BulkUpload = "/products/bulk-upload/";
+
 // ============================================
 //collection add 
 const Collection = "/products/category";
@@ -111,6 +114,8 @@ export const ProductSubCategoryAPI = (categoryId) => {
 
 export const ProductEditAPI = (id) => ProductEdit(id);
 export const ProductDeleteAPI = (id) => ProductDelete(id);
+
+export const BulkUploadAPI = () => BulkUpload;
 
 // ================= COLLECTION FUNCTION =================
 export const CollectionAPI = () => Collection;

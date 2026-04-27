@@ -224,6 +224,7 @@ export default function InventoryTable({ products = [], loading = false }) {
                             <th className="pb-2">Product</th>
                             <th>SKU</th>
                             <th>Category</th>
+                            <th>Subcategory</th>
                             <th>Stock Units</th>
                             <th>Unit Price</th>
                             <th>Status</th>
@@ -253,6 +254,10 @@ export default function InventoryTable({ products = [], loading = false }) {
                                     <td className="min-w-40">
                                         <div className="w-full bg-gray-200 h-2 rounded-full"></div>
                                         <div className="w-16 h-2 bg-gray-200 rounded mt-2"></div>
+                                    </td>
+
+                                    <td>
+                                        <div className="w-16 h-3 bg-gray-200 rounded"></div>
                                     </td>
 
                                     <td>
@@ -298,7 +303,13 @@ export default function InventoryTable({ products = [], loading = false }) {
 
                                         <td>
                                             <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium">
-                                                Category {item.category}
+                                                {item.category_name}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium">
+                                                {item.subcategory_name}
                                             </span>
                                         </td>
 

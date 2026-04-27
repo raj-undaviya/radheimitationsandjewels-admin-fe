@@ -4,11 +4,14 @@ import InventoryStats from "../../components/inventory/InventoryStats";
 import InventoryTable from "../../components/inventory/InventoryTable";
 import Pagination from "../../components/common/Pagination";
 import AddProductModal from "../../components/inventory/AddProductModal";
+import BulkUploadModal from "../../components/inventory/BulkUploadModal ";
 
 import API from "../../api/axiosInstance";
 import { ProductAPI } from "../../api/api";
 
 export default function Inventory() {
+
+    const [openBulkModal, setOpenBulkModal] = useState(false);
 
     const [open, setOpen] = useState(false);
     const [page, setPage] = useState(1);
@@ -60,7 +63,10 @@ export default function Inventory() {
     return (
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
-            <InventoryHeader onAddClick={() => setOpen(true)} />
+            <InventoryHeader
+                onAddClick={() => setOpen(true)}
+                onBulkUploadClick={() => setOpenBulkModal(true)}
+            />
 
             <InventoryStats
                 totalItems={stats?.totalItems}
@@ -97,6 +103,12 @@ export default function Inventory() {
                     fetchProducts();
                 }}
             />
+
+            {openBulkModal && (
+                <BulkUploadModal
+                    onClose={() => setOpenBulkModal(false)}
+                />
+            )}
 
         </div>
     );
