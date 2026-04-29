@@ -203,3 +203,17 @@ export const AdminProfileAPI = () => AdminProfile;
 export const ChangePasswordAPI = () => ChangePassword;
 
 export const RemoveProfileImageAPI = () => RemoveProfileImage;
+
+// 🔥 PAYMENTS API
+
+export const getPaymentStatsAPI = () =>
+    "/admin-panel/payments/stats/";
+
+export const getPaymentsListAPI = (params = "") =>
+    `/admin-panel/payments/list/${params ? `?${params}` : ""}`;
+
+export const getPaymentDetailAPI = (id) =>
+    `/admin-panel/payments/${id}/`;
+
+export const exportPaymentsAPI = () =>
+    "/admin-panel/payments/export/";

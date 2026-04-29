@@ -1,6 +1,10 @@
 import { CreditCard, Landmark, Wallet } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function PaymentsTable({ loading, orders = [] }) {
+
+  const navigate = useNavigate();
+
   const getStatusDot = (status) => {
     return status === "pending" || status === "failed"
       ? "bg-orange-500"
@@ -29,9 +33,14 @@ export default function PaymentsTable({ loading, orders = [] }) {
     <div className="bg-white p-5 rounded-2xl shadow">
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Latest Payments</h2>
-        <span className="text-orange-500 text-sm cursor-pointer hover:underline">
+
+        <span
+          onClick={() => navigate("/admin/transaction")}
+          className="text-orange-500 text-sm cursor-pointer hover:underline"
+        >
           VIEW ALL
         </span>
+
       </div>
 
       <div className="overflow-x-auto">
@@ -48,60 +57,63 @@ export default function PaymentsTable({ loading, orders = [] }) {
           <tbody>
             {loading
               ? [...Array(5)].map((_, i) => (
-                  <tr key={i} className="border-b animate-pulse">
-                    <td className="py-3 px-2">
-                      <div className="h-3 bg-gray-200 rounded w-32"></div>
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="h-3 bg-gray-200 rounded w-32"></div>
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="h-3 bg-gray-200 rounded w-40"></div>
-                    </td>
-                    <td className="py-3 px-2 text-right">
-                      <div className="h-3 bg-gray-200 rounded w-20 ml-auto"></div>
-                    </td>
-                  </tr>
-                ))
+                <tr key={i} className="border-b animate-pulse">
+                  <td className="py-3 px-2">
+                    <div className="h-3 bg-gray-200 rounded w-32"></div>
+                  </td>
+                  <td className="py-3 px-2">
+                    <div className="h-3 bg-gray-200 rounded w-32"></div>
+                  </td>
+                  <td className="py-3 px-2">
+                    <div className="h-3 bg-gray-200 rounded w-40"></div>
+                  </td>
+                  <td className="py-3 px-2 text-right">
+                    <div className="h-3 bg-gray-200 rounded w-20 ml-auto"></div>
+                  </td>
+                </tr>
+              ))
               : orders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b last:border-none hover:bg-gray-50 transition"
+                <tr
+                  key={order.id}
+                  className="border-b last:border-none hover:bg-gray-50 transition"
+                >
+                  <td className="py-3 px-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full " />
+                      <span className="font-semibold text-gray-700">
+                        {order.id}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="py-3 px-2">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${getStatusDot(order.payment_status)}`}
+                      />
+                      <span className="font-semibold text-gray-700">
+                        {(order.payment_method === "cod" ||
+                          ["pending", "failed"].includes(order.payment_status))
+                          ? "-"
+                          : order.razorpay_payment_id || `ORD-${order.id}`}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="py-3 px-2">
+                    <div className="flex items-center gap-2 text-gray-600 text-sm">
+                      {getIcon(order.payment_method)}
+                      {formatMethod(order.payment_method)}
+                    </div>
+                  </td>
+
+                  <td
+                    className={`py-3 px-2 text-right font-semibold ${getAmountColor(order.payment_status)}`}
                   >
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full " />
-                        <span className="font-semibold text-gray-700">
-                          {order.id}
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`w-2 h-2 rounded-full ${getStatusDot(order.payment_status)}`}
-                        />
-                        <span className="font-semibold text-gray-700">
-                          {order.razorpay_payment_id || `ORD-${order.id}`}
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-2 text-gray-600 text-sm">
-                        {getIcon(order.payment_method)}
-                        {formatMethod(order.payment_method)}
-                      </div>
-                    </td>
-
-                    <td
-                      className={`py-3 px-2 text-right font-semibold ${getAmountColor(order.payment_status)}`}
-                    >
-                      ₹{order.total_amount.toLocaleString("en-IN")}
-                    </td>
-                  </tr>
-                ))}
+                    ₹{order.total_amount.toLocaleString("en-IN")}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

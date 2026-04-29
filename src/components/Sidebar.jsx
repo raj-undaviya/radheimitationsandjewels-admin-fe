@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings, User, Shapes, Calendar } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, ChevronRight, Ticket, Settings, User, Shapes, Calendar, Wallet } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 
@@ -18,6 +18,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         { label: "Coupons", path: "/admin/coupons", icon: <Ticket size={18} /> },
         { label: "Policies", path: "/admin/policies", icon: <FileText size={18} /> },
         { label: "Appointment", path: "/admin/appointment", icon: <Calendar size={18} /> },
+        { label: "Transaction", path: "/admin/transaction", icon: <Wallet size={18} /> },
         // { label: "Settings", path: "/admin/settings", icon: <Settings size={18} /> },
     ];
 

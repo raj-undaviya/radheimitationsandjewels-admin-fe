@@ -18,6 +18,7 @@ import PoliciesPage from "./page/admin/PoliciesPage";
 import ProfilePage from "./page/admin/ProfilePage";
 import Appointment from "./page/admin/Appointment";
 import SettingPage from "./page/admin/SettingPage";
+import PaymentPage from "./page/admin/PaymentPage";
 
 // Protected route guard
 const AdminRoute = ({ children }) => {
@@ -69,6 +70,7 @@ function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingPage />} />
           <Route path="subcategory" element={<SubcategoryPage />} />
+          <Route path="transaction" element={<PaymentPage />} />
 
         </Route>
 
