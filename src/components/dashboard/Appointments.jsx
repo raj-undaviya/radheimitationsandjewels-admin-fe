@@ -4,11 +4,18 @@ import { useNavigate } from "react-router-dom";
 import API from "../../api/axiosInstance";
 import { AppointmentAdminAPI } from "../../api/api";
 
-export default function Appointments() {
+export default function Appointments({ socketData }) {
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true); // ✅ NEW
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (socketData && socketData.length > 0) {
+            setData(socketData);
+            setLoading(false);
+        }
+    }, [socketData]);
 
     useEffect(() => {
         const fetchAppointments = async () => {
