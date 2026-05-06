@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import API from "../../api/axiosInstance";
 import { loginAdminAPI } from "../../api/api";
@@ -30,21 +31,26 @@ export default function AdminLogin() {
 
             console.log("FULL RESPONSE:", response.data);
 
-            const user = response.data?.data;  
+            const user = response.data?.data;
             const token = user?.token;
 
             if (token && user?.is_staff) {
+
                 localStorage.setItem("adminToken", token);
                 localStorage.setItem("adminUser", JSON.stringify(user));
 
+                // SUCCESS MESSAGE
+                toast.success("Admin login successful");
+
                 navigate("/admin");
+
             } else {
-                alert("Access denied: Not an admin");
+                toast.error("Access denied: Not an admin");
             }
 
         } catch (error) {
             console.error(error);
-            alert(error?.response?.data?.message || "Login failed");
+            toast.error(error?.response?.data?.message || "Login failed");
         } finally {
             setLoading(false);
         }

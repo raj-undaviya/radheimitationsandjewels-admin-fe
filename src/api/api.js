@@ -1,4 +1,4 @@
-// ================= AUTH APIs =================
+// ======================= AUTH APIs =====================
 
 //Login endpoint
 const loginAdmin = "/users/auth/";
@@ -11,7 +11,7 @@ const Order = "/admin-panel/orders/";
 
 const SALES_CHART = "/admin-panel/sales-performance/";
 
-// =================== PRODUCT ========================
+// ======================== PRODUCT ========================
 //product page api /stats api
 const Product = "/products/";
 
@@ -27,7 +27,7 @@ const ProductDelete = (id) => `/products/${id}/`;
 //bulk product api
 const BulkUpload = "/products/bulk-upload/";
 
-// ============================================
+// ==================== COLLECTION API ========================
 //collection add 
 const Collection = "/products/category/";
 
@@ -39,7 +39,7 @@ const CollectionById = (id) => `/products/category/${id}/`;
 // Category Delete API
 const CollectionDelete = (id) => `/products/category/${id}/`;
 
-// ==============================================
+// ==================== SUBCATEGORY API ==========================
 
 //subcategory view API
 // subcategory add 
@@ -50,12 +50,12 @@ const SubCategoryEdit = (id) => `/products/subcategory/${id}/`;
 
 const SubCategoryDelete = (id) => `/products/subcategory/${id}/`;
 
-// ================= APPOINTMENT =================
+// ====================== APPOINTMENT =================
 
 const AppointmentAdmin = "/admin-panel/appointments/";
 const AppointmentById = (id) => `/appointments/${id}/`;
 
-//================= CUSTOMER ========================
+//======================== CUSTOMER ========================
 const CustomerView = "/admin-panel/users/";
 // Register / Create User API
 const RegisterUser = "/users/auth/";
@@ -70,7 +70,7 @@ const CouponEdit = (id) => `/admin-panel/coupons/${id}/`;
 // DELETE COUPON
 const CouponDelete = (id) => `/admin-panel/coupons/${id}/`;
 
-//=================== REPORTS API =====================
+//======================== REPORTS API =====================
 const PerformanceReport = "/admin-panel/reports/performance/";
 
 const SalesAnalytics = "/admin-panel/reports/sales-analytics/";
@@ -204,7 +204,7 @@ export const ChangePasswordAPI = () => ChangePassword;
 
 export const RemoveProfileImageAPI = () => RemoveProfileImage;
 
-// 🔥 PAYMENTS API
+//PAYMENTS API
 
 export const getPaymentStatsAPI = () =>
     "/admin-panel/payments/stats/";
