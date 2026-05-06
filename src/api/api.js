@@ -1,13 +1,13 @@
 // ================= AUTH APIs =================
 
 //Login endpoint
-const loginAdmin = "/users/auth";
+const loginAdmin = "/users/auth/";
 
 //Dashboard stat card 
-const StatsCards = "/admin-panel/dashboard";
+const StatsCards = "/admin-panel/dashboard/";
 
 //Latest Order and Order Page api dashboard and order page
-const Order = "/admin-panel/orders";
+const Order = "/admin-panel/orders/";
 
 const SALES_CHART = "/admin-panel/sales-performance/";
 
@@ -16,52 +16,52 @@ const SALES_CHART = "/admin-panel/sales-performance/";
 const Product = "/products/";
 
 // filter category vise
-const ProductSubCategory = "/products/subcategory";
+const ProductSubCategory = "/products/subcategory/";
 
 // Product Edit API
-const ProductEdit = (id) => `/products/${id}`;
+const ProductEdit = (id) => `/products/${id}/`;
 
 //Product delete API
-const ProductDelete = (id) => `/products/${id}`;
+const ProductDelete = (id) => `/products/${id}/`;
 
 //bulk product api
 const BulkUpload = "/products/bulk-upload/";
 
 // ============================================
 //collection add 
-const Collection = "/products/category";
+const Collection = "/products/category/";
 
 // Category Edit API
-const CollectionEdit = (id) => `/products/category/${id}`;
+const CollectionEdit = (id) => `/products/category/${id}/`;
 
-const CollectionById = (id) => `/products/category/${id}`;
+const CollectionById = (id) => `/products/category/${id}/`;
 
 // Category Delete API
-const CollectionDelete = (id) => `/products/category/${id}`;
+const CollectionDelete = (id) => `/products/category/${id}/`;
 
 // ==============================================
 
 //subcategory view API
 // subcategory add 
-const SubCategory = "/products/subcategory";
+const SubCategory = "/products/subcategory/";
 
 // subcategory edit api
-const SubCategoryEdit = (id) => `/products/subcategory/${id}`;
+const SubCategoryEdit = (id) => `/products/subcategory/${id}/`;
 
-const SubCategoryDelete = (id) => `/products/subcategory/${id}`;
+const SubCategoryDelete = (id) => `/products/subcategory/${id}/`;
 
 // ================= APPOINTMENT =================
 
-const AppointmentAdmin = "/admin-panel/appointments";
-const AppointmentById = (id) => `/appointments/${id}`;
+const AppointmentAdmin = "/admin-panel/appointments/";
+const AppointmentById = (id) => `/appointments/${id}/`;
 
 //================= CUSTOMER ========================
-const CustomerView = "/admin-panel/users";
+const CustomerView = "/admin-panel/users/";
 // Register / Create User API
-const RegisterUser = "/users/auth";
-const CustomerEdit = (id) => `/users/customers/${id}`;
+const RegisterUser = "/users/auth/";
+const CustomerEdit = (id) => `/users/customers/${id}/`;
 // 🔥 DELETE USER
-const CustomerDelete = (id) => `/users/customers/${id}`;
+const CustomerDelete = (id) => `/users/customers/${id}/`;
 
 //======================= COUPONS =======================
 const CouponView = "/admin-panel/coupons/";
@@ -139,7 +139,7 @@ export const SubCategoryDeleteAPI = (id) => SubCategoryDelete(id);
 
 export const AppointmentAdminAPI = () => AppointmentAdmin;
 export const AppointmentByIdAPI = (id) => AppointmentById(id);
-export const AppointmentUpdateAPI = (id) => `/appointments/${id}`;
+export const AppointmentUpdateAPI = (id) => `/appointments/${id}/`;
 
 export const AppointmentExportCSVAPI = (status) =>
     `/appointments/export-csv${status !== "All" ? `?status=${status}` : ""}`;
@@ -157,7 +157,7 @@ export const CouponEditAPI = (id) => CouponEdit(id);
 export const CouponDeleteAPI = (id) => CouponDelete(id);
 
 //=============== ADMIN PROFILE API FUNCTION ======================
-export const UpdateCustomerAPI = (id) => `/users/customers/${id}`;
+export const UpdateCustomerAPI = (id) => `/users/customers/${id}/`;
 
 //================== ORDER API FUNCTION ====================
 export const updateOrderStatusAPI = (id) =>
