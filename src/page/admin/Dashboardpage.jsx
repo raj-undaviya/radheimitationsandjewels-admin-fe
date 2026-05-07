@@ -63,7 +63,7 @@ export default function Dashboard() {
 
         fetchOrders(); // initial
 
-        const interval = setInterval(fetchOrders, 5000); // 🔁 every 5 sec
+        const interval = setInterval(fetchOrders, 5000); // every 5 sec
 
         return () => clearInterval(interval);
 

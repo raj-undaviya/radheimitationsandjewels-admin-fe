@@ -4,11 +4,7 @@ import { useState, useEffect } from "react";
 import TransactionModal from "./TransactionModal";
 
 import API from "../../api/axiosInstance";
-import {
-    getPaymentStatsAPI,
-    getPaymentsListAPI,
-    getPaymentDetailAPI,
-} from "../../api/api";
+import { getPaymentStatsAPI, getPaymentsListAPI, getPaymentDetailAPI } from "../../api/api";
 
 export default function PaymentLayout() {
 
@@ -27,18 +23,18 @@ export default function PaymentLayout() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    // 🔥 LOADING STATES
+    // LOADING STATES
     const [loading, setLoading] = useState(true);
     const [statsLoading, setStatsLoading] = useState(true);
 
-    // 🔥 CLOSE DROPDOWN
+    // CLOSE DROPDOWN
     useEffect(() => {
         const close = () => setOpenDropdown(null);
         window.addEventListener("click", close);
         return () => window.removeEventListener("click", close);
     }, []);
 
-    // 🔥 FETCH STATS
+    // FETCH STATS
     useEffect(() => {
         const fetchStats = async () => {
             try {
@@ -54,7 +50,7 @@ export default function PaymentLayout() {
         fetchStats();
     }, []);
 
-    // 🔥 FETCH PAYMENTS
+    // FETCH PAYMENTS
     useEffect(() => {
         const fetchPayments = async () => {
             try {

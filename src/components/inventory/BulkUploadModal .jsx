@@ -45,7 +45,7 @@ export default function BulkUploadModal({ onClose }) {
 
         } catch (err) {
             console.log(err);
-            toast.error("Failed to download template ❌");
+            toast.error("Failed to download template");
         }
     };
 
@@ -75,7 +75,7 @@ export default function BulkUploadModal({ onClose }) {
                 }
             );
 
-            toast.success("Upload successful ✅");
+            toast.success("Upload successful");
 
             setFile(null);
             setProgress(0);
@@ -83,7 +83,7 @@ export default function BulkUploadModal({ onClose }) {
 
         } catch (err) {
             console.log(err);
-            toast.error("Upload failed ❌");
+            toast.error("Upload failed");
         } finally {
             setUploading(false);
         }
@@ -94,7 +94,7 @@ export default function BulkUploadModal({ onClose }) {
 
             <div className="bg-white rounded-2xl w-[95%] max-w-lg p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
 
-                {/* 🔥 GLASS LOADER */}
+                {/* GLASS LOADER */}
                 {uploading && (
                     <div className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl">
 

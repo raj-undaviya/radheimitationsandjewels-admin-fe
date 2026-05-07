@@ -36,7 +36,7 @@ export default function ClientInsights() {
                 </p>
             </div>
 
-            {/* 🔥 SKELETON */}
+            {/* SKELETON */}
             {loading ? (
                 <div className="space-y-3">
                     {[1, 2].map((_, i) => (

@@ -3,17 +3,10 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, Upload, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
-
-import API from "../../api/axiosInstance";
-import {
-    AdminProfileAPI,
-    ChangePasswordAPI,
-    RemoveProfileImageAPI
-} from "../../api/api";
-
 import logo from "../../assets/Logo.png";
 
+import API from "../../api/axiosInstance";
+import { AdminProfileAPI, ChangePasswordAPI, RemoveProfileImageAPI } from "../../api/api";
 
 export default function ProfileUI() {
 
@@ -36,7 +29,7 @@ export default function ProfileUI() {
         setValue
     } = useForm();
 
-    // 🔥 FETCH PROFILE
+    // FETCH PROFILE
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -62,7 +55,7 @@ export default function ProfileUI() {
         fetchProfile();
     }, [setValue]);
 
-    // 🔥 IMAGE UPLOAD PREVIEW
+    // IMAGE UPLOAD PREVIEW
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -71,7 +64,7 @@ export default function ProfileUI() {
         setPreview(URL.createObjectURL(file));
     };
 
-    // 🔥 REMOVE IMAGE API
+    // REMOVE IMAGE API
     const handleRemoveImage = async () => {
         try {
             await API.delete(RemoveProfileImageAPI());
@@ -88,7 +81,7 @@ export default function ProfileUI() {
         }
     };
 
-    // 🔥 PASSWORD STRENGTH
+    // PASSWORD STRENGTH
     const getPasswordStrength = (password) => {
         if (!password) return { text: "", color: "" };
 
@@ -103,7 +96,7 @@ export default function ProfileUI() {
 
     const strength = getPasswordStrength(watch("newPassword"));
 
-    // 🔥 CHANGE PASSWORD
+    // CHANGE PASSWORD
     const onSubmit = async (data) => {
 
         if (data.newPassword !== data.confirmPassword) {
@@ -289,7 +282,7 @@ export default function ProfileUI() {
 
                     </div>
 
-                    {/* //image preview */}
+                    {/* image preview */}
                     {showPreview && (
                         <div
                             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4"

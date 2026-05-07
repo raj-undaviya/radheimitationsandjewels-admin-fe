@@ -76,7 +76,7 @@ export default function AddCustomerModal({ isOpen, onClose, editData, refreshUse
             let res;
 
             if (editData) {
-                // ✏️ UPDATE USER
+                // UPDATE USER
                 res = await API.put(CustomerEditAPI(editData.id), payload);
 
                 const updatedUser = {
@@ -86,13 +86,13 @@ export default function AddCustomerModal({ isOpen, onClose, editData, refreshUse
 
                 // update existing user in table
                 if (typeof addUser === "function") {
-                    addUser(updatedUser); // we will fix below
+                    addUser(updatedUser); 
                 }
 
                 toast.success("User updated successfully");
 
             } else {
-                // ➕ CREATE USER
+                // CREATE USER
                 res = await API.post(RegisterUserAPI(), payload);
 
                 const newUser = {

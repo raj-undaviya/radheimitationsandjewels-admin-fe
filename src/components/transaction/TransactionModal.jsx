@@ -1,13 +1,6 @@
-import {
-    X,
-    FileText,
-    User,
-    CreditCard,
-    MapPin,
-    Package,
-    Printer,
-} from "lucide-react";
+import { X, FileText, User, CreditCard, MapPin, Package, Printer } from "lucide-react";
 import { useEffect } from "react";
+
 import API from "../../api/axiosInstance";
 import { exportPaymentsAPI } from "../../api/api";
 
@@ -18,6 +11,7 @@ export default function TransactionModal({ isOpen, onClose, data }) {
         return () => (document.body.style.overflow = "auto");
     }, [isOpen]);
 
+    //csv file 
     const handleExport = async () => {
         try {
             const res = await API.get(exportPaymentsAPI(), {
@@ -44,9 +38,7 @@ export default function TransactionModal({ isOpen, onClose, data }) {
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 
-            <div className="bg-white rounded-2xl md:rounded-3xl w-full max-w-5xl 
-overflow-hidden flex flex-col md:flex-row 
-max-h-[95vh] md:max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl md:rounded-3xl w-full max-w-5xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] overflow-y-auto">
 
                 {/* LEFT SIDE */}
                 <div className="hidden md:flex md:w-1/3 bg-gray-50 p-8 flex-col justify-between">
@@ -89,7 +81,7 @@ max-h-[95vh] md:max-h-[90vh] overflow-y-auto">
                     </div>
 
                     {/* CARDS */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
 
                         <div className="bg-gray-50 p-4 rounded-xl">
                             <p className="text-gray-500 text-sm">Amount</p>
@@ -192,8 +184,7 @@ max-h-[95vh] md:max-h-[90vh] overflow-y-auto">
 
                         <button
                             onClick={handleExport}
-                            className="bg-orange-500 text-white px-6 py-2 rounded-full shadow-lg 
-w-full sm:w-auto text-center hover:scale-105 transition"
+                            className="bg-orange-500 text-white px-6 py-2 rounded-full shadow-lg w-full sm:w-auto text-center hover:scale-105 transition"
                         >
                             Print Receipt
                         </button>

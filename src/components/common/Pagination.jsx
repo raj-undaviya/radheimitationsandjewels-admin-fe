@@ -1,7 +1,4 @@
-export default function Pagination({
-    currentPage,
-    totalPages,
-    onPageChange,
+export default function Pagination({ currentPage, totalPages, onPageChange,
 }) {
 
     const getPages = () => {

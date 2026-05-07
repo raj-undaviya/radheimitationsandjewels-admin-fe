@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import API from "../../api/axiosInstance";
-import { CollectionAPI, CollectionEditAPI, SubCategoryEdiAPI } from "../../api/api";
+import { CollectionAPI, CollectionEditAPI, SubCategoryEdiAPI, SubCategoryAPI } from "../../api/api";
 import toast from "react-hot-toast";
-import { SubCategoryAPI } from "../../api/api";
 
 export default function AddCategoryModal({
     type = "category",
@@ -291,7 +290,7 @@ export default function AddCategoryModal({
                                             className="h-32 mx-auto object-contain rounded-lg"
                                         />
 
-                                        {/* ❌ REMOVE BUTTON */}
+                                        {/* REMOVE BUTTON */}
                                         <button
                                             type="button"
                                             onClick={(e) => {

@@ -54,7 +54,6 @@ const Settings = () => {
                         <Info size={16} className="text-gray-400 mt-1" />
                     </div>
 
-                    {/* Responsive Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                         <div>

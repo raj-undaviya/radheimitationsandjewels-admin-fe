@@ -6,17 +6,7 @@ import toast from "react-hot-toast";
 import API from "../../api/axiosInstance";
 import { CreatePolicyAPI, UpdatePolicyAPI } from "../../api/api";
 
-import {
-    Editor,
-    EditorProvider,
-    Toolbar,
-    BtnBold,
-    BtnItalic,
-    BtnUnderline,
-    BtnLink,
-    BtnUndo,
-    BtnRedo,
-} from "react-simple-wysiwyg";
+import { Editor, EditorProvider, Toolbar, BtnBold, BtnItalic, BtnUnderline, BtnLink, BtnUndo, BtnRedo } from "react-simple-wysiwyg";
 
 export default function AddPolicyModal({
     isOpen,
@@ -91,10 +81,10 @@ export default function AddPolicyModal({
 
             if (existing) {
                 res = await API.put(UpdatePolicyAPI(existing.id), payload);
-                toast.success("Policy updated ✅");
+                toast.success("Policy updated");
             } else {
                 res = await API.post(CreatePolicyAPI(), payload);
-                toast.success("Policy created ✅");
+                toast.success("Policy created");
             }
 
             onSave(res.data.data);

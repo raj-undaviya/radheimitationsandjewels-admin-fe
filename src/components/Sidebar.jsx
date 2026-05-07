@@ -3,7 +3,6 @@ import { LayoutDashboard, Package, ShoppingCart, Users, BarChart, X, FileText, C
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 
-
 const Sidebar = ({ isOpen, setIsOpen }) => {
     const user = JSON.parse(localStorage.getItem("adminUser"));
 

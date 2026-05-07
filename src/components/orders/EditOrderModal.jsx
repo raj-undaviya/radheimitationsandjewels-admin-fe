@@ -20,7 +20,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onUpdate }) {
         formState: { errors }
     } = useForm();
 
-    // 🔥 Load order data into form
+    // Load order data into form
     useEffect(() => {
         if (order) {
             reset({
@@ -42,7 +42,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onUpdate }) {
                 }
             );
 
-            toast.success("Order status updated successfully ✅");
+            toast.success("Order status updated successfully");
 
             onUpdate(); // refresh table
             onClose();
@@ -51,7 +51,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onUpdate }) {
             console.error(err);
 
             const message =
-                err?.response?.data?.message || "Failed to update order ❌";
+                err?.response?.data?.message || "Failed to update order";
 
             toast.error(message);
 
@@ -96,7 +96,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onUpdate }) {
                             <p className="font-medium">₹{order.total_amount}</p>
                         </div>
 
-                        {/* Status (EDITABLE 🔥) */}
+                        {/* Status (EDITABLE) */}
                         <div>
                             <label className="text-sm text-gray-500">Status</label>
 
@@ -108,7 +108,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onUpdate }) {
                                         type="button"
                                         onClick={() => setValue("status", s)}
                                         className={`px-3 py-1 rounded-full text-sm border 
-        ${watch("status") === s
+                                            ${watch("status") === s
                                                 ? "bg-orange-500 text-white border-orange-500"
                                                 : "bg-gray-100 text-gray-600 border-gray-200"
                                             }`}

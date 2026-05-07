@@ -126,12 +126,12 @@ export default function Subcategory() {
                     <button
                         onClick={async () => {
                             try {
-                                await API.delete(SubCategoryDeleteAPI(id)); // ✅ FIXED
+                                await API.delete(SubCategoryDeleteAPI(id)); 
 
                                 toast.success("Subcategory deleted");
                                 toast.dismiss(t.id);
 
-                                fetchSubcategories(); // ✅ refresh list
+                                fetchSubcategories(); //refresh list
 
                             } catch (error) {
                                 console.log(error);
@@ -189,7 +189,7 @@ export default function Subcategory() {
                                             setParentOpen(false);
                                             setCurrentPage(1);
 
-                                            fetchSubcategories(option.value); // 🔥 API CALL
+                                            fetchSubcategories(option.value);
                                         }}
                                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                                     >

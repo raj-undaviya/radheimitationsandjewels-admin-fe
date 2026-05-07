@@ -62,7 +62,7 @@ export default function CreateCouponModal({ isOpen, onClose, editData, addCoupon
             let res;
 
             if (editData) {
-                // ✏️ EDIT API
+                // EDIT API
                 res = await API.put(
                     CouponEditAPI(editData.id),
                     payload
@@ -71,7 +71,7 @@ export default function CreateCouponModal({ isOpen, onClose, editData, addCoupon
                 toast.success("Coupon updated successfully");
 
             } else {
-                // ➕ CREATE API
+                // CREATE API
                 res = await API.post(
                     CreateCouponAPI(),
                     payload
@@ -80,7 +80,7 @@ export default function CreateCouponModal({ isOpen, onClose, editData, addCoupon
                 toast.success("Coupon created successfully");
             }
 
-            // 🔥 UPDATE UI WITHOUT REFRESH
+            // UPDATE UI WITHOUT REFRESH
             if (typeof addCoupon === "function") {
                 addCoupon(res.data.data);
             }

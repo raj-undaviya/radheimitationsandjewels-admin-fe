@@ -27,7 +27,7 @@ export default function AppointmentDashboard({
             const res = await API.get(
                 AppointmentExportCSVAPI(statusFilter),
                 {
-                    responseType: "blob", // 🔥 VERY IMPORTANT
+                    responseType: "blob", //IMPORTANT
                 }
             );
 
@@ -101,9 +101,9 @@ export default function AppointmentDashboard({
                 updatedData
             );
 
-            // ✅ UPDATE UI WITHOUT REFRESH
+            // UPDATE UI WITHOUT REFRESH
             onUpdate(editData.id, res.data.data);
-            refresh();   // 🔥 ADD THIS
+            refresh();  
 
             toast.success("Status updated");
 
@@ -309,7 +309,7 @@ export default function AppointmentDashboard({
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        setSelectedId(item.id);   // 👈 trigger fetch
+                                                        setSelectedId(item.id);  
                                                         setOpenModal(true);
                                                     }}
                                                     className="group p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-all duration-200"

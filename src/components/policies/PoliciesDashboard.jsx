@@ -48,7 +48,7 @@ export default function PoliciesDashboard() {
         <>
             <div className="px-3 sm:px-6 py-5 space-y-6 max-w-7xl mx-auto">
 
-                {/* 🔥 RESPONSIVE HEADER */}
+                {/* RESPONSIVE HEADER */}
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
                     <div>
@@ -71,7 +71,7 @@ export default function PoliciesDashboard() {
                     </button>
                 </div>
 
-                {/* 🔥 RESPONSIVE GRID */}
+                {/*GRID POLICIES */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
 
                     {loading ? (
@@ -141,7 +141,7 @@ export default function PoliciesDashboard() {
                     )}
                 </div>
 
-                {/* 🔥 RESPONSIVE STATS */}
+                {/* STATS */}
                 {loading ? (
                     <div className="bg-white rounded-2xl p-5 space-y-3 animate-pulse">
                         <div className="h-5 w-24 bg-gray-200 rounded" />

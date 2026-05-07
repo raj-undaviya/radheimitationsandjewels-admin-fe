@@ -29,7 +29,7 @@ export default function Inventory() {
 
     const fetchProducts = async () => {
         try {
-            setLoading(true); // 🔥 ADD THIS
+            setLoading(true);
 
             const res = await API.get(ProductAPI());
 

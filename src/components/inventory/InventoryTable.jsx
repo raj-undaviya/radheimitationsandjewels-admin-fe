@@ -155,7 +155,7 @@ export default function InventoryTable({ products = [], loading = false }) {
                                             setSelectedCategory(option);
                                             setCategoryOpen(false);
 
-                                            // 🔥 API CALL (MAIN PART)
+                                            // API CALL
                                             if (option.value === "all") {
                                                 fetchProducts();
                                             } else {
@@ -171,7 +171,7 @@ export default function InventoryTable({ products = [], loading = false }) {
                         )}
                     </div>
 
-                    {/* //sort by stock */}
+                    {/* sort by stock */}
                     <div className="relative">
                         <button
                             onClick={() => setSortOpen(!sortOpen)}
@@ -196,7 +196,7 @@ export default function InventoryTable({ products = [], loading = false }) {
                                             setSelectedSort(option);
                                             setSortOpen(false);
 
-                                            applySort(option.value); // 🔥 MAIN LOGIC
+                                            applySort(option.value); //MAIN LOGIC
                                         }}
                                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                                     >

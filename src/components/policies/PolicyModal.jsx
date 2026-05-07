@@ -9,7 +9,7 @@ export default function PolicyModal({ isOpen, onClose, policyId }) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // 🔥 FETCH DATA
+    // FETCH DATA
     useEffect(() => {
         if (!isOpen || !policyId) return;
 
@@ -30,7 +30,7 @@ export default function PolicyModal({ isOpen, onClose, policyId }) {
         fetchPolicy();
     }, [isOpen, policyId]);
 
-    // 🔒 LOCK SCROLL
+    // LOCK SCROLL
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "auto";
         return () => (document.body.style.overflow = "auto");
@@ -49,14 +49,7 @@ export default function PolicyModal({ isOpen, onClose, policyId }) {
 
             {/* MODAL */}
             <div
-                className="
-                    relative z-10
-                    bg-white w-full 
-                    max-w-md sm:max-w-2xl lg:max-w-4xl mx-auto
-                    rounded-2xl sm:rounded-3xl shadow-xl
-                    max-h-[95vh] overflow-y-auto
-                "
-            >
+                className="relative z-10 bg-white w-full max-w-md sm:max-w-2xl lg:max-w-4xl mx-auto rounded-2xl sm:rounded-3xl shadow-xl max-h-[95vh] overflow-y-auto">
 
                 {/* HEADER */}
                 <div className="sticky top-0 bg-white p-4 sm:p-6 border-b">

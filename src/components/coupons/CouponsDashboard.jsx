@@ -76,7 +76,7 @@ export default function CouponsDashboard() {
                             try {
                                 await API.delete(CouponDeleteAPI(id));
 
-                                // 🔥 REMOVE FROM UI
+                                // REMOVE FROM UI coupon
                                 setCoupons((prev) =>
                                     prev.filter((c) => c.id !== id)
                                 );
@@ -341,13 +341,13 @@ export default function CouponsDashboard() {
                         const exists = prev.find((c) => c.id === coupon.id);
 
                         if (exists) {
-                            // ✏️ UPDATE
+                            //UPDATE coupon
                             return prev.map((c) =>
                                 c.id === coupon.id ? coupon : c
                             );
                         }
 
-                        // ➕ ADD
+                        //ADD coupon
                         return [coupon, ...prev];
                     })
                 }

@@ -51,7 +51,7 @@ export default function StatsCards() {
         }
     ] : [];
 
-    // 🔥 SKELETON LOADER
+    // SKELETON LOADER
     if (loading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -83,7 +83,7 @@ export default function StatsCards() {
                             {s.icon}
                         </div>
 
-                        {/* ✅ FIXED: show change */}
+                        {/* chart status */}
                         <span className={`
                             text-xs px-2 py-1 rounded-full
                             ${s.trend === "up" ? "bg-green-100 text-green-600" : ""}

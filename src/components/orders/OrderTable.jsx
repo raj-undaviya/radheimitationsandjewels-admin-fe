@@ -175,8 +175,7 @@ export default function OrdersTable({
                 </table>
             </div>
 
-            {
-                !loading && (
+            {!loading && (
                     <div className="mt-4 flex justify-center">
                         <Pagination
                             currentPage={page}
@@ -195,14 +194,14 @@ export default function OrdersTable({
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 order={selectedOrder}
-                mode={invoiceMode} // 🔥 IMPORTANT
+                mode={invoiceMode} //IMPORTANT
             />
 
             <EditOrderModal
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
                 order={selectedOrder}
-                onUpdate={refreshOrders} // 🔥 IMPORTANT
+                onUpdate={refreshOrders} //IMPORTANT
             />
 
         </div >

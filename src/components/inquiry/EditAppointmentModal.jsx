@@ -23,7 +23,7 @@ export default function EditAppointmentModal({
     const onSubmit = (data) => {
         onSave({
             ...data,
-            status, // ✅ ADD THIS
+            status,
         });
         onClose();
     };

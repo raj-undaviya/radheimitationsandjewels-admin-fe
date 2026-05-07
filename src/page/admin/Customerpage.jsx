@@ -135,7 +135,7 @@ export default function CustomerPage() {
                 totalItems={filteredCustomers.length}
                 itemsPerPage={itemsPerPage}
                 onToggleStatus={toggleStatus}
-                loading={loading}   // ✅ ADD THIS
+                loading={loading}  
                 onEdit={(customer) => {
                     setEditData(customer);
                     setOpenModal(true);
@@ -149,13 +149,12 @@ export default function CustomerPage() {
                         const exists = prev.find((c) => c.id === user.id);
 
                         if (exists) {
-                            // 🔥 UPDATE
+                            //UPDATE
                             return prev.map((c) =>
                                 c.id === user.id ? user : c
                             );
                         }
-
-                        // 🔥 ADD
+                        //ADD
                         return [user, ...prev];
                     })
                 }

@@ -73,7 +73,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
 
         setImages(prev => [...prev, ...previews]);
 
-        // ✅ store real files
+        // store real files
         setImageFiles(prev => [...prev, ...validFiles]);
     };
 
@@ -96,7 +96,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
                 formData.append("product_images[]", file);
             });
 
-            let res; // IMPORTANT (declare here)
+            let res; // IMPORTANT
 
             if (editData) {
                 res = await API.put(`${ProductAPI()}${editData.id}`, formData, {
@@ -108,7 +108,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
                 });
             }
 
-            // now res is defined
+            // res is defined from response here
             if (onSuccess) onSuccess(res.data.data);
 
             toast.success("Saved successfully");
@@ -364,7 +364,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, editData }
                                                 key={item.id}
                                                 onClick={() => {
                                                     setSubcategory(item.name);        // UI
-                                                    setValue("subcategory", item.id); // ✅ API
+                                                    setValue("subcategory", item.id); // API
                                                     setSubOpen(false);
                                                 }}
                                                 className="px-4 py-2 text-sm hover:bg-[#f5f5f5] cursor-pointer"

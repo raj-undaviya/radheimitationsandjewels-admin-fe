@@ -36,7 +36,7 @@ export default function OrderProcessing() {
                 </p>
             </div>
 
-            {/* 🔥 SKELETON LOADER */}
+            {/* SKELETON LOADER */}
             {loading ? (
                 <div className="space-y-3">
 

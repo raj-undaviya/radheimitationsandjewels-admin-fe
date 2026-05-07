@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* 🔥 IMPORTANT FIX */
 .ProseMirror {
     white-space: pre-wrap !important;
     word-break: break-word;
@@ -26,7 +25,7 @@
     cursor: pointer;
 }
 
-/* //profile page */
+/* profile page */
 .inputDash {
   width: 100%;
   padding: 10px 14px;

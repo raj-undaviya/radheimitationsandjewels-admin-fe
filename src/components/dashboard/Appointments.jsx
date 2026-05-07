@@ -7,7 +7,7 @@ import { AppointmentAdminAPI } from "../../api/api";
 export default function Appointments({ socketData }) {
 
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true); // ✅ NEW
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function Appointments({ socketData }) {
             } catch (err) {
                 console.error("Error fetching appointments:", err);
             } finally {
-                setLoading(false); // ✅ IMPORTANT
+                setLoading(false);
             }
         };
 
@@ -49,7 +49,7 @@ export default function Appointments({ socketData }) {
             <div className="space-y-3">
 
                 {loading ? (
-                    // 🔥 SKELETON
+                    // SKELETON
                     [...Array(5)].map((_, i) => (
                         <div key={i} className="flex justify-between items-center animate-pulse">
 
